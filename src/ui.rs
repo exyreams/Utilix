@@ -66,20 +66,20 @@ pub fn run_app<B: Backend>(
                             qr_code_generator_textarea
                                 .move_cursor(tui_textarea::CursorMove::WordBack);
                         } else if key.modifiers.contains(KeyModifiers::SHIFT) {
-                            // Selection for Base64 Converter
+                            
                             base64_converter_textarea.move_cursor(CursorMove::Head);
                             base64_converter_textarea.start_selection();
                             base64_converter_textarea.move_cursor(CursorMove::End);
 
-                            // Selection for Date Converter
+                            
                             date_converter_textarea.move_cursor(CursorMove::Head);
                             date_converter_textarea.start_selection();
                             date_converter_textarea.move_cursor(CursorMove::End);
-                            // Selection for Hash Generator
+                           
                             hash_generator_textarea.move_cursor(CursorMove::Head);
                             hash_generator_textarea.start_selection();
                             hash_generator_textarea.move_cursor(CursorMove::End);
-                            // Selection for QR Generator
+                            
                             qr_code_generator_textarea.move_cursor(CursorMove::Head);
                             qr_code_generator_textarea.start_selection();
                             qr_code_generator_textarea.move_cursor(CursorMove::End);
@@ -109,19 +109,19 @@ pub fn run_app<B: Backend>(
                             qr_code_generator_textarea
                                 .move_cursor(tui_textarea::CursorMove::WordForward);
                         } else if key.modifiers.contains(KeyModifiers::SHIFT) {
-                            // Selection for Base64 Converter
+                           
                             base64_converter_textarea.move_cursor(CursorMove::Head);
                             base64_converter_textarea.start_selection();
                             base64_converter_textarea.move_cursor(CursorMove::End);
-                            // Selection for Date Converter
+                            
                             date_converter_textarea.move_cursor(CursorMove::Head);
                             date_converter_textarea.start_selection();
                             date_converter_textarea.move_cursor(CursorMove::End);
-                            // Selection for Hash Generator
+                            
                             hash_generator_textarea.move_cursor(CursorMove::Head);
                             hash_generator_textarea.start_selection();
                             hash_generator_textarea.move_cursor(CursorMove::End);
-                            // Selection for QR Generator
+                            
                             qr_code_generator_textarea.move_cursor(CursorMove::Head);
                             qr_code_generator_textarea.start_selection();
                             qr_code_generator_textarea.move_cursor(CursorMove::End);
@@ -187,6 +187,7 @@ pub fn run_app<B: Backend>(
 
                 match input.key {
                     Key::Esc => return Ok(()),
+                    
                     Key::Char(c) => match app.current_tool {
                         Tool::Base64Encoder => {
                             base64_converter_textarea.insert_char(c);
@@ -264,6 +265,27 @@ pub fn run_app<B: Backend>(
                                 app.qr_code_generator.input =
                                     qr_code_generator_textarea.lines().join("\n");
                                 app.qr_code_generator.generate_qr_code();
+                            }
+                        }
+
+                        Tool::UuidGenerator => {
+                            match c {
+                                's' => {
+                                    app.uuid_generator.generate_v4_uuid();
+                                }
+                                'm' => {
+                                    app.uuid_generator.generate_multiple_v4_uuids();
+                                }
+                                'c' => {
+                                    app.uuid_generator.clear();
+                                }
+                                'i' => {
+                                    app.uuid_generator.increase_length();
+                                }
+                                'd' => {
+                                    app.uuid_generator.decrease_length();
+                                }
+                                _ => {}
                             }
                         }
                         _ => {}
@@ -377,8 +399,8 @@ fn render_base64_encoder(
     let input_guide_chunks = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([
-            Constraint::Percentage(50), // Input
-            Constraint::Percentage(50), // Guide
+            Constraint::Percentage(50), 
+            Constraint::Percentage(50),
         ])
         .split(chunks[0]);
 
@@ -529,8 +551,8 @@ fn render_date_converter(
     let input_guide_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
-            Constraint::Percentage(50), // Input
-            Constraint::Percentage(50), // Guide
+            Constraint::Percentage(50),
+            Constraint::Percentage(50), 
         ])
         .split(chunks[0]);
 
@@ -594,8 +616,8 @@ fn render_hash_generator(
     let input_guide_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
-            Constraint::Percentage(50), // Input
-            Constraint::Percentage(50), // Guide
+            Constraint::Percentage(50),
+            Constraint::Percentage(50),
         ])
         .split(chunks[0]);
 
@@ -690,8 +712,8 @@ fn render_password_generator(f: &mut Frame, app: &mut App, area: Rect) {
     let settings_guide_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
-            Constraint::Percentage(50), // Settings
-            Constraint::Percentage(50), // Guide
+            Constraint::Percentage(50), 
+            Constraint::Percentage(50),
         ])
         .split(chunks[0]);
 
@@ -762,8 +784,8 @@ fn render_qr_code_generator(
     let input_guide_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
-            Constraint::Percentage(50), // Input
-            Constraint::Percentage(50), // Guide
+            Constraint::Percentage(50),
+            Constraint::Percentage(50),
         ])
         .split(chunks[0]);
 
@@ -815,25 +837,126 @@ fn render_uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
         .constraints([Constraint::Percentage(30), Constraint::Percentage(70)].as_ref())
         .split(area);
 
+        let settings_guide_chunks = Layout::default()
+            .direction(Direction::Vertical)
+            .constraints([
+                Constraint::Percentage(20),
+                Constraint::Percentage(80),
+            ])
+            .split(chunks[0]);
+    
+
+        let settings = vec![
+            Line::from(vec![
+                Span::raw("Number of UUID: "),
+                Span::styled(
+                    app.uuid_generator.length.to_string(),
+                    Style::default().fg(Color::Yellow),
+                ),
+            ]),
+        ];
+
+        let settings_widget = Paragraph::new(settings)
+            .block(
+                Block::default()
+                    .title(" Settings ")
+                    .borders(Borders::ALL)
+                    .border_type(BorderType::Rounded)
+                    .padding(Padding::new(1, 0, 0, 0)),
+            )
+            .wrap(Wrap { trim: true })
+            .scroll((0, 0))
+            .style(
+                Style::default()
+                    .add_modifier(Modifier::BOLD)
+                    .fg(Color::Yellow),
+            );
+    
+        f.render_widget(settings_widget, settings_guide_chunks[0]);
+
+    
+
     let guide_text = vec![
-        Line::from(vec![Span::raw("Controls:")]),
-        Line::from(vec![Span::raw("Esc: Quit Program")]),
-        Line::from(vec![Span::raw("  - 'd': Decode")]),
-        Line::from(vec![Span::raw("  - Backspace: Clear input")]),
+        Line::from(vec![Span::raw("")]),
+        Line::from(vec![
+            Span::styled(
+                "Esc",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("   Quit", Style::default().fg(Color::White)),
+        ]),
+        
+        Line::from(vec![
+            Span::styled(
+                "s",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("     Generate single UUID", Style::default().fg(Color::White)),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "m",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("     Generate multiple UUIDs", Style::default().fg(Color::White)),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "i",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("     Increase number of UUIDs", Style::default().fg(Color::White)),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "d",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("     Decrease number of UUIDs", Style::default().fg(Color::White)),
+        ]),
+        Line::from(vec![Span::raw("")]),
+        Line::from(vec![
+            Span::styled(
+                "Important:",
+                Style::default()
+                    .fg(Color::LightCyan)
+                    .add_modifier(Modifier::BOLD)
+                    .add_modifier(Modifier::ITALIC)
+                    .add_modifier(Modifier::UNDERLINED)
+                    
+            ),
+            Span::styled(
+                " The application currently does not support the simultaneous highlighting of multiple UUIDs.",
+                Style::default()
+                    .fg(Color::Yellow)
+                    .add_modifier(Modifier::ITALIC)
+                    
+            ),
+        ]),
     ];
 
     let guide = Paragraph::new(guide_text)
         .style(Style::default().add_modifier(Modifier::BOLD).fg(Color::Red))
         .block(
             Block::default()
-                .title(" Guide ")
+                .title(" UUID Help ")
                 .borders(Borders::ALL)
                 .border_type(BorderType::Rounded)
                 .padding(Padding::new(1, 0, 0, 0)),
         );
-    f.render_widget(guide, chunks[0]);
+    f.render_widget(guide, settings_guide_chunks[1]);
 
-    let output = Paragraph::new(app.uuid_generator.generated_uuid.as_str())
+    let version_4_uuid = Paragraph::new(app.uuid_generator.generated_uuid.as_str())
         .style(
             Style::default()
                 .add_modifier(Modifier::BOLD)
@@ -842,8 +965,10 @@ fn render_uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
         .block(
             Block::default()
                 .borders(Borders::ALL)
-                .title(" Generated UUID ")
-                .border_type(BorderType::Rounded),
+                .title(" Version 4 UUID ")
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 0, 0, 0))
         );
-    f.render_widget(output, chunks[1]);
+    f.render_widget(version_4_uuid, chunks[1]);
+
 }
