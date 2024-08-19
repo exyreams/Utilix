@@ -633,7 +633,6 @@ fn render_date_converter(
                     .add_modifier(Modifier::BOLD),
             ),
         ]),
-        Line::from(vec![Span::raw("")]),
         Line::from(vec![
             Span::styled(
                 "Y-m-d H:M:S",
@@ -857,12 +856,12 @@ fn render_date_converter(
     );
     f.render_widget(humanreadable, converstion_chunks_fourth_split[0]);
     
-    let shordate_text = vec![
+    let shortdate_text = vec![
         Line::from(vec![Span::styled(app.date_converter.short_date.to_string(), Style::default().fg(Color::Green))]),
         
     ];
     
-    let shortdate = Paragraph::new(shordate_text)
+    let shortdate = Paragraph::new(shortdate_text)
     .style(
         Style::default()
             .add_modifier(Modifier::BOLD)
