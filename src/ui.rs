@@ -216,20 +216,13 @@ pub fn run_app<B: Backend>(
 
                         Tool::DateConverter => {
                             date_converter_textarea.insert_char(c);
-
-                            if base64_converter_textarea.lines().join("\n").len() % 50 == 0 {
-                                base64_converter_textarea.insert_newline();
+                        
+                            if date_converter_textarea.lines().join("\n").len() % 50 == 0 {
+                                date_converter_textarea.insert_newline();
                             }
-
-                            if key.modifiers.contains(KeyModifiers::ALT) && c == 'd' {
-                                app.date_converter.input =
-                                    date_converter_textarea.lines().join("\n");
-                                app.date_converter.convert_date();
-                            } else if !key.modifiers.contains(KeyModifiers::ALT) {
-                                app.date_converter.input =
-                                    date_converter_textarea.lines().join("\n");
-                                app.date_converter.convert_date();
-                            }
+                        
+                            app.date_converter.input = date_converter_textarea.lines().join("\n");
+                            app.date_converter.convert_all();
                         }
 
                         Tool::HashGenerator => {
@@ -610,44 +603,280 @@ fn render_date_converter(
             .title_style(Style::default().fg(Color::Yellow).bold())
             .borders(Borders::ALL)
             .border_style(Style::default().fg(Color::Yellow))
-            .border_type(BorderType::Rounded),
+            .border_type(BorderType::Rounded)
+            .padding(Padding::new(1, 1, 0, 0)),
     );
 
     date_converter_textarea.set_style(Style::default().bold());
 
     f.render_widget(&*date_converter_textarea, input_guide_chunks[0]);
 
+    
     let guide_text = vec![
-        Line::from(vec![Span::raw("Controls:")]),
-        Line::from(vec![Span::raw("Esc: Quit Program")]),
-        Line::from(vec![Span::raw("  - 'c': Convert Date")]),
-        Line::from(vec![Span::raw("  - Backspace: Clear input")]),
+        
+        Line::from(vec![Span::raw("")]),
+        Line::from(vec![
+            Span::styled(
+                "Esc",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("  Quit", Style::default().fg(Color::White)),
+        ]),
+        Line::from(vec![Span::raw("")]),
+        Line::from(vec![
+            Span::styled(
+                "Supported Formats:",
+                Style::default()
+                    .fg(Color::Yellow)
+                    .add_modifier(Modifier::BOLD),
+            ),
+        ]),
+        Line::from(vec![Span::raw("")]),
+        Line::from(vec![
+            Span::styled(
+                "Y-m-d H:M:S",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "Y-m-dTH:M:S:z",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "Y-m-d",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "d/m/Y H:M:S",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "d/m/Y  ",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+        ]),
     ];
 
     let guide = Paragraph::new(guide_text)
         .style(Style::default().add_modifier(Modifier::BOLD).fg(Color::Red))
         .block(
             Block::default()
-                .title(" Guide ")
+                .title(" Date Converter Help ")
                 .borders(Borders::ALL)
                 .border_type(BorderType::Rounded)
                 .padding(Padding::new(1, 0, 0, 0)),
         );
     f.render_widget(guide, input_guide_chunks[1]);
 
-    let output = Paragraph::new(app.date_converter.output.as_str())
-        .style(
-            Style::default()
-                .add_modifier(Modifier::BOLD)
-                .fg(Color::Green),
-        )
-        .block(
-            Block::default()
-                .title(" Converted Date ")
-                .borders(Borders::ALL)
-                .border_type(BorderType::Rounded),
-        );
-    f.render_widget(output, chunks[1]);
+    let converstion_chunks = Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints([
+            Constraint::Percentage(60),
+            Constraint::Percentage(40),
+        ])
+        .split(chunks[1]);
+    
+    let converstion_chunks_first_split = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([
+            Constraint::Percentage(50),
+            Constraint::Percentage(50),
+        ])
+        .split(converstion_chunks[0]);
+    
+    let converstion_chunks_second_split = Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints([
+            Constraint::Percentage(50),
+            Constraint::Percentage(50),
+        ])
+        .split(converstion_chunks_first_split[0]);
+    
+    let rfc3339_text = vec![
+        Line::from(vec![Span::styled(app.date_converter.rfc3339.to_string(), Style::default().fg(Color::Green))]),
+        
+    ];
+    
+    let rfc3339 = Paragraph::new(rfc3339_text)
+    .style(
+        Style::default()
+            .add_modifier(Modifier::BOLD)
+            .fg(Color::Green),
+    )
+    .block(
+        Block::default()
+            .title(" RFC3339 Conversion ")
+            .borders(Borders::ALL)
+            .border_type(BorderType::Rounded)
+            .padding(Padding::new(1, 1, 0, 0)),
+    );
+    f.render_widget(rfc3339, converstion_chunks_second_split[0]);
+    
+    let rfc2822_text = vec![
+        Line::from(vec![Span::styled(app.date_converter.rfc2822.to_string(), Style::default().fg(Color::Green))]),
+        
+    ];
+    
+    let rfc2822 = Paragraph::new(rfc2822_text)
+    .style(
+        Style::default()
+            .add_modifier(Modifier::BOLD)
+            .fg(Color::Green),
+    )
+    .block(
+        Block::default()
+            .title(" RFC2822 Conversion ")
+            .borders(Borders::ALL)
+            .border_type(BorderType::Rounded)
+            .padding(Padding::new(1, 1, 0, 0)),
+    );
+    f.render_widget(rfc2822, converstion_chunks_second_split[1]);
+     
+    let converstion_chunks_third_split = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([
+            Constraint::Percentage(50),
+            Constraint::Percentage(50),
+        ])
+        
+        .split(converstion_chunks[1]);
+    
+    let converstion_chunks_third_split_half = Layout::default()
+    .direction(Direction::Vertical)
+    .constraints([
+        Constraint::Percentage(50),
+        Constraint::Percentage(50),
+    ])
+    
+    .split(converstion_chunks_third_split[0]);
+
+    let timeonly_text = vec![
+        Line::from(vec![Span::styled(app.date_converter.time_only.to_string(), Style::default().fg(Color::Green))]),
+        
+    ];
+
+    let timeonly = Paragraph::new(timeonly_text)
+    .style(
+        Style::default()
+            .add_modifier(Modifier::BOLD)
+            .fg(Color::Green),
+    )
+    .block(
+        Block::default()
+            .title(" Time Only Conversion ")
+            .borders(Borders::ALL)
+            .border_type(BorderType::Rounded)
+            .padding(Padding::new(1, 1, 0, 0)),
+    );
+    f.render_widget(timeonly, converstion_chunks_third_split_half[0]);
+
+    let iso8601_text = vec![
+        Line::from(vec![Span::styled(app.date_converter.iso8601.to_string(), Style::default().fg(Color::Green))]),
+        
+    ];
+
+    let iso8601 = Paragraph::new(iso8601_text)
+    .style(
+        Style::default()
+            .add_modifier(Modifier::BOLD)
+            .fg(Color::Green),
+    )
+    .block(
+        Block::default()
+            .title(" ISO8601 Conversion ")
+            .borders(Borders::ALL)
+            .border_type(BorderType::Rounded)
+            .padding(Padding::new(1, 1, 0, 0)),
+    );
+    f.render_widget(iso8601, converstion_chunks_third_split_half[1]);
+    
+    let unixtimestamp_text = vec![
+        Line::from(vec![Span::styled(app.date_converter.unix_timestamp.to_string(), Style::default().fg(Color::Green))]),
+        
+    ];
+
+    let unixtimestamp = Paragraph::new(unixtimestamp_text)
+    .style(
+        Style::default()
+            .add_modifier(Modifier::BOLD)
+            .fg(Color::Green),
+    )
+    .block(
+        Block::default()
+            .title(" Unix Conversion ")
+            .borders(Borders::ALL)
+            .border_type(BorderType::Rounded)
+            .padding(Padding::new(1, 1, 0, 0)),
+    );
+    f.render_widget(unixtimestamp, converstion_chunks_third_split[1]);
+    
+    let converstion_chunks_fourth_split = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([
+            Constraint::Percentage(50),
+            Constraint::Percentage(50),
+        ])
+        .split(converstion_chunks_first_split[1]);
+    
+    let humanreadable_text = vec![
+        Line::from(vec![Span::styled(app.date_converter.human_readable.to_string(), Style::default().fg(Color::Green))]),
+        
+    ];
+    
+    let humanreadable = Paragraph::new(humanreadable_text)
+    .style(
+        Style::default()
+            .add_modifier(Modifier::BOLD)
+            .fg(Color::Green),
+    )
+    .block(
+        Block::default()
+            .title(" Human Readable Conversion ")
+            .borders(Borders::ALL)
+            .border_type(BorderType::Rounded)
+            .padding(Padding::new(1, 1, 0, 0)),
+    );
+    f.render_widget(humanreadable, converstion_chunks_fourth_split[0]);
+    
+    let shordate_text = vec![
+        Line::from(vec![Span::styled(app.date_converter.short_date.to_string(), Style::default().fg(Color::Green))]),
+        
+    ];
+    
+    let shortdate = Paragraph::new(shordate_text)
+    .style(
+        Style::default()
+            .add_modifier(Modifier::BOLD)
+            .fg(Color::Green),
+    )
+    .block(
+        Block::default()
+            .title(" Short Date Conversion ")
+            .borders(Borders::ALL)
+            .border_type(BorderType::Rounded)
+            .padding(Padding::new(1, 1, 0, 0)),
+    );
+    f.render_widget(shortdate, converstion_chunks_fourth_split[1]);
+        
 }
 
 fn render_hash_generator(
