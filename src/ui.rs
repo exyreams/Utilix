@@ -66,20 +66,20 @@ pub fn run_app<B: Backend>(
                             qr_code_generator_textarea
                                 .move_cursor(tui_textarea::CursorMove::WordBack);
                         } else if key.modifiers.contains(KeyModifiers::SHIFT) {
-                            
+                            // Selection for Base64 Converter
                             base64_converter_textarea.move_cursor(CursorMove::Head);
                             base64_converter_textarea.start_selection();
                             base64_converter_textarea.move_cursor(CursorMove::End);
 
-                            
+                            // Selection for Date Converter
                             date_converter_textarea.move_cursor(CursorMove::Head);
                             date_converter_textarea.start_selection();
                             date_converter_textarea.move_cursor(CursorMove::End);
-                           
+                            // Selection for Hash Generator
                             hash_generator_textarea.move_cursor(CursorMove::Head);
                             hash_generator_textarea.start_selection();
                             hash_generator_textarea.move_cursor(CursorMove::End);
-                            
+                            // Selection for QR Generator
                             qr_code_generator_textarea.move_cursor(CursorMove::Head);
                             qr_code_generator_textarea.start_selection();
                             qr_code_generator_textarea.move_cursor(CursorMove::End);
@@ -109,19 +109,19 @@ pub fn run_app<B: Backend>(
                             qr_code_generator_textarea
                                 .move_cursor(tui_textarea::CursorMove::WordForward);
                         } else if key.modifiers.contains(KeyModifiers::SHIFT) {
-                           
+                            // Selection for Base64 Converter
                             base64_converter_textarea.move_cursor(CursorMove::Head);
                             base64_converter_textarea.start_selection();
                             base64_converter_textarea.move_cursor(CursorMove::End);
-                            
+                            // Selection for Date Converter
                             date_converter_textarea.move_cursor(CursorMove::Head);
                             date_converter_textarea.start_selection();
                             date_converter_textarea.move_cursor(CursorMove::End);
-                            
+                            // Selection for Hash Generator
                             hash_generator_textarea.move_cursor(CursorMove::Head);
                             hash_generator_textarea.start_selection();
                             hash_generator_textarea.move_cursor(CursorMove::End);
-                            
+                            // Selection for QR Generator
                             qr_code_generator_textarea.move_cursor(CursorMove::Head);
                             qr_code_generator_textarea.start_selection();
                             qr_code_generator_textarea.move_cursor(CursorMove::End);
@@ -399,8 +399,8 @@ fn render_base64_encoder(
     let input_guide_chunks = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([
-            Constraint::Percentage(50), 
-            Constraint::Percentage(50),
+            Constraint::Percentage(50), // Input
+            Constraint::Percentage(50), // Guide
         ])
         .split(chunks[0]);
 
@@ -551,8 +551,8 @@ fn render_date_converter(
     let input_guide_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
-            Constraint::Percentage(50),
-            Constraint::Percentage(50), 
+            Constraint::Percentage(50), // Input
+            Constraint::Percentage(50), // Guide
         ])
         .split(chunks[0]);
 
@@ -712,8 +712,8 @@ fn render_password_generator(f: &mut Frame, app: &mut App, area: Rect) {
     let settings_guide_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
-            Constraint::Percentage(50), 
-            Constraint::Percentage(50),
+            Constraint::Percentage(50), // Settings
+            Constraint::Percentage(50), // Guide
         ])
         .split(chunks[0]);
 
@@ -784,8 +784,8 @@ fn render_qr_code_generator(
     let input_guide_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
-            Constraint::Percentage(50),
-            Constraint::Percentage(50),
+            Constraint::Percentage(50), // Input
+            Constraint::Percentage(50), // Guide
         ])
         .split(chunks[0]);
 
@@ -946,14 +946,16 @@ fn render_uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
     ];
 
     let guide = Paragraph::new(guide_text)
-        .style(Style::default().add_modifier(Modifier::BOLD).fg(Color::Red))
+        .style(Style::default().fg(Color::Red))
         .block(
             Block::default()
                 .title(" UUID Help ")
+                .title_style(Style::default().add_modifier(Modifier::BOLD).fg(Color::Red))
                 .borders(Borders::ALL)
                 .border_type(BorderType::Rounded)
                 .padding(Padding::new(1, 0, 0, 0)),
-        );
+        )
+        .wrap(Wrap { trim: true });
     f.render_widget(guide, settings_guide_chunks[1]);
 
     let version_4_uuid = Paragraph::new(app.uuid_generator.generated_uuid.as_str())
@@ -966,6 +968,7 @@ fn render_uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
             Block::default()
                 .borders(Borders::ALL)
                 .title(" Version 4 UUID ")
+                
                 .border_type(BorderType::Rounded)
                 .padding(Padding::new(1, 0, 0, 0))
         );
