@@ -66,20 +66,20 @@ pub fn run_app<B: Backend>(
                             qr_code_generator_textarea
                                 .move_cursor(tui_textarea::CursorMove::WordBack);
                         } else if key.modifiers.contains(KeyModifiers::SHIFT) {
-                            // Selection for Base64 Converter
+                            
                             base64_converter_textarea.move_cursor(CursorMove::Head);
                             base64_converter_textarea.start_selection();
                             base64_converter_textarea.move_cursor(CursorMove::End);
 
-                            // Selection for Date Converter
+                            
                             date_converter_textarea.move_cursor(CursorMove::Head);
                             date_converter_textarea.start_selection();
                             date_converter_textarea.move_cursor(CursorMove::End);
-                            // Selection for Hash Generator
+                           
                             hash_generator_textarea.move_cursor(CursorMove::Head);
                             hash_generator_textarea.start_selection();
                             hash_generator_textarea.move_cursor(CursorMove::End);
-                            // Selection for QR Generator
+                            
                             qr_code_generator_textarea.move_cursor(CursorMove::Head);
                             qr_code_generator_textarea.start_selection();
                             qr_code_generator_textarea.move_cursor(CursorMove::End);
@@ -109,19 +109,19 @@ pub fn run_app<B: Backend>(
                             qr_code_generator_textarea
                                 .move_cursor(tui_textarea::CursorMove::WordForward);
                         } else if key.modifiers.contains(KeyModifiers::SHIFT) {
-                            // Selection for Base64 Converter
+                            
                             base64_converter_textarea.move_cursor(CursorMove::Head);
                             base64_converter_textarea.start_selection();
                             base64_converter_textarea.move_cursor(CursorMove::End);
-                            // Selection for Date Converter
+                            
                             date_converter_textarea.move_cursor(CursorMove::Head);
                             date_converter_textarea.start_selection();
                             date_converter_textarea.move_cursor(CursorMove::End);
-                            // Selection for Hash Generator
+                            
                             hash_generator_textarea.move_cursor(CursorMove::Head);
                             hash_generator_textarea.start_selection();
                             hash_generator_textarea.move_cursor(CursorMove::End);
-                            // Selection for QR Generator
+                            
                             qr_code_generator_textarea.move_cursor(CursorMove::Head);
                             qr_code_generator_textarea.start_selection();
                             qr_code_generator_textarea.move_cursor(CursorMove::End);
@@ -250,6 +250,54 @@ pub fn run_app<B: Backend>(
                             }
                         }
 
+                        Tool::PasswordGenerator => {
+                            match c {
+                                'g' => {
+                                    let _ = app.password_generator.generate_password();
+                                }
+                                'i' => {
+                                    app.password_generator.increase_length();
+                                }
+                                'd' => {
+                                    app.password_generator.decrease_length();
+                                }
+                                'u' => {
+                                    app.password_generator.toggle_uppercase();
+                                }
+                                'l' => {
+                                    app.password_generator.toggle_lowercase();
+                                }
+                                'n' => {
+                                    app.password_generator.toggle_numbers();
+                                }
+                                's' => {
+                                    app.password_generator.toggle_symbols();
+                                }
+                                'z' => {
+                                    app.password_generator.toggle_similar_characters();
+                                }
+                                'x' => {
+                                    app.password_generator.toggle_duplicate_characters();
+                                }
+                                'c' => {
+                                    app.password_generator.clear_password();
+                                }
+                                'v' => {
+                                    app.password_generator.toggle_sequential_characters();
+                                }
+                                'm' => {
+                                    let _ = app.password_generator.generate_multiple_passwords();
+                                }
+                                'k' => {
+                                    app.password_generator.increase_quantity();
+                                }
+                                'j' => {
+                                    app.password_generator.decrease_quantity();
+                                }
+                                _ => {}
+                            }
+                        }
+
                         Tool::QRCodeGenerator => {
                             qr_code_generator_textarea.insert_char(c);
 
@@ -288,7 +336,7 @@ pub fn run_app<B: Backend>(
                                 _ => {}
                             }
                         }
-                        _ => {}
+                        
                     },
                     _ => {}
                 }
@@ -399,8 +447,8 @@ fn render_base64_encoder(
     let input_guide_chunks = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([
-            Constraint::Percentage(50), // Input
-            Constraint::Percentage(50), // Guide
+            Constraint::Percentage(50), 
+            Constraint::Percentage(50), 
         ])
         .split(chunks[0]);
 
@@ -551,8 +599,8 @@ fn render_date_converter(
     let input_guide_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
-            Constraint::Percentage(50), // Input
-            Constraint::Percentage(50), // Guide
+            Constraint::Percentage(50),
+            Constraint::Percentage(50),
         ])
         .split(chunks[0]);
 
@@ -671,11 +719,17 @@ fn render_password_generator(f: &mut Frame, app: &mut App, area: Rect) {
         .split(area);
 
     let settings = vec![
-        Line::from(vec![Span::raw("Password Generator Options:")]),
         Line::from(vec![
             Span::raw("Length: "),
             Span::styled(
                 app.password_generator.length.to_string(),
+                Style::default().fg(Color::Yellow),
+            ),
+        ]),
+        Line::from(vec![
+            Span::raw("Quantity: "),
+            Span::styled(
+                app.password_generator.quantity.to_string(),
                 Style::default().fg(Color::Yellow),
             ),
         ]),
@@ -707,13 +761,34 @@ fn render_password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                 Style::default().fg(Color::Yellow),
             ),
         ]),
+        Line::from(vec![
+            Span::raw("Similar Characters: "),
+            Span::styled(
+                app.password_generator.use_similar_characters.to_string(),
+                Style::default().fg(Color::Yellow),
+            ),
+        ]),
+        Line::from(vec![
+            Span::raw("Duplicate Characters: "),
+            Span::styled(
+                app.password_generator.use_duplicate_characters.to_string(),
+                Style::default().fg(Color::Yellow),
+            ),
+        ]),
+        Line::from(vec![
+            Span::raw("Sequential Characters: "),
+            Span::styled(
+                app.password_generator.use_sequential_characters.to_string(),
+                Style::default().fg(Color::Yellow),
+            ),
+        ]),
     ];
 
     let settings_guide_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
-            Constraint::Percentage(50), // Settings
-            Constraint::Percentage(50), // Guide
+            Constraint::Percentage(37), 
+            Constraint::Percentage(63), 
         ])
         .split(chunks[0]);
 
@@ -736,17 +811,169 @@ fn render_password_generator(f: &mut Frame, app: &mut App, area: Rect) {
     f.render_widget(settings_widget, settings_guide_chunks[0]);
 
     let guide_text = vec![
-        Line::from(vec![Span::raw("Controls:")]),
-        Line::from(vec![Span::raw("Esc: Quit Program")]),
-        Line::from(vec![Span::raw("  - 'd': Decode")]),
-        Line::from(vec![Span::raw("  - Backspace: Clear input")]),
+        
+        Line::from(vec![
+            Span::styled(
+                "Esc",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("   Quit", Style::default().fg(Color::White)),
+        ]),
+        
+        Line::from(vec![
+            Span::styled(
+                "g",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("     Generate password", Style::default().fg(Color::White)),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "c",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("     Clear password", Style::default().fg(Color::White)),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "i",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("     Increase Password Length", Style::default().fg(Color::White)),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "d",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("     Decrease Password Length", Style::default().fg(Color::White)),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "m",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("     Generate Multiple passwords", Style::default().fg(Color::White)),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "k",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("     Increase Password Quantity", Style::default().fg(Color::White)),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "j",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("     Decrease Password Quantity", Style::default().fg(Color::White)),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "u",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("     Include Uppercase Characters", Style::default().fg(Color::White)),
+            Span::styled(" (e.g. ABCDEFGH)", Style::default().fg(Color::Cyan))
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "l",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("     Include Lowercase Characters", Style::default().fg(Color::White)),
+            Span::styled(" (e.g. abcdefgh)", Style::default().fg(Color::Cyan))
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "n",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("     Include Numbers", Style::default().fg(Color::White)),
+            Span::styled(" (e.g. 1234567890)", Style::default().fg(Color::Cyan))
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "s",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("     Include Symbols", Style::default().fg(Color::White)),
+            Span::styled(" (e.g. !@#$%^&*()_+-=[]{}|;:,.<>?)", Style::default().fg(Color::Cyan))
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "z",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("     Similar Characters", Style::default().fg(Color::White)),
+            Span::styled(" (e.g. i, l, L, o, 0, O, etc.)", Style::default().fg(Color::Cyan))
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "x",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("     Duplicate Characters", Style::default().fg(Color::White)),
+            Span::styled(" (e.g. aa, bb, 11)", Style::default().fg(Color::Cyan))
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "v",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("     Sequential Characters", Style::default().fg(Color::White)),
+            Span::styled(" (e.g. abc, def, 234, 567)", Style::default().fg(Color::Cyan))
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "Warning:",
+                Style::default()
+                    .fg(Color::LightYellow)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(" Multi password generator isn't working", Style::default().fg(Color::White)),
+            
+        ]),
+        
     ];
 
     let guide = Paragraph::new(guide_text)
-        .style(Style::default().add_modifier(Modifier::BOLD).fg(Color::Red))
+        .style(Style::default().fg(Color::Red))
         .block(
             Block::default()
-                .title(" Guide ")
+                .title(" Password Generator Help ")
+                .title_style(Style::default().add_modifier(Modifier::BOLD).fg(Color::Red))
                 .borders(Borders::ALL)
                 .border_type(BorderType::Rounded)
                 .padding(Padding::new(1, 0, 0, 0)),
@@ -763,10 +990,11 @@ fn render_password_generator(f: &mut Frame, app: &mut App, area: Rect) {
             Block::default()
                 .title(" Generated Password ")
                 .borders(Borders::ALL)
-                .border_type(BorderType::Rounded),
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 1, 0, 0))
         )
-        .wrap(Wrap { trim: true })
-        .scroll((0, 0));
+        .wrap(Wrap { trim: true });
+        
     f.render_widget(password, chunks[1]);
 }
 
@@ -784,8 +1012,8 @@ fn render_qr_code_generator(
     let input_guide_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
-            Constraint::Percentage(50), // Input
-            Constraint::Percentage(50), // Guide
+            Constraint::Percentage(50), 
+            Constraint::Percentage(50),
         ])
         .split(chunks[0]);
 

@@ -1,4 +1,6 @@
+use rand::thread_rng;
 use rand::Rng;
+use std::collections::HashSet;
 
 pub struct PasswordGenerator {
     pub length: usize,
@@ -6,49 +8,92 @@ pub struct PasswordGenerator {
     pub use_lowercase: bool,
     pub use_numbers: bool,
     pub use_symbols: bool,
+    pub use_similar_characters: bool,
+    pub use_duplicate_characters: bool,
+    pub use_sequential_characters: bool,
+    pub similar_characters: HashSet<char>,
     pub generated_password: String,
+    pub quantity: usize,
 }
 
-impl PasswordGenerator {
-    pub fn new() -> Self {
+impl Default for PasswordGenerator {
+    fn default() -> Self {
         PasswordGenerator {
             length: 12,
             use_uppercase: true,
             use_lowercase: true,
             use_numbers: true,
             use_symbols: true,
+            use_similar_characters: false,
+            use_duplicate_characters: false,
+            use_sequential_characters: false,
+            similar_characters: "ilLo0O".chars().collect(),
             generated_password: String::new(),
+            quantity: 1,
         }
     }
+}
 
-    pub fn generate_password(&mut self) {
-        let mut rng = rand::thread_rng();
-        let mut charset = String::new();
+impl PasswordGenerator {
+    pub fn new() -> Self {
+        Default::default()
+    }
+
+    pub fn generate_password(&mut self) -> Result<(), String> {
+        let mut rng = thread_rng();
+        let mut charset: Vec<char> = Vec::new();
 
         if self.use_uppercase {
-            charset.push_str("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+            charset.extend("ABCDEFGHIJKLMNPQRSTUVWXYZ".chars());
         }
         if self.use_lowercase {
-            charset.push_str("abcdefghijklmnopqrstuvwxyz");
+            charset.extend("abcdefghjkmnpqrstuvwxyz".chars());
         }
         if self.use_numbers {
-            charset.push_str("0123456789");
+            charset.extend("23456789".chars());
         }
         if self.use_symbols {
-            charset.push_str("!@#$%^&*()_+-=[]{}|;:,.<>?");
+            charset.extend("!@#$%^&*()_+-=[]{}|;:,.<>?".chars());
         }
 
         if charset.is_empty() {
-            self.generated_password = String::new();
-            return;
+            return Err("Charset is empty".to_string());
         }
 
         self.generated_password = (0..self.length)
             .map(|_| {
-                let idx = rng.gen_range(0..charset.len());
-                charset.chars().nth(idx).unwrap()
+                let mut idx = rng.gen_range(0..charset.len());
+                let mut char_to_add = charset[idx];
+
+                if !self.use_duplicate_characters {
+                    while self.generated_password.contains(char_to_add) {
+                        idx = rng.gen_range(0..charset.len());
+                        char_to_add = charset[idx];
+                    }
+                }
+
+                if !self.use_sequential_characters && !self.generated_password.is_empty() {
+                    let last_char = self.generated_password.chars().last().unwrap();
+                    while (char_to_add as i32 == last_char as i32 + 1)
+                        || (char_to_add as i32 == last_char as i32 - 1)
+                    {
+                        idx = rng.gen_range(0..charset.len());
+                        char_to_add = charset[idx];
+                    }
+                }
+
+                if !self.use_similar_characters {
+                    while self.similar_characters.contains(&char_to_add) {
+                        idx = rng.gen_range(0..charset.len());
+                        char_to_add = charset[idx];
+                    }
+                }
+
+                char_to_add
             })
             .collect();
+
+        Ok(())
     }
 
     pub fn increase_length(&mut self) {
@@ -59,6 +104,10 @@ impl PasswordGenerator {
         if self.length > 1 {
             self.length -= 1;
         }
+    }
+
+    pub fn clear_password(&mut self) {
+        self.generated_password.clear();
     }
 
     pub fn toggle_uppercase(&mut self) {
@@ -75,5 +124,37 @@ impl PasswordGenerator {
 
     pub fn toggle_symbols(&mut self) {
         self.use_symbols = !self.use_symbols;
+    }
+
+    pub fn toggle_similar_characters(&mut self) {
+        self.use_similar_characters = !self.use_similar_characters;
+    }
+
+    pub fn toggle_duplicate_characters(&mut self) {
+        self.use_duplicate_characters = !self.use_duplicate_characters;
+    }
+
+    pub fn toggle_sequential_characters(&mut self) {
+        self.use_sequential_characters = !self.use_sequential_characters;
+    }
+
+    pub fn generate_multiple_passwords(&mut self) -> Result<Vec<String>, String> {
+        let mut passwords = Vec::with_capacity(self.quantity);
+
+        for _ in 0..self.quantity {
+            self.clear_password();
+            self.generate_password()?;
+            passwords.push(format!("{}\n", self.generated_password));
+        }
+
+        Ok(passwords)
+    }
+
+    pub fn increase_quantity(&mut self) {
+        self.quantity = self.quantity.saturating_add(1);
+    }
+
+    pub fn decrease_quantity(&mut self) {
+        self.quantity = self.quantity.saturating_sub(1).max(1);
     }
 }
