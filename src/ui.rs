@@ -338,6 +338,9 @@ pub fn run_app<B: Backend>(
                                 'd' => {
                                     app.uuid_generator.decrease_length();
                                 }
+                                'x' => {
+                                    let _ = app.uuid_generator.write_to_file();
+                                }
                                 _ => {}
                             }
                         }
@@ -525,7 +528,7 @@ fn render_base64_encoder(
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled(" export/base64encoder.txt", Style::default().fg(Color::White)),
+            Span::styled("   export/base64encoder.txt", Style::default().fg(Color::White)),
         ]),
         Line::from(vec![Span::raw("")]), 
         Line::from(vec![
@@ -1612,24 +1615,24 @@ fn render_uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
             ),
             Span::styled("     Decrease number of UUIDs", Style::default().fg(Color::White)),
         ]),
+        Line::from(vec![
+            Span::styled(
+                "x",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("     Export Generated UUIDs", Style::default().fg(Color::White)),
+        ]),
         Line::from(vec![Span::raw("")]),
         Line::from(vec![
             Span::styled(
-                "Important:",
+                "Exported File Path:",
                 Style::default()
-                    .fg(Color::LightCyan)
-                    .add_modifier(Modifier::BOLD)
-                    .add_modifier(Modifier::ITALIC)
-                    .add_modifier(Modifier::UNDERLINED)
-                    
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
             ),
-            Span::styled(
-                " The application currently does not support the simultaneous highlighting of multiple UUIDs.",
-                Style::default()
-                    .fg(Color::Yellow)
-                    .add_modifier(Modifier::ITALIC)
-                    
-            ),
+            Span::styled(" export/uuidgenerator.txt", Style::default().fg(Color::White)),
         ]),
     ];
 
