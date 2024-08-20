@@ -189,8 +189,14 @@ pub fn run_app<B: Backend>(
                     
                     Key::Char(c) => match app.current_tool {
                         Tool::Base64Encoder => {
-                            base64_converter_textarea.insert_char(c);
 
+                            if !key.modifiers.contains(KeyModifiers::ALT)
+                            && !key.modifiers.contains(KeyModifiers::SHIFT)
+                            && !key.modifiers.contains(KeyModifiers::CONTROL)
+                        {
+                            base64_converter_textarea.insert_char(c);
+                        }
+                            
                             if base64_converter_textarea.lines().join("\n").len() % 84 == 0 {
                                 base64_converter_textarea.insert_newline();
                             }
@@ -203,11 +209,14 @@ pub fn run_app<B: Backend>(
                                 app.base64_encoder.input =
                                     base64_converter_textarea.lines().join("\n");
                                 app.base64_encoder.decode();
-                            } else if !key.modifiers.contains(KeyModifiers::ALT)
+                            } else if key.modifiers.contains(KeyModifiers::ALT) && c == 'x'{
+                                let _ = app.base64_encoder.write_to_file();
+                            } 
+                            else if !key.modifiers.contains(KeyModifiers::ALT)
                                 && !key.modifiers.contains(KeyModifiers::SHIFT)
                             {
                                 app.base64_encoder.input =
-                                    base64_converter_textarea.lines().join("\n");
+                                    base64_converter_textarea.lines().join("");
                                 app.base64_encoder.encode();
                                 app.base64_encoder.decode();
                             }
@@ -232,7 +241,6 @@ pub fn run_app<B: Backend>(
                             }
 
                             if key.modifiers.contains(KeyModifiers::ALT) && c == 'x' {
-                                
                                 let _ = app.hash_generator.write_to_file();
                             } else if !key.modifiers.contains(KeyModifiers::ALT)
                                 && !key.modifiers.contains(KeyModifiers::SHIFT)
@@ -433,7 +441,7 @@ fn render_base64_encoder(
 ) {
     let chunks = Layout::default()
         .direction(Direction::Vertical)
-        .constraints([Constraint::Percentage(40), Constraint::Percentage(60)])
+        .constraints([Constraint::Percentage(45), Constraint::Percentage(55)])
         .split(area);
 
     let input_guide_chunks = Layout::default()
@@ -459,26 +467,6 @@ fn render_base64_encoder(
     f.render_widget(&*base64_converter_textarea, input_guide_chunks[0]);
 
     let guide_text = vec![
-        Line::from(vec![Span::raw("")]),
-        Line::from(vec![
-            Span::styled(
-                "Note:",
-                Style::default()
-                    .fg(Color::LightCyan)
-                    .add_modifier(Modifier::BOLD)
-                    .add_modifier(Modifier::ITALIC)
-                    .add_modifier(Modifier::UNDERLINED)
-                    
-            ),
-            Span::styled(
-                " Encoding/decoding begins automatically while typing. If it doesn't start, use the shortcut keys.",
-                Style::default()
-                    .fg(Color::Yellow)
-                    .add_modifier(Modifier::ITALIC)
-                    
-            ),
-        ]),
-        Line::from(vec![Span::raw("")]),
         Line::from(vec![
             Span::styled(
                 "Esc",
@@ -517,13 +505,42 @@ fn render_base64_encoder(
         ]),
         Line::from(vec![
             Span::styled(
-                "Backspace",
+                "Alt + x",
                 Style::default()
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("       Clear input", Style::default().fg(Color::White)),
+            Span::styled("   Export Generated Hash", Style::default().fg(Color::White)),
+        ]), 
+        Line::from(vec![Span::raw("")]), 
+        Line::from(vec![
+            Span::styled(
+                "Exported File Path:",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("   export/base64encoder.txt", Style::default().fg(Color::White)),
         ]),
+        Line::from(vec![Span::raw("")]), 
+        Line::from(vec![
+            Span::styled(
+                "Note:",
+                Style::default()
+                    .fg(Color::LightCyan)
+                    .add_modifier(Modifier::BOLD)
+                    .add_modifier(Modifier::ITALIC)
+                    .add_modifier(Modifier::UNDERLINED)
+                    
+            ),
+            Span::styled(
+                " Encoding/decoding begins automatically while typing. If it doesn't start, use the shortcut keys.",
+                Style::default()
+                    .fg(Color::Yellow)
+                    .add_modifier(Modifier::ITALIC)
+                    
+            ),
+        ]), 
     ];
 
     let guide = Paragraph::new(guide_text)
