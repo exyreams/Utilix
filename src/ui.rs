@@ -510,7 +510,7 @@ fn render_base64_encoder(
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("   Export Generated Hash", Style::default().fg(Color::White)),
+            Span::styled("         Export Generated Hash", Style::default().fg(Color::White)),
         ]), 
         Line::from(vec![Span::raw("")]), 
         Line::from(vec![
