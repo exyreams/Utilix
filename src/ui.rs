@@ -281,7 +281,7 @@ pub fn run_app<B: Backend>(
                                 'z' => {
                                     app.password_generator.toggle_similar_characters();
                                 }
-                                'x' => {
+                                'q' => {
                                     app.password_generator.toggle_duplicate_characters();
                                 }
                                 'c' => {
@@ -298,6 +298,9 @@ pub fn run_app<B: Backend>(
                                 }
                                 'j' => {
                                     app.password_generator.decrease_quantity();
+                                }
+                                'x' => {
+                                    let _ = app.password_generator.write_to_file();
                                 }
                                 _ => {}
                             }
@@ -1305,6 +1308,15 @@ fn render_password_generator(f: &mut Frame, app: &mut App, area: Rect) {
         ]),
         Line::from(vec![
             Span::styled(
+                "x",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("     Export Generated password", Style::default().fg(Color::White)),
+        ]),
+        Line::from(vec![
+            Span::styled(
                 "i",
                 Style::default()
                     .fg(Color::Blue)
@@ -1400,7 +1412,7 @@ fn render_password_generator(f: &mut Frame, app: &mut App, area: Rect) {
         ]),
         Line::from(vec![
             Span::styled(
-                "x",
+                "q",
                 Style::default()
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
@@ -1417,6 +1429,16 @@ fn render_password_generator(f: &mut Frame, app: &mut App, area: Rect) {
             ),
             Span::styled("     Sequential Characters", Style::default().fg(Color::White)),
             Span::styled(" (e.g. abc, 234)", Style::default().fg(Color::Cyan))
+        ]),
+        Line::from(vec![Span::raw("")]),
+        Line::from(vec![
+            Span::styled(
+                "Exported File Path:",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(" export/password.txt", Style::default().fg(Color::White)),
         ]),
         Line::from(vec![
             Span::raw(""),
