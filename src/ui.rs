@@ -307,17 +307,27 @@ pub fn run_app<B: Backend>(
                         }
 
                         Tool::QRCodeGenerator => {
-                            qr_code_generator_textarea.insert_char(c);
+                            if !key.modifiers.contains(KeyModifiers::ALT)
+                            && !key.modifiers.contains(KeyModifiers::SHIFT)
+                            && !key.modifiers.contains(KeyModifiers::CONTROL)
+                            {
+                                qr_code_generator_textarea.insert_char(c);
+                            }
 
-                            if base64_converter_textarea.lines().join("\n").len() % 68 == 0 {
-                                base64_converter_textarea.insert_newline();
+                            if qr_code_generator_textarea.lines().join("\n").len() % 68 == 0 {
+                                qr_code_generator_textarea.insert_newline();
                             }
 
                             if key.modifiers.contains(KeyModifiers::ALT) && c == 'q' {
                                 app.qr_code_generator.input =
                                     qr_code_generator_textarea.lines().join("\n");
                                 app.qr_code_generator.generate_qr_code();
-                            } else if !key.modifiers.contains(KeyModifiers::ALT) {
+                            } else if key.modifiers.contains(KeyModifiers::ALT) && c == 'x'{
+                               if let Err(e) = app.qr_code_generator.export_qr_code() {
+                                eprintln!("Failed to export QR code: {}", e);
+                                }
+                            }
+                            else if !key.modifiers.contains(KeyModifiers::ALT) {
                                 app.qr_code_generator.input =
                                     qr_code_generator_textarea.lines().join("\n");
                                 app.qr_code_generator.generate_qr_code();
@@ -1509,31 +1519,76 @@ fn render_qr_code_generator(
     qr_code_generator_textarea.set_block(
         Block::default()
             .title(" Input ")
+            .title_style(Style::default().fg(Color::Yellow).bold())
             .borders(Borders::ALL)
-            .border_type(BorderType::Rounded),
+            .border_style(Style::default().fg(Color::Yellow))
+            .border_type(BorderType::Rounded)
+            .padding(Padding::new(1, 1, 0, 0)),
     );
 
     f.render_widget(&*qr_code_generator_textarea, input_guide_chunks[0]);
 
     let guide_text = vec![
-        Line::from(vec![Span::raw("Controls:")]),
-        Line::from(vec![Span::raw("Esc: Quit Program")]),
-        Line::from(vec![Span::raw("  - 'g': Generate QR Code")]),
-        Line::from(vec![Span::raw("  - Backspace: Clear input")]),
+        Line::from(vec![Span::raw("")]),
+        Line::from(vec![
+            Span::styled(
+                "Esc",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("        Quit", Style::default().fg(Color::White)),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "Alt + x",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("    Export Generated QR Code", Style::default().fg(Color::White)),
+        ]), 
+        Line::from(vec![Span::raw("")]), 
+        Line::from(vec![
+            Span::styled(
+                "Exported File Path:",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("   export/", Style::default().fg(Color::White)),
+            Span::styled("{input_text}", Style::default().fg(Color::Yellow)),
+            Span::styled(".txt", Style::default().fg(Color::White)),
+        ]),
+        Line::from(vec![Span::raw("")]),
+        Line::from(vec![
+            Span::styled(
+                "Note:",
+                Style::default()
+                    .fg(Color::Yellow)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(" The file name for the QR image is created by taking ", Style::default().fg(Color::White)),
+            Span::styled("first ten characters", Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD).add_modifier(Modifier::UNDERLINED)),
+            Span::styled(" of the information you enter in the input field.", Style::default().fg(Color::White)),
+        ]),
     ];
 
     let guide = Paragraph::new(guide_text)
         .style(Style::default().add_modifier(Modifier::BOLD).fg(Color::Red))
         .block(
             Block::default()
-                .title(" Guide ")
+                .title(" QR Generator Help ")
                 .borders(Borders::ALL)
                 .border_type(BorderType::Rounded)
-                .padding(Padding::new(1, 0, 0, 0)),
-        );
+                .padding(Padding::new(1, 1, 0, 0)),
+        )
+        .wrap(Wrap { trim: true });
     f.render_widget(guide, input_guide_chunks[1]);
 
-    let output = Paragraph::new(app.qr_code_generator.qr_code.as_str())
+    let qr_code = app.qr_code_generator.get_qr_string();
+
+    let output = Paragraph::new(qr_code)
         .style(
             Style::default()
                 .add_modifier(Modifier::BOLD)
@@ -1543,7 +1598,8 @@ fn render_qr_code_generator(
             Block::default()
                 .title(" QR Code ")
                 .borders(Borders::ALL)
-                .border_type(BorderType::Rounded),
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 1, 0, 0)),
         );
     f.render_widget(output, chunks[1]);
 }
