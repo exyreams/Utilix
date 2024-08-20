@@ -193,9 +193,9 @@ pub fn run_app<B: Backend>(
                             if !key.modifiers.contains(KeyModifiers::ALT)
                             && !key.modifiers.contains(KeyModifiers::SHIFT)
                             && !key.modifiers.contains(KeyModifiers::CONTROL)
-                        {
-                            base64_converter_textarea.insert_char(c);
-                        }
+                            {
+                                base64_converter_textarea.insert_char(c);
+                            }
                             
                             if base64_converter_textarea.lines().join("\n").len() % 84 == 0 {
                                 base64_converter_textarea.insert_newline();
@@ -234,7 +234,12 @@ pub fn run_app<B: Backend>(
                         }
 
                         Tool::HashGenerator => {
-                            hash_generator_textarea.insert_char(c);
+                            if !key.modifiers.contains(KeyModifiers::ALT)
+                            && !key.modifiers.contains(KeyModifiers::SHIFT)
+                            && !key.modifiers.contains(KeyModifiers::CONTROL)
+                            {
+                                hash_generator_textarea.insert_char(c);
+                            }
                             
                             if hash_generator_textarea.lines().join("\n").len() % 62 == 0 {
                                 hash_generator_textarea.insert_newline();
@@ -1058,23 +1063,8 @@ fn render_hash_generator(
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("   export/hashgenerator.txt", Style::default().fg(Color::White)),
-        ]), 
-        Line::from(vec![Span::raw("")]), 
-        Line::from(vec![
-            Span::styled(
-                "Note:",
-                Style::default()
-                    .fg(Color::Yellow)
-                    .add_modifier(Modifier::BOLD),
-            ),
-            Span::styled(" When using the", Style::default().fg(Color::White)),
-            Span::styled(" ALT", Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)),
-            Span::styled(" key in a shortcut, the", Style::default().fg(Color::White)),
-            Span::styled(" 'x'", Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)),
-            Span::styled(" may appear in the input field, but it doesn't change the hash", Style::default().fg(Color::White)),
-            Span::styled(" but it doesn't change the hash.", Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)),
-        ]),  
+            Span::styled(" export/hashgenerator.txt", Style::default().fg(Color::White)),
+        ]),
     ];
 
     let guide = Paragraph::new(guide_text)
