@@ -1,4 +1,9 @@
 use uuid::Uuid;
+
+use std::fs::{create_dir_all, File};
+use std::io::Write;
+use std::path::Path;
+
 pub struct UuidGenerator {
     pub generated_uuid: String,
     pub length: usize,
@@ -39,5 +44,16 @@ impl UuidGenerator {
     pub fn clear(&mut self) {
         self.generated_uuid.clear();
         self.length = 0;
+    }
+
+    pub fn write_to_file(&self) -> std::io::Result<()> {
+        let file_path = Path::new("export/uuidgenerator.txt");
+        if let Some(parent) = file_path.parent() {
+            create_dir_all(parent)?;
+        }
+        let mut file = File::create(file_path)?;
+        writeln!(file, "UUIDs:")?;
+        writeln!(file, "{}", self.generated_uuid)?;
+        Ok(())
     }
 }
