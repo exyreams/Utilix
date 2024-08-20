@@ -226,13 +226,20 @@ pub fn run_app<B: Backend>(
 
                         Tool::HashGenerator => {
                             hash_generator_textarea.insert_char(c);
-
+                            
                             if hash_generator_textarea.lines().join("\n").len() % 62 == 0 {
                                 hash_generator_textarea.insert_newline();
                             }
 
-                            let new_input = hash_generator_textarea.lines().join("\n");
-                            app.hash_generator.update_input(&new_input);
+                            if key.modifiers.contains(KeyModifiers::ALT) && c == 'x' {
+                                
+                                let _ = app.hash_generator.write_to_file();
+                            } else if !key.modifiers.contains(KeyModifiers::ALT)
+                                && !key.modifiers.contains(KeyModifiers::SHIFT)
+                            {
+                                let new_input = hash_generator_textarea.lines().join("\n");
+                                app.hash_generator.update_input(&new_input);
+                            }
                         }
                        
                         Tool::PasswordGenerator => {
@@ -1007,7 +1014,7 @@ fn render_hash_generator(
     f.render_widget(&*hash_generator_textarea, input_guide_chunks[0]);
 
     let guide_text = vec![
-        
+        Line::from(vec![Span::raw("")]),
         Line::from(vec![
             Span::styled(
                 "Esc",
@@ -1015,9 +1022,42 @@ fn render_hash_generator(
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("   Quit", Style::default().fg(Color::White)),
+            Span::styled("       Quit", Style::default().fg(Color::White)),
         ]), 
-        
+        Line::from(vec![
+            Span::styled(
+                "Alt + x",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("   Export Generated Hash", Style::default().fg(Color::White)),
+        ]), 
+        Line::from(vec![Span::raw("")]), 
+        Line::from(vec![
+            Span::styled(
+                "Exported File Path:",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("   export/hashgenerator.txt", Style::default().fg(Color::White)),
+        ]), 
+        Line::from(vec![Span::raw("")]), 
+        Line::from(vec![
+            Span::styled(
+                "Note:",
+                Style::default()
+                    .fg(Color::Yellow)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(" When using the", Style::default().fg(Color::White)),
+            Span::styled(" ALT", Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)),
+            Span::styled(" key in a shortcut, the", Style::default().fg(Color::White)),
+            Span::styled(" 'x'", Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)),
+            Span::styled(" may appear in the input field, but it doesn't change the hash", Style::default().fg(Color::White)),
+            Span::styled(" but it doesn't change the hash.", Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)),
+        ]),  
     ];
 
     let guide = Paragraph::new(guide_text)
@@ -1028,7 +1068,8 @@ fn render_hash_generator(
                 .borders(Borders::ALL)
                 .border_type(BorderType::Rounded)
                 .padding(Padding::new(1, 0, 0, 0)),
-        );
+        )
+        .wrap(Wrap { trim: true });
     f.render_widget(guide, input_guide_chunks[1]);
     
     let hash_output_chunks = Layout::default()
