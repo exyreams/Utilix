@@ -592,7 +592,7 @@ fn render_date_converter(
     let input_guide_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
-            Constraint::Percentage(35),
+            Constraint::Percentage(25),
             Constraint::Percentage(75),
         ])
         .split(chunks[0]);
