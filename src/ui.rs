@@ -1178,7 +1178,7 @@ fn render_hash_generator(
 fn render_password_generator(f: &mut Frame, app: &mut App, area: Rect) {
     let chunks = Layout::default()
         .direction(Direction::Horizontal)
-        .constraints([Constraint::Percentage(40), Constraint::Percentage(60)].as_ref())
+        .constraints([Constraint::Percentage(60), Constraint::Percentage(40)].as_ref())
         .split(area);
 
     let settings = vec![
@@ -1248,7 +1248,7 @@ fn render_password_generator(f: &mut Frame, app: &mut App, area: Rect) {
     ];
 
     let settings_guide_chunks = Layout::default()
-        .direction(Direction::Vertical)
+        .direction(Direction::Horizontal)
         .constraints([
             Constraint::Percentage(37), 
             Constraint::Percentage(63), 
@@ -1356,7 +1356,7 @@ fn render_password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .add_modifier(Modifier::BOLD),
             ),
             Span::styled("     Include Uppercase Characters", Style::default().fg(Color::White)),
-            Span::styled(" (e.g. ABCDEFGH)", Style::default().fg(Color::Cyan))
+            Span::styled(" (e.g. ABCDE)", Style::default().fg(Color::Cyan))
         ]),
         Line::from(vec![
             Span::styled(
@@ -1366,7 +1366,7 @@ fn render_password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .add_modifier(Modifier::BOLD),
             ),
             Span::styled("     Include Lowercase Characters", Style::default().fg(Color::White)),
-            Span::styled(" (e.g. abcdefgh)", Style::default().fg(Color::Cyan))
+            Span::styled(" (e.g. abcde)", Style::default().fg(Color::Cyan))
         ]),
         Line::from(vec![
             Span::styled(
@@ -1376,7 +1376,7 @@ fn render_password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .add_modifier(Modifier::BOLD),
             ),
             Span::styled("     Include Numbers", Style::default().fg(Color::White)),
-            Span::styled(" (e.g. 1234567890)", Style::default().fg(Color::Cyan))
+            Span::styled(" (e.g. 12345)", Style::default().fg(Color::Cyan))
         ]),
         Line::from(vec![
             Span::styled(
@@ -1386,7 +1386,7 @@ fn render_password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .add_modifier(Modifier::BOLD),
             ),
             Span::styled("     Include Symbols", Style::default().fg(Color::White)),
-            Span::styled(" (e.g. !@#$%^&*()_+-=[]{}|;:,.<>?)", Style::default().fg(Color::Cyan))
+            Span::styled(" (e.g. !@#$%^", Style::default().fg(Color::Cyan))
         ]),
         Line::from(vec![
             Span::styled(
@@ -1396,7 +1396,7 @@ fn render_password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .add_modifier(Modifier::BOLD),
             ),
             Span::styled("     Similar Characters", Style::default().fg(Color::White)),
-            Span::styled(" (e.g. i, l, L, o, 0, O, etc.)", Style::default().fg(Color::Cyan))
+            Span::styled(" (e.g. i,l,L,o,0,O, etc.)", Style::default().fg(Color::Cyan))
         ]),
         Line::from(vec![
             Span::styled(
@@ -1406,7 +1406,7 @@ fn render_password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .add_modifier(Modifier::BOLD),
             ),
             Span::styled("     Duplicate Characters", Style::default().fg(Color::White)),
-            Span::styled(" (e.g. aa, bb, 11)", Style::default().fg(Color::Cyan))
+            Span::styled(" (e.g. pp, 11)", Style::default().fg(Color::Cyan))
         ]),
         Line::from(vec![
             Span::styled(
@@ -1416,7 +1416,10 @@ fn render_password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .add_modifier(Modifier::BOLD),
             ),
             Span::styled("     Sequential Characters", Style::default().fg(Color::White)),
-            Span::styled(" (e.g. abc, def, 234, 567)", Style::default().fg(Color::Cyan))
+            Span::styled(" (e.g. abc, 234)", Style::default().fg(Color::Cyan))
+        ]),
+        Line::from(vec![
+            Span::raw(""),
         ]),
         Line::from(vec![
             Span::styled(
@@ -1440,7 +1443,8 @@ fn render_password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                 .borders(Borders::ALL)
                 .border_type(BorderType::Rounded)
                 .padding(Padding::new(1, 0, 0, 0)),
-        );
+        )
+        .wrap(Wrap { trim: true });
     f.render_widget(guide, settings_guide_chunks[1]);
 
     let password = Paragraph::new(app.password_generator.generated_password.clone())
