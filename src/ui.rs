@@ -1641,7 +1641,7 @@ fn render_uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
                 .title_style(Style::default().add_modifier(Modifier::BOLD).fg(Color::Red))
                 .borders(Borders::ALL)
                 .border_type(BorderType::Rounded)
-                .padding(Padding::new(1, 0, 0, 0)),
+                .padding(Padding::new(1, 1, 0, 0)),
         )
         .wrap(Wrap { trim: true });
     f.render_widget(guide, settings_guide_chunks[1]);
