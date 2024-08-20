@@ -78,7 +78,7 @@ impl HashGenerator {
     }
 
     pub fn write_to_file(&self) -> std::io::Result<()> {
-        let file_path = Path::new("export/hashgenerator.txt");
+        let file_path = Path::new("export/hash.txt");
         if let Some(parent) = file_path.parent() {
             create_dir_all(parent)?;
         }

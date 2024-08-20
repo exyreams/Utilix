@@ -47,7 +47,7 @@ impl UuidGenerator {
     }
 
     pub fn write_to_file(&self) -> std::io::Result<()> {
-        let file_path = Path::new("export/uuidgenerator.txt");
+        let file_path = Path::new("export/uuid.txt");
         if let Some(parent) = file_path.parent() {
             create_dir_all(parent)?;
         }

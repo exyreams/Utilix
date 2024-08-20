@@ -531,7 +531,7 @@ fn render_base64_encoder(
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("   export/base64encoder.txt", Style::default().fg(Color::White)),
+            Span::styled("   export/base64.txt", Style::default().fg(Color::White)),
         ]),
         Line::from(vec![Span::raw("")]), 
         Line::from(vec![
@@ -1069,7 +1069,7 @@ fn render_hash_generator(
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled(" export/hashgenerator.txt", Style::default().fg(Color::White)),
+            Span::styled(" export/hash.txt", Style::default().fg(Color::White)),
         ]),
     ];
 
@@ -1658,7 +1658,7 @@ fn render_uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled(" export/uuidgenerator.txt", Style::default().fg(Color::White)),
+            Span::styled(" export/uuid.txt", Style::default().fg(Color::White)),
         ]),
     ];
 

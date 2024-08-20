@@ -35,7 +35,7 @@ impl Base64Encoder {
     }
 
     pub fn write_to_file(&self) -> std::io::Result<()> {
-        let file_path = Path::new("export/base64encoder.txt");
+        let file_path = Path::new("export/base64.txt");
         if let Some(parent) = file_path.parent() {
             create_dir_all(parent)?;
         }
