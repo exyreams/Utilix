@@ -1,6 +1,10 @@
 use rand::thread_rng;
 use rand::Rng;
+
 use std::collections::HashSet;
+use std::fs::{create_dir_all, File};
+use std::io::Write;
+use std::path::Path;
 
 pub struct PasswordGenerator {
     pub length: usize,
@@ -156,5 +160,16 @@ impl PasswordGenerator {
 
     pub fn decrease_quantity(&mut self) {
         self.quantity = self.quantity.saturating_sub(1).max(1);
+    }
+
+    pub fn write_to_file(&self) -> std::io::Result<()> {
+        let file_path = Path::new("export/password.txt");
+        if let Some(parent) = file_path.parent() {
+            create_dir_all(parent)?;
+        }
+        let mut file = File::create(file_path)?;
+        writeln!(file, "Password:")?;
+        writeln!(file, "{}", self.generated_password)?;
+        Ok(())
     }
 }
