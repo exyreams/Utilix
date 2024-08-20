@@ -2,6 +2,10 @@ use digest::Digest;
 use sha1::Sha1;
 use sha2::{Sha256, Sha384, Sha512};
 
+use std::fs::{create_dir_all, File};
+use std::io::Write;
+use std::path::Path;
+
 pub struct HashGenerator {
     input: String,
     sha1_hash: String,
@@ -71,5 +75,18 @@ impl HashGenerator {
         let mut hasher = Sha512::new();
         Digest::update(&mut hasher, self.input.as_bytes());
         format!("{:x}", hasher.finalize())
+    }
+
+    pub fn write_to_file(&self) -> std::io::Result<()> {
+        let file_path = Path::new("export/hashgenerator.txt");
+        if let Some(parent) = file_path.parent() {
+            create_dir_all(parent)?;
+        }
+        let mut file = File::create(file_path)?;
+        writeln!(file, "SHA1: {}", self.sha1_hash)?;
+        writeln!(file, "SHA256: {}", self.sha256_hash)?;
+        writeln!(file, "SHA384: {}", self.sha384_hash)?;
+        writeln!(file, "SHA512: {}", self.sha512_hash)?;
+        Ok(())
     }
 }
