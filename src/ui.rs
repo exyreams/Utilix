@@ -586,14 +586,14 @@ fn render_date_converter(
 ) {
     let chunks = Layout::default()
         .direction(Direction::Horizontal)
-        .constraints([Constraint::Percentage(30), Constraint::Percentage(70)].as_ref())
+        .constraints([Constraint::Percentage(35), Constraint::Percentage(65)].as_ref())
         .split(area);
 
     let input_guide_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
-            Constraint::Percentage(50),
-            Constraint::Percentage(50),
+            Constraint::Percentage(35),
+            Constraint::Percentage(75),
         ])
         .split(chunks[0]);
 
@@ -610,11 +610,8 @@ fn render_date_converter(
     date_converter_textarea.set_style(Style::default().bold());
 
     f.render_widget(&*date_converter_textarea, input_guide_chunks[0]);
-
     
-    let guide_text = vec![
-        
-        Line::from(vec![Span::raw("")]),
+    let guide_text = vec![        
         Line::from(vec![
             Span::styled(
                 "Esc",
@@ -622,7 +619,7 @@ fn render_date_converter(
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("  Quit", Style::default().fg(Color::White)),
+            Span::styled("    Quit", Style::default().fg(Color::White)),
         ]),
         Line::from(vec![Span::raw("")]),
         Line::from(vec![
@@ -635,7 +632,7 @@ fn render_date_converter(
         ]),
         Line::from(vec![
             Span::styled(
-                "Y-m-d H:M:S",
+                "YYYY-MM-DD H:M:S",
                 Style::default()
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
@@ -643,7 +640,7 @@ fn render_date_converter(
         ]),
         Line::from(vec![
             Span::styled(
-                "Y-m-dTH:M:S:z",
+                "YYYY-MM-DDTH:M:S:z",
                 Style::default()
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
@@ -651,7 +648,7 @@ fn render_date_converter(
         ]),
         Line::from(vec![
             Span::styled(
-                "Y-m-d",
+                "YYYY-MM-DD",
                 Style::default()
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
@@ -659,7 +656,7 @@ fn render_date_converter(
         ]),
         Line::from(vec![
             Span::styled(
-                "d/m/Y H:M:S",
+                "DD/MM/YYYY H:M:S",
                 Style::default()
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
@@ -667,10 +664,111 @@ fn render_date_converter(
         ]),
         Line::from(vec![
             Span::styled(
-                "d/m/Y  ",
+                "DD/MM/YYYY  ",
                 Style::default()
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
+            ),
+        ]),
+        Line::from(vec![Span::raw("")]),
+        Line::from(vec![
+            Span::styled(
+                "Examples:",
+                Style::default()
+                    .fg(Color::Yellow)
+                    .add_modifier(Modifier::BOLD),
+            ),
+        ]),
+        
+        Line::from(vec![
+            Span::styled(
+                "RFC 3339:",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                " 2024-05-22T13:00:00Z",
+                Style::default()
+                    .fg(Color::White)    
+            ),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "RFC 2822:",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                " Tue, 22 May 2022 13:00:00 +0100",
+                Style::default()
+                    .fg(Color::White)
+            ),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "ISO 8601:",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                " 2024-05-22T13:00:00+01:00 or 20240522T130000+0100",
+                Style::default()
+                    .fg(Color::White)      
+            ),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "Unix Timestamp:",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                " 1716382800",
+                Style::default()
+                    .fg(Color::White)   
+            ),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "Human Readable:",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                " Tuesday, March 1, 2022, 1:00:00 PM",
+                Style::default()
+                    .fg(Color::White)      
+            ),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "Short Date:",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                " 05/22/2024 or 2024-03-22",
+                Style::default()
+                    .fg(Color::White)
+            ),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "Time Only:",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                " 13:00:00 or 7:30:00 AM",
+                Style::default()
+                    .fg(Color::White)
             ),
         ]),
     ];
@@ -683,7 +781,8 @@ fn render_date_converter(
                 .borders(Borders::ALL)
                 .border_type(BorderType::Rounded)
                 .padding(Padding::new(1, 0, 0, 0)),
-        );
+        )
+        .wrap(Wrap { trim: true });
     f.render_widget(guide, input_guide_chunks[1]);
 
     let converstion_chunks = Layout::default()
@@ -723,11 +822,12 @@ fn render_date_converter(
     )
     .block(
         Block::default()
-            .title(" RFC3339 Conversion ")
+            .title(" RFC 3339 Conversion ")
             .borders(Borders::ALL)
             .border_type(BorderType::Rounded)
             .padding(Padding::new(1, 1, 0, 0)),
-    );
+    )
+    .wrap(Wrap { trim: true });
     f.render_widget(rfc3339, converstion_chunks_second_split[0]);
     
     let rfc2822_text = vec![
@@ -743,11 +843,12 @@ fn render_date_converter(
     )
     .block(
         Block::default()
-            .title(" RFC2822 Conversion ")
+            .title(" RFC 2822 Conversion ")
             .borders(Borders::ALL)
             .border_type(BorderType::Rounded)
             .padding(Padding::new(1, 1, 0, 0)),
-    );
+    )
+    .wrap(Wrap { trim: true });
     f.render_widget(rfc2822, converstion_chunks_second_split[1]);
      
     let converstion_chunks_third_split = Layout::default()
@@ -785,7 +886,8 @@ fn render_date_converter(
             .borders(Borders::ALL)
             .border_type(BorderType::Rounded)
             .padding(Padding::new(1, 1, 0, 0)),
-    );
+    )
+    .wrap(Wrap { trim: true });
     f.render_widget(timeonly, converstion_chunks_third_split_half[0]);
 
     let iso8601_text = vec![
@@ -801,11 +903,12 @@ fn render_date_converter(
     )
     .block(
         Block::default()
-            .title(" ISO8601 Conversion ")
+            .title(" ISO 8601 Conversion ")
             .borders(Borders::ALL)
             .border_type(BorderType::Rounded)
             .padding(Padding::new(1, 1, 0, 0)),
-    );
+    )
+    .wrap(Wrap { trim: true });
     f.render_widget(iso8601, converstion_chunks_third_split_half[1]);
     
     let unixtimestamp_text = vec![
@@ -825,7 +928,8 @@ fn render_date_converter(
             .borders(Borders::ALL)
             .border_type(BorderType::Rounded)
             .padding(Padding::new(1, 1, 0, 0)),
-    );
+    )
+    .wrap(Wrap { trim: true });
     f.render_widget(unixtimestamp, converstion_chunks_third_split[1]);
     
     let converstion_chunks_fourth_split = Layout::default()
@@ -853,15 +957,16 @@ fn render_date_converter(
             .borders(Borders::ALL)
             .border_type(BorderType::Rounded)
             .padding(Padding::new(1, 1, 0, 0)),
-    );
+    )
+    .wrap(Wrap { trim: true });
     f.render_widget(humanreadable, converstion_chunks_fourth_split[0]);
     
-    let shortdate_text = vec![
+    let shordate_text = vec![
         Line::from(vec![Span::styled(app.date_converter.short_date.to_string(), Style::default().fg(Color::Green))]),
         
     ];
     
-    let shortdate = Paragraph::new(shortdate_text)
+    let shortdate = Paragraph::new(shordate_text)
     .style(
         Style::default()
             .add_modifier(Modifier::BOLD)
@@ -873,7 +978,8 @@ fn render_date_converter(
             .borders(Borders::ALL)
             .border_type(BorderType::Rounded)
             .padding(Padding::new(1, 1, 0, 0)),
-    );
+    )
+    .wrap(Wrap { trim: true });
     f.render_widget(shortdate, converstion_chunks_fourth_split[1]);
         
 }
