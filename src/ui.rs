@@ -71,7 +71,6 @@ pub fn run_app<B: Backend>(
                             base64_converter_textarea.start_selection();
                             base64_converter_textarea.move_cursor(CursorMove::End);
 
-                            
                             date_converter_textarea.move_cursor(CursorMove::Head);
                             date_converter_textarea.start_selection();
                             date_converter_textarea.move_cursor(CursorMove::End);
@@ -228,21 +227,14 @@ pub fn run_app<B: Backend>(
                         Tool::HashGenerator => {
                             hash_generator_textarea.insert_char(c);
 
-                            if base64_converter_textarea.lines().join("\n").len() % 68 == 0 {
-                                base64_converter_textarea.insert_newline();
+                            if hash_generator_textarea.lines().join("\n").len() % 62 == 0 {
+                                hash_generator_textarea.insert_newline();
                             }
 
-                            if key.modifiers.contains(KeyModifiers::ALT) && c == 'h' {
-                                app.hash_generator.input =
-                                    hash_generator_textarea.lines().join("\n");
-                                app.hash_generator.generate_hash();
-                            } else if !key.modifiers.contains(KeyModifiers::ALT) {
-                                app.hash_generator.input =
-                                    hash_generator_textarea.lines().join("\n");
-                                app.hash_generator.generate_hash();
-                            }
+                            let new_input = hash_generator_textarea.lines().join("\n");
+                            app.hash_generator.update_input(&new_input);
                         }
-
+                       
                         Tool::PasswordGenerator => {
                             match c {
                                 'g' => {
@@ -1006,30 +998,56 @@ fn render_hash_generator(
     hash_generator_textarea.set_block(
         Block::default()
             .title(" Input ")
+            .title_style(Style::default().fg(Color::Yellow).bold())
             .borders(Borders::ALL)
-            .border_type(BorderType::Rounded),
+            .border_type(BorderType::Rounded)
+            .border_style(Style::default().fg(Color::Yellow))
+            .padding(Padding::new(1, 1, 0, 0)),
     );
-
     f.render_widget(&*hash_generator_textarea, input_guide_chunks[0]);
 
     let guide_text = vec![
-        Line::from(vec![Span::raw("Controls:")]),
-        Line::from(vec![Span::raw("Esc: Quit Program")]),
-        Line::from(vec![Span::raw("  - Backspace: Clear input")]),
+        
+        Line::from(vec![
+            Span::styled(
+                "Esc",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled("   Quit", Style::default().fg(Color::White)),
+        ]), 
+        
     ];
 
     let guide = Paragraph::new(guide_text)
         .style(Style::default().add_modifier(Modifier::BOLD).fg(Color::Red))
         .block(
             Block::default()
-                .title(" Guide ")
+                .title(" Hash Generator Help ")
                 .borders(Borders::ALL)
                 .border_type(BorderType::Rounded)
                 .padding(Padding::new(1, 0, 0, 0)),
         );
     f.render_widget(guide, input_guide_chunks[1]);
+    
+    let hash_output_chunks = Layout::default()
+    .direction(Direction::Vertical)
+    .constraints([
+        Constraint::Percentage(50),
+        Constraint::Percentage(50),
+    ])
+    .split(chunks[1]);
+    
+    let sha1_sha256_chunks = Layout::default()
+    .direction(Direction::Vertical)
+    .constraints([
+        Constraint::Percentage(50),
+        Constraint::Percentage(50),
+    ])
+    .split(hash_output_chunks[0]);
 
-    let output = Paragraph::new(app.hash_generator.hash.as_str())
+    let sha1 = Paragraph::new(app.hash_generator.get_sha1())
         .style(
             Style::default()
                 .add_modifier(Modifier::BOLD)
@@ -1037,13 +1055,73 @@ fn render_hash_generator(
         )
         .block(
             Block::default()
-                .title(" Hash ")
+                .title(" SHA-1 Hash ")
                 .borders(Borders::ALL)
-                .border_type(BorderType::Rounded),
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 1, 0, 0)),
         )
         .wrap(Wrap { trim: true })
         .scroll((0, 0));
-    f.render_widget(output, chunks[1]);
+    f.render_widget(sha1, sha1_sha256_chunks[0]);
+
+    let sha256 = Paragraph::new(app.hash_generator.get_sha256())
+        .style(
+            Style::default()
+                .add_modifier(Modifier::BOLD)
+                .fg(Color::Green),
+        )
+        .block(
+            Block::default()
+                .title(" SHA-256 Hash ")
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 1, 0, 0)),
+        )
+        .wrap(Wrap { trim: true })
+        .scroll((0, 0));
+    f.render_widget(sha256, sha1_sha256_chunks[1]);
+
+    let sha384_sha512_chunks = Layout::default()
+    .direction(Direction::Vertical)
+    .constraints([
+        Constraint::Percentage(50),
+        Constraint::Percentage(50),
+    ])
+    .split(hash_output_chunks[1]);
+
+    let sha384 = Paragraph::new(app.hash_generator.get_sha384())
+        .style(
+            Style::default()
+                .add_modifier(Modifier::BOLD)
+                .fg(Color::Green),
+        )
+        .block(
+            Block::default()
+                .title(" SHA-1 Hash ")
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 1, 0, 0)),
+        )
+        .wrap(Wrap { trim: true })
+        .scroll((0, 0));
+    f.render_widget(sha384, sha384_sha512_chunks[0]);
+
+    let sha512 = Paragraph::new(app.hash_generator.get_sha512())
+        .style(
+            Style::default()
+                .add_modifier(Modifier::BOLD)
+                .fg(Color::Green),
+        )
+        .block(
+            Block::default()
+                .title(" SHA-512 Hash ")
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 1, 0, 0)),
+        )
+        .wrap(Wrap { trim: true })
+        .scroll((0, 0));
+    f.render_widget(sha512, sha384_sha512_chunks[1]);
 }
 
 fn render_password_generator(f: &mut Frame, app: &mut App, area: Rect) {
