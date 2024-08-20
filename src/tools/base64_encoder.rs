@@ -1,5 +1,9 @@
 use base64::{engine::general_purpose, Engine as _};
 
+use std::fs::{create_dir_all, File};
+use std::io::Write;
+use std::path::Path;
+
 pub struct Base64Encoder {
     pub input: String,
     pub encoded: String,
@@ -28,5 +32,16 @@ impl Base64Encoder {
                 self.decoded = "provided input is not a valid base64 string.".to_string();
             }
         }
+    }
+
+    pub fn write_to_file(&self) -> std::io::Result<()> {
+        let file_path = Path::new("export/base64encoder.txt");
+        if let Some(parent) = file_path.parent() {
+            create_dir_all(parent)?;
+        }
+        let mut file = File::create(file_path)?;
+        writeln!(file, "Encoded: {}", self.encoded)?;
+        writeln!(file, "Decoded: {}", self.decoded)?;
+        Ok(())
     }
 }
