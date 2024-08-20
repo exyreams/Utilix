@@ -559,7 +559,7 @@ fn render_base64_encoder(
                 .borders(Borders::ALL)
                 .border_style(Style::default().fg(Color::Red))
                 .border_type(BorderType::Rounded)
-                .padding(Padding::new(1, 0, 0, 0)),
+                .padding(Padding::new(1, 1, 0, 0)),
         )
         .wrap(Wrap { trim: true });
     f.render_widget(guide, input_guide_chunks[1]);
