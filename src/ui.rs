@@ -221,7 +221,6 @@ pub fn run_app<B: Backend>(
                         Tool::Base64Encoder => {
 
                             if !key.modifiers.contains(KeyModifiers::ALT)
-                            && !key.modifiers.contains(KeyModifiers::SHIFT)
                             && !key.modifiers.contains(KeyModifiers::CONTROL)
                             {
                                 base64_converter_textarea.insert_char(c);
@@ -265,7 +264,6 @@ pub fn run_app<B: Backend>(
 
                         Tool::HashGenerator => {
                             if !key.modifiers.contains(KeyModifiers::ALT)
-                            && !key.modifiers.contains(KeyModifiers::SHIFT)
                             && !key.modifiers.contains(KeyModifiers::CONTROL)
                             {
                                 hash_generator_textarea.insert_char(c);
@@ -278,7 +276,6 @@ pub fn run_app<B: Backend>(
                             if key.modifiers.contains(KeyModifiers::ALT) && c == 'x' {
                                 let _ = app.hash_generator.write_to_file();
                             } else if !key.modifiers.contains(KeyModifiers::ALT)
-                                && !key.modifiers.contains(KeyModifiers::SHIFT)
                             {
                                 let new_input = hash_generator_textarea.lines().join("\n");
                                 app.hash_generator.update_input(&new_input);
@@ -360,7 +357,6 @@ pub fn run_app<B: Backend>(
 
                         Tool::QRCodeGenerator => {
                             if !key.modifiers.contains(KeyModifiers::ALT)
-                            && !key.modifiers.contains(KeyModifiers::SHIFT)
                             && !key.modifiers.contains(KeyModifiers::CONTROL)
                             {
                                 qr_code_generator_textarea.insert_char(c);
