@@ -59,7 +59,7 @@ pub fn run_app<B: Backend>(
                         };
                         continue;
                     }
-
+                    
                     KeyCode::Left => {
                         if key.modifiers.contains(KeyModifiers::CONTROL) {
                             base64_converter_textarea
@@ -252,8 +252,12 @@ pub fn run_app<B: Backend>(
                         }
 
                         Tool::DateConverter => {
-                            date_converter_textarea.insert_char(c);
-                        
+                            if !key.modifiers.contains(KeyModifiers::ALT)
+                            && !key.modifiers.contains(KeyModifiers::CONTROL)
+                            {
+                                date_converter_textarea.insert_char(c);
+                            }
+                            
                             if date_converter_textarea.lines().join("\n").len() % 50 == 0 {
                                 date_converter_textarea.insert_newline();
                             }
