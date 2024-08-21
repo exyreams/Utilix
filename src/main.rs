@@ -22,6 +22,7 @@ fn main() -> Result<(), io::Error> {
     let mut base64_converter_textarea = TextArea::default();
     let mut date_converter_textarea = TextArea::default();
     let mut hash_generator_textarea = TextArea::default();
+    let mut number_base_converter_textarea = TextArea::default();
     let mut qr_code_generator_textarea = TextArea::default();
 
     let app = App::new();
@@ -31,6 +32,7 @@ fn main() -> Result<(), io::Error> {
         &mut base64_converter_textarea,
         &mut date_converter_textarea,
         &mut hash_generator_textarea,
+        &mut number_base_converter_textarea,
         &mut qr_code_generator_textarea,
     );
 

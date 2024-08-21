@@ -18,6 +18,7 @@ pub fn run_app<B: Backend>(
     base64_converter_textarea: &mut TextArea,
     date_converter_textarea: &mut TextArea,
     hash_generator_textarea: &mut TextArea,
+    number_base_converter_textarea: &mut TextArea,
     qr_code_generator_textarea: &mut TextArea,
 ) -> io::Result<()> {
     loop {
@@ -28,6 +29,7 @@ pub fn run_app<B: Backend>(
                 base64_converter_textarea,
                 date_converter_textarea,
                 hash_generator_textarea,
+                number_base_converter_textarea,
                 qr_code_generator_textarea,
             )
         })?;
@@ -49,7 +51,8 @@ pub fn run_app<B: Backend>(
                         app.current_tool = match app.current_tool {
                             Tool::Base64Encoder => Tool::DateConverter,
                             Tool::DateConverter => Tool::HashGenerator,
-                            Tool::HashGenerator => Tool::PasswordGenerator,
+                            Tool::HashGenerator => Tool::NumberBaseConverter,
+                            Tool::NumberBaseConverter => Tool::PasswordGenerator,
                             Tool::PasswordGenerator => Tool::QRCodeGenerator,
                             Tool::QRCodeGenerator => Tool::UuidGenerator,
                             Tool::UuidGenerator => Tool::Base64Encoder,
@@ -62,6 +65,7 @@ pub fn run_app<B: Backend>(
                             base64_converter_textarea
                                 .move_cursor(tui_textarea::CursorMove::WordBack);
                             date_converter_textarea.move_cursor(tui_textarea::CursorMove::WordBack);
+                            number_base_converter_textarea.move_cursor(tui_textarea::CursorMove::WordBack);
                             hash_generator_textarea.move_cursor(tui_textarea::CursorMove::WordBack);
                             qr_code_generator_textarea
                                 .move_cursor(tui_textarea::CursorMove::WordBack);
@@ -79,16 +83,26 @@ pub fn run_app<B: Backend>(
                             hash_generator_textarea.start_selection();
                             hash_generator_textarea.move_cursor(CursorMove::End);
                             
+                            number_base_converter_textarea.move_cursor(CursorMove::Head);
+                            number_base_converter_textarea.start_selection();
+                            number_base_converter_textarea.move_cursor(CursorMove::End);
+                            
                             qr_code_generator_textarea.move_cursor(CursorMove::Head);
                             qr_code_generator_textarea.start_selection();
                             qr_code_generator_textarea.move_cursor(CursorMove::End);
                         } else {
                             base64_converter_textarea.move_cursor(tui_textarea::CursorMove::Back);
                             base64_converter_textarea.cancel_selection();
+                            
                             date_converter_textarea.move_cursor(tui_textarea::CursorMove::Back);
                             date_converter_textarea.cancel_selection();
+                            
                             hash_generator_textarea.move_cursor(tui_textarea::CursorMove::Back);
                             hash_generator_textarea.cancel_selection();
+                            
+                            number_base_converter_textarea.move_cursor(tui_textarea::CursorMove::Back);
+                            number_base_converter_textarea.cancel_selection();
+                            
                             qr_code_generator_textarea.move_cursor(tui_textarea::CursorMove::Back);
                             qr_code_generator_textarea.cancel_selection();
                         }
@@ -102,6 +116,8 @@ pub fn run_app<B: Backend>(
                             date_converter_textarea
                                 .move_cursor(tui_textarea::CursorMove::WordForward);
                             hash_generator_textarea
+                                .move_cursor(tui_textarea::CursorMove::WordForward);
+                            number_base_converter_textarea
                                 .move_cursor(tui_textarea::CursorMove::WordForward);
                             qr_code_generator_textarea
                                 .move_cursor(tui_textarea::CursorMove::WordForward);
@@ -121,6 +137,10 @@ pub fn run_app<B: Backend>(
                             hash_generator_textarea.start_selection();
                             hash_generator_textarea.move_cursor(CursorMove::End);
                             
+                            number_base_converter_textarea.move_cursor(CursorMove::Head);
+                            number_base_converter_textarea.start_selection();
+                            number_base_converter_textarea.move_cursor(CursorMove::End);
+                            
                             qr_code_generator_textarea.move_cursor(CursorMove::Head);
                             qr_code_generator_textarea.start_selection();
                             qr_code_generator_textarea.move_cursor(CursorMove::End);
@@ -128,10 +148,16 @@ pub fn run_app<B: Backend>(
                             base64_converter_textarea
                                 .move_cursor(tui_textarea::CursorMove::Forward);
                             base64_converter_textarea.cancel_selection();
+                            
                             date_converter_textarea.move_cursor(tui_textarea::CursorMove::Forward);
                             date_converter_textarea.cancel_selection();
+                            
                             hash_generator_textarea.move_cursor(tui_textarea::CursorMove::Forward);
                             hash_generator_textarea.cancel_selection();
+                            
+                            number_base_converter_textarea.move_cursor(tui_textarea::CursorMove::Forward);
+                            number_base_converter_textarea.cancel_selection();
+                            
                             qr_code_generator_textarea
                                 .move_cursor(tui_textarea::CursorMove::Forward);
                             qr_code_generator_textarea.cancel_selection();
@@ -143,6 +169,7 @@ pub fn run_app<B: Backend>(
                         base64_converter_textarea.move_cursor(tui_textarea::CursorMove::Up);
                         date_converter_textarea.move_cursor(tui_textarea::CursorMove::Up);
                         hash_generator_textarea.move_cursor(tui_textarea::CursorMove::Up);
+                        number_base_converter_textarea.move_cursor(tui_textarea::CursorMove::Up);
                         qr_code_generator_textarea.move_cursor(tui_textarea::CursorMove::Up);
 
                         continue;
@@ -152,6 +179,7 @@ pub fn run_app<B: Backend>(
                         base64_converter_textarea.move_cursor(tui_textarea::CursorMove::Down);
                         date_converter_textarea.move_cursor(tui_textarea::CursorMove::Down);
                         hash_generator_textarea.move_cursor(tui_textarea::CursorMove::Down);
+                        number_base_converter_textarea.move_cursor(tui_textarea::CursorMove::Down);
                         qr_code_generator_textarea.move_cursor(tui_textarea::CursorMove::Down);
 
                         continue;
@@ -161,6 +189,7 @@ pub fn run_app<B: Backend>(
                         base64_converter_textarea.insert_newline();
                         date_converter_textarea.insert_newline();
                         hash_generator_textarea.insert_newline();
+                        number_base_converter_textarea.insert_newline();
                         qr_code_generator_textarea.insert_newline();
                         continue;
                     }
@@ -169,6 +198,7 @@ pub fn run_app<B: Backend>(
                         base64_converter_textarea.delete_char();
                         date_converter_textarea.delete_char();
                         hash_generator_textarea.delete_char();
+                        number_base_converter_textarea.delete_char();
                         qr_code_generator_textarea.delete_char();
                         continue;
                     }
@@ -177,7 +207,7 @@ pub fn run_app<B: Backend>(
                         base64_converter_textarea.delete_next_char();
                         date_converter_textarea.delete_next_char();
                         hash_generator_textarea.delete_next_char();
-                        qr_code_generator_textarea.delete_next_char();
+                        number_base_converter_textarea.delete_next_char();
                         qr_code_generator_textarea.insert_newline();
                         continue;
                     }
@@ -255,6 +285,28 @@ pub fn run_app<B: Backend>(
                             }
                         }
                        
+                       Tool::NumberBaseConverter => {
+                            
+                            if !key.modifiers.contains(KeyModifiers::ALT)
+                            && !key.modifiers.contains(KeyModifiers::CONTROL)
+                            {
+                                number_base_converter_textarea.insert_char(c);
+                            }
+                            
+                            if number_base_converter_textarea.lines().join("\n").len() % 50 == 0 {
+                                number_base_converter_textarea.insert_newline();
+                            }
+                            
+                            if key.modifiers.contains(KeyModifiers::ALT) && c == 'x' {
+                                let _ = app.number_base_converter.write_to_file();
+                            } else if !key.modifiers.contains(KeyModifiers::ALT)
+                                && !key.modifiers.contains(KeyModifiers::SHIFT)
+                            {
+                                app.number_base_converter.input = number_base_converter_textarea.lines().join("\n");
+                                app.number_base_converter.convert();
+                            }
+                            
+                        }
                         Tool::PasswordGenerator => {
                             match c {
                                 'g' => {
@@ -373,6 +425,7 @@ fn ui(
     base64_converter_textarea: &mut TextArea,
     date_converter_textarea: &mut TextArea,
     hash_generator_textarea: &mut TextArea,
+    number_base_converter_textarea: &mut TextArea,
     qr_code_generator_textarea: &mut TextArea,
 ) {
     let chunks = Layout::default()
@@ -406,6 +459,7 @@ fn ui(
         Span::raw("Base64 Encoder"),
         Span::raw("Date Converter"),
         Span::raw("Hash Generator"),
+        Span::raw("Number Base Generator"),
         Span::raw("Password Generator"),
         Span::raw("QR Code Generator"),
         Span::raw("UUID Generator"),
@@ -426,9 +480,10 @@ fn ui(
         Tool::Base64Encoder => 0,
         Tool::DateConverter => 1,
         Tool::HashGenerator => 2,
-        Tool::PasswordGenerator => 3,
-        Tool::QRCodeGenerator => 4,
-        Tool::UuidGenerator => 5,
+        Tool::NumberBaseConverter => 3, 
+        Tool::PasswordGenerator => 4,
+        Tool::QRCodeGenerator => 5,
+        Tool::UuidGenerator => 6,
     })
     .divider("|")
     .padding(" ", " ");
@@ -445,6 +500,9 @@ fn ui(
         }
         Tool::HashGenerator => {
             render_hash_generator(f, app, tool_content_area, hash_generator_textarea)
+        }
+        Tool::NumberBaseConverter => {
+            render_number_base_converter(f, app, tool_content_area, number_base_converter_textarea)
         }
         Tool::PasswordGenerator => render_password_generator(f, app, tool_content_area),
         Tool::QRCodeGenerator => {
@@ -1188,6 +1246,216 @@ fn render_hash_generator(
     f.render_widget(sha512, sha384_sha512_chunks[1]);
 }
 
+fn render_number_base_converter(
+    f: &mut Frame,
+    app: &mut App,
+    area: Rect,
+    number_base_converter_textarea: &mut TextArea,
+) {
+    let chunks = Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints([Constraint::Percentage(40), Constraint::Percentage(60)].as_ref())
+        .split(area);
+
+    let input_guide_chunks = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref())
+        .split(chunks[0]);
+
+    number_base_converter_textarea.set_block(
+        Block::default()
+            .title(" Input ")
+            .title_style(Style::default().fg(Color::Yellow).bold())
+            .borders(Borders::ALL)
+            .border_style(Style::default().fg(Color::Yellow))
+            .border_type(BorderType::Rounded)
+            .padding(Padding::new(1, 1, 0, 0)),
+    );
+
+    f.render_widget(&*number_base_converter_textarea, input_guide_chunks[0]);
+
+    let guide_text = vec![
+        Line::from(vec![Span::raw("")]),
+        Line::from(vec![
+            Span::styled("Esc", Style::default().fg(Color::Blue).add_modifier(Modifier::BOLD)),
+            Span::styled("       Quit", Style::default().fg(Color::White)),
+        ]),
+        Line::from(vec![
+            Span::styled("Alt + x", Style::default().fg(Color::Blue).add_modifier(Modifier::BOLD)),
+            Span::styled("   Export Generated Result", Style::default().fg(Color::White)),
+        ]),
+        Line::from(vec![Span::raw("")]), 
+        Line::from(vec![
+            Span::styled(
+                "Exported File Path:",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(" export/number_conversion.txt", Style::default().fg(Color::White)),
+        ]),
+    ];
+
+    let guide = Paragraph::new(guide_text)
+        .style(Style::default().fg(Color::Red))
+        .block(
+            Block::default()
+                .title(" Number Base Converter Help ")
+                .title_style(Style::default().add_modifier(Modifier::BOLD).fg(Color::Red))
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 1, 0, 0)),
+        )
+        .wrap(Wrap { trim: true });
+    f.render_widget(guide, input_guide_chunks[1]);
+
+    // Output Chunks Layout
+    let output_chunks = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([
+            Constraint::Percentage(17),
+            Constraint::Percentage(16),
+            Constraint::Percentage(17),
+            Constraint::Percentage(16),
+            Constraint::Percentage(17),
+            Constraint::Percentage(17),
+        ])
+        .split(chunks[1]);
+
+    // Render individual conversion outputs
+    let binary_to_decimal_text = vec![
+        Line::from(vec![Span::styled(
+            app.number_base_converter.binary_to_decimal.to_string(),
+            Style::default().fg(Color::Green),
+        )]),
+    ];
+    let binary_to_decimal = Paragraph::new(binary_to_decimal_text)
+        .style(
+            Style::default()
+                .add_modifier(Modifier::BOLD)
+                .fg(Color::Green),
+        )
+        .block(
+            Block::default()
+                .title(" Binary to Decimal ")
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 1, 0, 0)),
+        )
+        .wrap(Wrap { trim: true });
+    f.render_widget(binary_to_decimal, output_chunks[0]);
+
+    let binary_to_hexadecimal_text = vec![
+        Line::from(vec![Span::styled(
+            app.number_base_converter.binary_to_hexadecimal.to_string(),
+            Style::default().fg(Color::Green),
+        )]),
+    ];
+    let binary_to_hexadecimal = Paragraph::new(binary_to_hexadecimal_text)
+        .style(
+            Style::default()
+                .add_modifier(Modifier::BOLD)
+                .fg(Color::Green),
+        )
+        .block(
+            Block::default()
+                .title(" Binary to Hexadecimal ")
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 1, 0, 0)),
+        )
+        .wrap(Wrap { trim: true });
+    f.render_widget(binary_to_hexadecimal, output_chunks[1]);
+
+    let decimal_to_binary_text = vec![
+        Line::from(vec![Span::styled(
+            app.number_base_converter.decimal_to_binary.to_string(),
+            Style::default().fg(Color::Green),
+        )]),
+    ];
+    let decimal_to_binary = Paragraph::new(decimal_to_binary_text)
+        .style(
+            Style::default()
+                .add_modifier(Modifier::BOLD)
+                .fg(Color::Green),
+        )
+        .block(
+            Block::default()
+                .title(" Decimal to Binary ")
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 1, 0, 0)),
+        )
+        .wrap(Wrap { trim: true });
+    f.render_widget(decimal_to_binary, output_chunks[2]);
+
+    let decimal_to_hexadecimal_text = vec![
+        Line::from(vec![Span::styled(
+            app.number_base_converter.decimal_to_hexadecimal.to_string(),
+            Style::default().fg(Color::Green),
+        )]),
+    ];
+    let decimal_to_hexadecimal = Paragraph::new(decimal_to_hexadecimal_text)
+        .style(
+            Style::default()
+                .add_modifier(Modifier::BOLD)
+                .fg(Color::Green),
+        )
+        .block(
+            Block::default()
+                .title(" Decimal to Hexadecimal ")
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 1, 0, 0)),
+        )
+        .wrap(Wrap { trim: true });
+    f.render_widget(decimal_to_hexadecimal, output_chunks[3]);
+
+    let hexadecimal_to_binary_text = vec![
+        Line::from(vec![Span::styled(
+            app.number_base_converter.hexadecimal_to_binary.to_string(),
+            Style::default().fg(Color::Green),
+        )]),
+    ];
+    let hexadecimal_to_binary = Paragraph::new(hexadecimal_to_binary_text)
+        .style(
+            Style::default()
+                .add_modifier(Modifier::BOLD)
+                .fg(Color::Green),
+        )
+        .block(
+            Block::default()
+                .title(" Hexadecimal to Binary ")
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 1, 0, 0)),
+        )
+        .wrap(Wrap { trim: true });
+    f.render_widget(hexadecimal_to_binary, output_chunks[4]);
+
+    let hexadecimal_to_decimal_text = vec![
+        Line::from(vec![Span::styled(
+            app.number_base_converter.hexadecimal_to_decimal.to_string(),
+            Style::default().fg(Color::Green),
+        )]),
+    ];
+    let hexadecimal_to_decimal = Paragraph::new(hexadecimal_to_decimal_text)
+        .style(
+            Style::default()
+                .add_modifier(Modifier::BOLD)
+                .fg(Color::Green),
+        )
+        .block(
+            Block::default()
+                .title(" Hexadecimal to Decimal ")
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 1, 0, 0)),
+        )
+        .wrap(Wrap { trim: true });
+    f.render_widget(hexadecimal_to_decimal, output_chunks[5]);
+}
+
 fn render_password_generator(f: &mut Frame, app: &mut App, area: Rect) {
     let chunks = Layout::default()
         .direction(Direction::Horizontal)
@@ -1474,7 +1742,7 @@ fn render_password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                 .title_style(Style::default().add_modifier(Modifier::BOLD).fg(Color::Red))
                 .borders(Borders::ALL)
                 .border_type(BorderType::Rounded)
-                .padding(Padding::new(1, 0, 0, 0)),
+                .padding(Padding::new(1, 1, 0, 0)),
         )
         .wrap(Wrap { trim: true });
     f.render_widget(guide, settings_guide_chunks[1]);
