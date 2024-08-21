@@ -493,26 +493,26 @@ fn ui(
 
     match app.current_tool {
         Tool::Base64Encoder => {
-            render_base64_encoder(f, app, tool_content_area, base64_converter_textarea)
+            base64_encoder(f, app, tool_content_area, base64_converter_textarea)
         }
         Tool::DateConverter => {
-            render_date_converter(f, app, tool_content_area, date_converter_textarea)
+            date_converter(f, app, tool_content_area, date_converter_textarea)
         }
         Tool::HashGenerator => {
-            render_hash_generator(f, app, tool_content_area, hash_generator_textarea)
+            hash_generator(f, app, tool_content_area, hash_generator_textarea)
         }
         Tool::NumberBaseConverter => {
-            render_number_base_converter(f, app, tool_content_area, number_base_converter_textarea)
+            number_base_converter(f, app, tool_content_area, number_base_converter_textarea)
         }
-        Tool::PasswordGenerator => render_password_generator(f, app, tool_content_area),
+        Tool::PasswordGenerator => password_generator(f, app, tool_content_area),
         Tool::QRCodeGenerator => {
-            render_qr_code_generator(f, app, tool_content_area, qr_code_generator_textarea)
+            qr_code_generator(f, app, tool_content_area, qr_code_generator_textarea)
         }
-        Tool::UuidGenerator => render_uuid_generator(f, app, tool_content_area),
+        Tool::UuidGenerator => uuid_generator(f, app, tool_content_area),
     }
 }
 
-fn render_base64_encoder(
+fn base64_encoder(
     f: &mut Frame,
     app: &mut App,
     area: Rect,
@@ -673,7 +673,7 @@ fn render_base64_encoder(
     f.render_widget(decoded, encoded_decoded_chunks[1]);
 }
 
-fn render_date_converter(
+fn date_converter(
     f: &mut Frame,
     app: &mut App,
     area: Rect,
@@ -1079,7 +1079,7 @@ fn render_date_converter(
         
 }
 
-fn render_hash_generator(
+fn hash_generator(
     f: &mut Frame,
     app: &mut App,
     area: Rect,
@@ -1246,7 +1246,7 @@ fn render_hash_generator(
     f.render_widget(sha512, sha384_sha512_chunks[1]);
 }
 
-fn render_number_base_converter(
+fn number_base_converter(
     f: &mut Frame,
     app: &mut App,
     area: Rect,
@@ -1456,7 +1456,7 @@ fn render_number_base_converter(
     f.render_widget(hexadecimal_to_decimal, output_chunks[5]);
 }
 
-fn render_password_generator(f: &mut Frame, app: &mut App, area: Rect) {
+fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
     let chunks = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(60), Constraint::Percentage(40)].as_ref())
@@ -1765,7 +1765,7 @@ fn render_password_generator(f: &mut Frame, app: &mut App, area: Rect) {
     f.render_widget(password, chunks[1]);
 }
 
-fn render_qr_code_generator(
+fn qr_code_generator(
     f: &mut Frame,
     app: &mut App,
     area: Rect,
@@ -1872,7 +1872,7 @@ fn render_qr_code_generator(
     f.render_widget(output, chunks[1]);
 }
 
-fn render_uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
+fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
     let chunks = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(30), Constraint::Percentage(70)].as_ref())
