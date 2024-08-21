@@ -59,18 +59,18 @@ pub fn run_app<B: Backend>(
                         };
                         continue;
                     }
-                    
+
                     KeyCode::Left => {
                         if key.modifiers.contains(KeyModifiers::CONTROL) {
                             base64_converter_textarea
                                 .move_cursor(tui_textarea::CursorMove::WordBack);
                             date_converter_textarea.move_cursor(tui_textarea::CursorMove::WordBack);
-                            number_base_converter_textarea.move_cursor(tui_textarea::CursorMove::WordBack);
+                            number_base_converter_textarea
+                                .move_cursor(tui_textarea::CursorMove::WordBack);
                             hash_generator_textarea.move_cursor(tui_textarea::CursorMove::WordBack);
                             qr_code_generator_textarea
                                 .move_cursor(tui_textarea::CursorMove::WordBack);
                         } else if key.modifiers.contains(KeyModifiers::SHIFT) {
-                            
                             base64_converter_textarea.move_cursor(CursorMove::Head);
                             base64_converter_textarea.start_selection();
                             base64_converter_textarea.move_cursor(CursorMove::End);
@@ -78,31 +78,32 @@ pub fn run_app<B: Backend>(
                             date_converter_textarea.move_cursor(CursorMove::Head);
                             date_converter_textarea.start_selection();
                             date_converter_textarea.move_cursor(CursorMove::End);
-                           
+
                             hash_generator_textarea.move_cursor(CursorMove::Head);
                             hash_generator_textarea.start_selection();
                             hash_generator_textarea.move_cursor(CursorMove::End);
-                            
+
                             number_base_converter_textarea.move_cursor(CursorMove::Head);
                             number_base_converter_textarea.start_selection();
                             number_base_converter_textarea.move_cursor(CursorMove::End);
-                            
+
                             qr_code_generator_textarea.move_cursor(CursorMove::Head);
                             qr_code_generator_textarea.start_selection();
                             qr_code_generator_textarea.move_cursor(CursorMove::End);
                         } else {
                             base64_converter_textarea.move_cursor(tui_textarea::CursorMove::Back);
                             base64_converter_textarea.cancel_selection();
-                            
+
                             date_converter_textarea.move_cursor(tui_textarea::CursorMove::Back);
                             date_converter_textarea.cancel_selection();
-                            
+
                             hash_generator_textarea.move_cursor(tui_textarea::CursorMove::Back);
                             hash_generator_textarea.cancel_selection();
-                            
-                            number_base_converter_textarea.move_cursor(tui_textarea::CursorMove::Back);
+
+                            number_base_converter_textarea
+                                .move_cursor(tui_textarea::CursorMove::Back);
                             number_base_converter_textarea.cancel_selection();
-                            
+
                             qr_code_generator_textarea.move_cursor(tui_textarea::CursorMove::Back);
                             qr_code_generator_textarea.cancel_selection();
                         }
@@ -124,23 +125,22 @@ pub fn run_app<B: Backend>(
                             qr_code_generator_textarea
                                 .move_cursor(tui_textarea::CursorMove::WordForward);
                         } else if key.modifiers.contains(KeyModifiers::SHIFT) {
-                            
                             base64_converter_textarea.move_cursor(CursorMove::Head);
                             base64_converter_textarea.start_selection();
                             base64_converter_textarea.move_cursor(CursorMove::End);
-                            
+
                             date_converter_textarea.move_cursor(CursorMove::Head);
                             date_converter_textarea.start_selection();
                             date_converter_textarea.move_cursor(CursorMove::End);
-                            
+
                             hash_generator_textarea.move_cursor(CursorMove::Head);
                             hash_generator_textarea.start_selection();
                             hash_generator_textarea.move_cursor(CursorMove::End);
-                            
+
                             number_base_converter_textarea.move_cursor(CursorMove::Head);
                             number_base_converter_textarea.start_selection();
                             number_base_converter_textarea.move_cursor(CursorMove::End);
-                            
+
                             qr_code_generator_textarea.move_cursor(CursorMove::Head);
                             qr_code_generator_textarea.start_selection();
                             qr_code_generator_textarea.move_cursor(CursorMove::End);
@@ -148,16 +148,17 @@ pub fn run_app<B: Backend>(
                             base64_converter_textarea
                                 .move_cursor(tui_textarea::CursorMove::Forward);
                             base64_converter_textarea.cancel_selection();
-                            
+
                             date_converter_textarea.move_cursor(tui_textarea::CursorMove::Forward);
                             date_converter_textarea.cancel_selection();
-                            
+
                             hash_generator_textarea.move_cursor(tui_textarea::CursorMove::Forward);
                             hash_generator_textarea.cancel_selection();
-                            
-                            number_base_converter_textarea.move_cursor(tui_textarea::CursorMove::Forward);
+
+                            number_base_converter_textarea
+                                .move_cursor(tui_textarea::CursorMove::Forward);
                             number_base_converter_textarea.cancel_selection();
-                            
+
                             qr_code_generator_textarea
                                 .move_cursor(tui_textarea::CursorMove::Forward);
                             qr_code_generator_textarea.cancel_selection();
@@ -216,16 +217,15 @@ pub fn run_app<B: Backend>(
 
                 match input.key {
                     Key::Esc => return Ok(()),
-                    
+
                     Key::Char(c) => match app.current_tool {
                         Tool::Base64Encoder => {
-
                             if !key.modifiers.contains(KeyModifiers::ALT)
-                            && !key.modifiers.contains(KeyModifiers::CONTROL)
+                                && !key.modifiers.contains(KeyModifiers::CONTROL)
                             {
                                 base64_converter_textarea.insert_char(c);
                             }
-                            
+
                             if base64_converter_textarea.lines().join("\n").len() % 84 == 0 {
                                 base64_converter_textarea.insert_newline();
                             }
@@ -238,10 +238,9 @@ pub fn run_app<B: Backend>(
                                 app.base64_encoder.input =
                                     base64_converter_textarea.lines().join("\n");
                                 app.base64_encoder.decode();
-                            } else if key.modifiers.contains(KeyModifiers::ALT) && c == 'x'{
+                            } else if key.modifiers.contains(KeyModifiers::ALT) && c == 'x' {
                                 let _ = app.base64_encoder.write_to_file();
-                            } 
-                            else if !key.modifiers.contains(KeyModifiers::ALT)
+                            } else if !key.modifiers.contains(KeyModifiers::ALT)
                                 && !key.modifiers.contains(KeyModifiers::SHIFT)
                             {
                                 app.base64_encoder.input =
@@ -252,116 +251,108 @@ pub fn run_app<B: Backend>(
                         }
 
                         Tool::DateConverter => {
-                            if !key.modifiers.contains(KeyModifiers::ALT)
-                            && !key.modifiers.contains(KeyModifiers::CONTROL)
-                            {
-                                date_converter_textarea.insert_char(c);
-                            }
-                            
+                            date_converter_textarea.insert_char(c);
+
                             if date_converter_textarea.lines().join("\n").len() % 50 == 0 {
                                 date_converter_textarea.insert_newline();
                             }
-                        
+
                             app.date_converter.input = date_converter_textarea.lines().join("\n");
                             app.date_converter.convert_all();
                         }
 
                         Tool::HashGenerator => {
                             if !key.modifiers.contains(KeyModifiers::ALT)
-                            && !key.modifiers.contains(KeyModifiers::CONTROL)
+                                && !key.modifiers.contains(KeyModifiers::CONTROL)
                             {
                                 hash_generator_textarea.insert_char(c);
                             }
-                            
+
                             if hash_generator_textarea.lines().join("\n").len() % 62 == 0 {
                                 hash_generator_textarea.insert_newline();
                             }
 
                             if key.modifiers.contains(KeyModifiers::ALT) && c == 'x' {
                                 let _ = app.hash_generator.write_to_file();
-                            } else if !key.modifiers.contains(KeyModifiers::ALT)
-                            {
+                            } else if !key.modifiers.contains(KeyModifiers::ALT) {
                                 let new_input = hash_generator_textarea.lines().join("\n");
                                 app.hash_generator.update_input(&new_input);
                             }
                         }
-                       
-                       Tool::NumberBaseConverter => {
-                            
+
+                        Tool::NumberBaseConverter => {
                             if !key.modifiers.contains(KeyModifiers::ALT)
-                            && !key.modifiers.contains(KeyModifiers::CONTROL)
+                                && !key.modifiers.contains(KeyModifiers::CONTROL)
                             {
                                 number_base_converter_textarea.insert_char(c);
                             }
-                            
+
                             if number_base_converter_textarea.lines().join("\n").len() % 50 == 0 {
                                 number_base_converter_textarea.insert_newline();
                             }
-                            
+
                             if key.modifiers.contains(KeyModifiers::ALT) && c == 'x' {
                                 let _ = app.number_base_converter.write_to_file();
                             } else if !key.modifiers.contains(KeyModifiers::ALT)
                                 && !key.modifiers.contains(KeyModifiers::SHIFT)
                             {
-                                app.number_base_converter.input = number_base_converter_textarea.lines().join("\n");
+                                app.number_base_converter.input =
+                                    number_base_converter_textarea.lines().join("\n");
                                 app.number_base_converter.convert();
                             }
-                            
                         }
-                        Tool::PasswordGenerator => {
-                            match c {
-                                'g' => {
-                                    let _ = app.password_generator.generate_password();
-                                }
-                                'i' => {
-                                    app.password_generator.increase_length();
-                                }
-                                'd' => {
-                                    app.password_generator.decrease_length();
-                                }
-                                'u' => {
-                                    app.password_generator.toggle_uppercase();
-                                }
-                                'l' => {
-                                    app.password_generator.toggle_lowercase();
-                                }
-                                'n' => {
-                                    app.password_generator.toggle_numbers();
-                                }
-                                's' => {
-                                    app.password_generator.toggle_symbols();
-                                }
-                                'z' => {
-                                    app.password_generator.toggle_similar_characters();
-                                }
-                                'q' => {
-                                    app.password_generator.toggle_duplicate_characters();
-                                }
-                                'c' => {
-                                    app.password_generator.clear_password();
-                                }
-                                'v' => {
-                                    app.password_generator.toggle_sequential_characters();
-                                }
-                                'm' => {
-                                    let _ = app.password_generator.generate_multiple_passwords();
-                                }
-                                'k' => {
-                                    app.password_generator.increase_quantity();
-                                }
-                                'j' => {
-                                    app.password_generator.decrease_quantity();
-                                }
-                                'x' => {
-                                    let _ = app.password_generator.write_to_file();
-                                }
-                                _ => {}
+                        Tool::PasswordGenerator => match c {
+                            'g' => {
+                                let _ = app.password_generator.generate_password();
                             }
-                        }
+                            'i' => {
+                                app.password_generator.increase_length();
+                            }
+                            'd' => {
+                                app.password_generator.decrease_length();
+                            }
+                            'u' => {
+                                app.password_generator.toggle_uppercase();
+                            }
+                            'l' => {
+                                app.password_generator.toggle_lowercase();
+                            }
+                            'n' => {
+                                app.password_generator.toggle_numbers();
+                            }
+                            's' => {
+                                app.password_generator.toggle_symbols();
+                            }
+                            'z' => {
+                                app.password_generator.toggle_similar_characters();
+                            }
+                            'q' => {
+                                app.password_generator.toggle_duplicate_characters();
+                            }
+                            'c' => {
+                                app.password_generator.clear_password();
+                            }
+                            'v' => {
+                                app.password_generator.toggle_sequential_characters();
+                            }
+                            'm' => {
+                                let _ = app.password_generator.generate_multiple_passwords();
+                            }
+                            'k' => {
+                                app.password_generator.increase_quantity();
+                            }
+                            'j' => {
+                                app.password_generator.decrease_quantity();
+                            }
+                            'x' => {
+                                let _ = app.password_generator.write_to_file();
+                            }
+                            _ => {}
+                        },
 
                         Tool::QRCodeGenerator => {
                             if !key.modifiers.contains(KeyModifiers::ALT)
-                            && !key.modifiers.contains(KeyModifiers::CONTROL)
+                                && !key.modifiers.contains(KeyModifiers::CONTROL)
                             {
                                 qr_code_generator_textarea.insert_char(c);
                             }
@@ -374,42 +365,38 @@ pub fn run_app<B: Backend>(
                                 app.qr_code_generator.input =
                                     qr_code_generator_textarea.lines().join("\n");
                                 app.qr_code_generator.generate_qr_code();
-                            } else if key.modifiers.contains(KeyModifiers::ALT) && c == 'x'{
-                               if let Err(e) = app.qr_code_generator.export_qr_code() {
-                                eprintln!("Failed to export QR code: {}", e);
+                            } else if key.modifiers.contains(KeyModifiers::ALT) && c == 'x' {
+                                if let Err(e) = app.qr_code_generator.export_qr_code() {
+                                    eprintln!("Failed to export QR code: {}", e);
                                 }
-                            }
-                            else if !key.modifiers.contains(KeyModifiers::ALT) {
+                            } else if !key.modifiers.contains(KeyModifiers::ALT) {
                                 app.qr_code_generator.input =
                                     qr_code_generator_textarea.lines().join("\n");
                                 app.qr_code_generator.generate_qr_code();
                             }
                         }
 
-                        Tool::UuidGenerator => {
-                            match c {
-                                's' => {
-                                    app.uuid_generator.generate_v4_uuid();
-                                }
-                                'm' => {
-                                    app.uuid_generator.generate_multiple_v4_uuids();
-                                }
-                                'c' => {
-                                    app.uuid_generator.clear();
-                                }
-                                'i' => {
-                                    app.uuid_generator.increase_length();
-                                }
-                                'd' => {
-                                    app.uuid_generator.decrease_length();
-                                }
-                                'x' => {
-                                    let _ = app.uuid_generator.write_to_file();
-                                }
-                                _ => {}
+                        Tool::UuidGenerator => match c {
+                            's' => {
+                                app.uuid_generator.generate_v4_uuid();
                             }
-                        }
-                        
+                            'm' => {
+                                app.uuid_generator.generate_multiple_v4_uuids();
+                            }
+                            'c' => {
+                                app.uuid_generator.clear();
+                            }
+                            'i' => {
+                                app.uuid_generator.increase_length();
+                            }
+                            'd' => {
+                                app.uuid_generator.decrease_length();
+                            }
+                            'x' => {
+                                let _ = app.uuid_generator.write_to_file();
+                            }
+                            _ => {}
+                        },
                     },
                     _ => {}
                 }
@@ -480,7 +467,7 @@ fn ui(
         Tool::Base64Encoder => 0,
         Tool::DateConverter => 1,
         Tool::HashGenerator => 2,
-        Tool::NumberBaseConverter => 3, 
+        Tool::NumberBaseConverter => 3,
         Tool::PasswordGenerator => 4,
         Tool::QRCodeGenerator => 5,
         Tool::UuidGenerator => 6,
@@ -492,15 +479,9 @@ fn ui(
     let tool_content_area = chunks[2];
 
     match app.current_tool {
-        Tool::Base64Encoder => {
-            base64_encoder(f, app, tool_content_area, base64_converter_textarea)
-        }
-        Tool::DateConverter => {
-            date_converter(f, app, tool_content_area, date_converter_textarea)
-        }
-        Tool::HashGenerator => {
-            hash_generator(f, app, tool_content_area, hash_generator_textarea)
-        }
+        Tool::Base64Encoder => base64_encoder(f, app, tool_content_area, base64_converter_textarea),
+        Tool::DateConverter => date_converter(f, app, tool_content_area, date_converter_textarea),
+        Tool::HashGenerator => hash_generator(f, app, tool_content_area, hash_generator_textarea),
         Tool::NumberBaseConverter => {
             number_base_converter(f, app, tool_content_area, number_base_converter_textarea)
         }
@@ -525,10 +506,7 @@ fn base64_encoder(
 
     let input_guide_chunks = Layout::default()
         .direction(Direction::Horizontal)
-        .constraints([
-            Constraint::Percentage(50), 
-            Constraint::Percentage(50), 
-        ])
+        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(chunks[0]);
 
     base64_converter_textarea.set_block(
@@ -590,7 +568,7 @@ fn base64_encoder(
                     .add_modifier(Modifier::BOLD),
             ),
             Span::styled("         Export Generated Hash", Style::default().fg(Color::White)),
-        ]), 
+        ]),
         Line::from(vec![Span::raw("")]), 
         Line::from(vec![
             Span::styled(
@@ -610,16 +588,14 @@ fn base64_encoder(
                     .add_modifier(Modifier::BOLD)
                     .add_modifier(Modifier::ITALIC)
                     .add_modifier(Modifier::UNDERLINED)
-                    
             ),
             Span::styled(
                 " Encoding/decoding begins automatically while typing. If it doesn't start, use the shortcut keys.",
                 Style::default()
                     .fg(Color::Yellow)
                     .add_modifier(Modifier::ITALIC)
-                    
             ),
-        ]), 
+        ]),
     ];
 
     let guide = Paragraph::new(guide_text)
@@ -686,10 +662,7 @@ fn date_converter(
 
     let input_guide_chunks = Layout::default()
         .direction(Direction::Vertical)
-        .constraints([
-            Constraint::Percentage(25),
-            Constraint::Percentage(75),
-        ])
+        .constraints([Constraint::Percentage(25), Constraint::Percentage(75)])
         .split(chunks[0]);
 
     date_converter_textarea.set_block(
@@ -705,8 +678,8 @@ fn date_converter(
     date_converter_textarea.set_style(Style::default().bold());
 
     f.render_widget(&*date_converter_textarea, input_guide_chunks[0]);
-    
-    let guide_text = vec![        
+
+    let guide_text = vec![
         Line::from(vec![
             Span::styled(
                 "Esc",
@@ -717,64 +690,49 @@ fn date_converter(
             Span::styled("    Quit", Style::default().fg(Color::White)),
         ]),
         Line::from(vec![Span::raw("")]),
-        Line::from(vec![
-            Span::styled(
-                "Supported Formats:",
-                Style::default()
-                    .fg(Color::Yellow)
-                    .add_modifier(Modifier::BOLD),
-            ),
-        ]),
-        Line::from(vec![
-            Span::styled(
-                "YYYY-MM-DD H:M:S",
-                Style::default()
-                    .fg(Color::Blue)
-                    .add_modifier(Modifier::BOLD),
-            ),
-        ]),
-        Line::from(vec![
-            Span::styled(
-                "YYYY-MM-DDTH:M:S:z",
-                Style::default()
-                    .fg(Color::Blue)
-                    .add_modifier(Modifier::BOLD),
-            ),
-        ]),
-        Line::from(vec![
-            Span::styled(
-                "YYYY-MM-DD",
-                Style::default()
-                    .fg(Color::Blue)
-                    .add_modifier(Modifier::BOLD),
-            ),
-        ]),
-        Line::from(vec![
-            Span::styled(
-                "DD/MM/YYYY H:M:S",
-                Style::default()
-                    .fg(Color::Blue)
-                    .add_modifier(Modifier::BOLD),
-            ),
-        ]),
-        Line::from(vec![
-            Span::styled(
-                "DD/MM/YYYY  ",
-                Style::default()
-                    .fg(Color::Blue)
-                    .add_modifier(Modifier::BOLD),
-            ),
-        ]),
+        Line::from(vec![Span::styled(
+            "Supported Formats:",
+            Style::default()
+                .fg(Color::Yellow)
+                .add_modifier(Modifier::BOLD),
+        )]),
+        Line::from(vec![Span::styled(
+            "YYYY-MM-DD H:M:S",
+            Style::default()
+                .fg(Color::Blue)
+                .add_modifier(Modifier::BOLD),
+        )]),
+        Line::from(vec![Span::styled(
+            "YYYY-MM-DDTH:M:S:z",
+            Style::default()
+                .fg(Color::Blue)
+                .add_modifier(Modifier::BOLD),
+        )]),
+        Line::from(vec![Span::styled(
+            "YYYY-MM-DD",
+            Style::default()
+                .fg(Color::Blue)
+                .add_modifier(Modifier::BOLD),
+        )]),
+        Line::from(vec![Span::styled(
+            "DD/MM/YYYY H:M:S",
+            Style::default()
+                .fg(Color::Blue)
+                .add_modifier(Modifier::BOLD),
+        )]),
+        Line::from(vec![Span::styled(
+            "DD/MM/YYYY  ",
+            Style::default()
+                .fg(Color::Blue)
+                .add_modifier(Modifier::BOLD),
+        )]),
         Line::from(vec![Span::raw("")]),
-        Line::from(vec![
-            Span::styled(
-                "Examples:",
-                Style::default()
-                    .fg(Color::Yellow)
-                    .add_modifier(Modifier::BOLD),
-            ),
-        ]),
-        
+        Line::from(vec![Span::styled(
+            "Examples:",
+            Style::default()
+                .fg(Color::Yellow)
+                .add_modifier(Modifier::BOLD),
+        )]),
         Line::from(vec![
             Span::styled(
                 "RFC 3339:",
@@ -782,11 +740,7 @@ fn date_converter(
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled(
-                " 2024-05-22T13:00:00Z",
-                Style::default()
-                    .fg(Color::White)    
-            ),
+            Span::styled(" 2024-05-22T13:00:00Z", Style::default().fg(Color::White)),
         ]),
         Line::from(vec![
             Span::styled(
@@ -797,8 +751,7 @@ fn date_converter(
             ),
             Span::styled(
                 " Tue, 22 May 2022 13:00:00 +0100",
-                Style::default()
-                    .fg(Color::White)
+                Style::default().fg(Color::White),
             ),
         ]),
         Line::from(vec![
@@ -810,8 +763,7 @@ fn date_converter(
             ),
             Span::styled(
                 " 2024-05-22T13:00:00+01:00 or 20240522T130000+0100",
-                Style::default()
-                    .fg(Color::White)      
+                Style::default().fg(Color::White),
             ),
         ]),
         Line::from(vec![
@@ -821,11 +773,7 @@ fn date_converter(
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled(
-                " 1716382800",
-                Style::default()
-                    .fg(Color::White)   
-            ),
+            Span::styled(" 1716382800", Style::default().fg(Color::White)),
         ]),
         Line::from(vec![
             Span::styled(
@@ -836,8 +784,7 @@ fn date_converter(
             ),
             Span::styled(
                 " Tuesday, March 1, 2022, 1:00:00 PM",
-                Style::default()
-                    .fg(Color::White)      
+                Style::default().fg(Color::White),
             ),
         ]),
         Line::from(vec![
@@ -849,8 +796,7 @@ fn date_converter(
             ),
             Span::styled(
                 " 05/22/2024 or 2024-03-22",
-                Style::default()
-                    .fg(Color::White)
+                Style::default().fg(Color::White),
             ),
         ]),
         Line::from(vec![
@@ -860,11 +806,7 @@ fn date_converter(
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled(
-                " 13:00:00 or 7:30:00 AM",
-                Style::default()
-                    .fg(Color::White)
-            ),
+            Span::styled(" 13:00:00 or 7:30:00 AM", Style::default().fg(Color::White)),
         ]),
     ];
 
@@ -882,201 +824,180 @@ fn date_converter(
 
     let converstion_chunks = Layout::default()
         .direction(Direction::Horizontal)
-        .constraints([
-            Constraint::Percentage(60),
-            Constraint::Percentage(40),
-        ])
+        .constraints([Constraint::Percentage(60), Constraint::Percentage(40)])
         .split(chunks[1]);
-    
+
     let converstion_chunks_first_split = Layout::default()
         .direction(Direction::Vertical)
-        .constraints([
-            Constraint::Percentage(50),
-            Constraint::Percentage(50),
-        ])
+        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(converstion_chunks[0]);
-    
+
     let converstion_chunks_second_split = Layout::default()
         .direction(Direction::Horizontal)
-        .constraints([
-            Constraint::Percentage(50),
-            Constraint::Percentage(50),
-        ])
+        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(converstion_chunks_first_split[0]);
-    
-    let rfc3339_text = vec![
-        Line::from(vec![Span::styled(app.date_converter.rfc3339.to_string(), Style::default().fg(Color::Green))]),
-        
-    ];
-    
+
+    let rfc3339_text = vec![Line::from(vec![Span::styled(
+        app.date_converter.rfc3339.to_string(),
+        Style::default().fg(Color::Green),
+    )])];
+
     let rfc3339 = Paragraph::new(rfc3339_text)
-    .style(
-        Style::default()
-            .add_modifier(Modifier::BOLD)
-            .fg(Color::Green),
-    )
-    .block(
-        Block::default()
-            .title(" RFC 3339 Conversion ")
-            .borders(Borders::ALL)
-            .border_type(BorderType::Rounded)
-            .padding(Padding::new(1, 1, 0, 0)),
-    )
-    .wrap(Wrap { trim: true });
+        .style(
+            Style::default()
+                .add_modifier(Modifier::BOLD)
+                .fg(Color::Green),
+        )
+        .block(
+            Block::default()
+                .title(" RFC 3339 Conversion ")
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 1, 0, 0)),
+        )
+        .wrap(Wrap { trim: true });
     f.render_widget(rfc3339, converstion_chunks_second_split[0]);
-    
-    let rfc2822_text = vec![
-        Line::from(vec![Span::styled(app.date_converter.rfc2822.to_string(), Style::default().fg(Color::Green))]),
-        
-    ];
-    
+
+    let rfc2822_text = vec![Line::from(vec![Span::styled(
+        app.date_converter.rfc2822.to_string(),
+        Style::default().fg(Color::Green),
+    )])];
+
     let rfc2822 = Paragraph::new(rfc2822_text)
-    .style(
-        Style::default()
-            .add_modifier(Modifier::BOLD)
-            .fg(Color::Green),
-    )
-    .block(
-        Block::default()
-            .title(" RFC 2822 Conversion ")
-            .borders(Borders::ALL)
-            .border_type(BorderType::Rounded)
-            .padding(Padding::new(1, 1, 0, 0)),
-    )
-    .wrap(Wrap { trim: true });
+        .style(
+            Style::default()
+                .add_modifier(Modifier::BOLD)
+                .fg(Color::Green),
+        )
+        .block(
+            Block::default()
+                .title(" RFC 2822 Conversion ")
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 1, 0, 0)),
+        )
+        .wrap(Wrap { trim: true });
     f.render_widget(rfc2822, converstion_chunks_second_split[1]);
-     
+
     let converstion_chunks_third_split = Layout::default()
         .direction(Direction::Vertical)
-        .constraints([
-            Constraint::Percentage(50),
-            Constraint::Percentage(50),
-        ])
-        
+        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(converstion_chunks[1]);
-    
-    let converstion_chunks_third_split_half = Layout::default()
-    .direction(Direction::Vertical)
-    .constraints([
-        Constraint::Percentage(50),
-        Constraint::Percentage(50),
-    ])
-    
-    .split(converstion_chunks_third_split[0]);
 
-    let timeonly_text = vec![
-        Line::from(vec![Span::styled(app.date_converter.time_only.to_string(), Style::default().fg(Color::Green))]),
-        
-    ];
+    let converstion_chunks_third_split_half = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
+        .split(converstion_chunks_third_split[0]);
+
+    let timeonly_text = vec![Line::from(vec![Span::styled(
+        app.date_converter.time_only.to_string(),
+        Style::default().fg(Color::Green),
+    )])];
 
     let timeonly = Paragraph::new(timeonly_text)
-    .style(
-        Style::default()
-            .add_modifier(Modifier::BOLD)
-            .fg(Color::Green),
-    )
-    .block(
-        Block::default()
-            .title(" Time Only Conversion ")
-            .borders(Borders::ALL)
-            .border_type(BorderType::Rounded)
-            .padding(Padding::new(1, 1, 0, 0)),
-    )
-    .wrap(Wrap { trim: true });
+        .style(
+            Style::default()
+                .add_modifier(Modifier::BOLD)
+                .fg(Color::Green),
+        )
+        .block(
+            Block::default()
+                .title(" Time Only Conversion ")
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 1, 0, 0)),
+        )
+        .wrap(Wrap { trim: true });
     f.render_widget(timeonly, converstion_chunks_third_split_half[0]);
 
-    let iso8601_text = vec![
-        Line::from(vec![Span::styled(app.date_converter.iso8601.to_string(), Style::default().fg(Color::Green))]),
-        
-    ];
+    let iso8601_text = vec![Line::from(vec![Span::styled(
+        app.date_converter.iso8601.to_string(),
+        Style::default().fg(Color::Green),
+    )])];
 
     let iso8601 = Paragraph::new(iso8601_text)
-    .style(
-        Style::default()
-            .add_modifier(Modifier::BOLD)
-            .fg(Color::Green),
-    )
-    .block(
-        Block::default()
-            .title(" ISO 8601 Conversion ")
-            .borders(Borders::ALL)
-            .border_type(BorderType::Rounded)
-            .padding(Padding::new(1, 1, 0, 0)),
-    )
-    .wrap(Wrap { trim: true });
+        .style(
+            Style::default()
+                .add_modifier(Modifier::BOLD)
+                .fg(Color::Green),
+        )
+        .block(
+            Block::default()
+                .title(" ISO 8601 Conversion ")
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 1, 0, 0)),
+        )
+        .wrap(Wrap { trim: true });
     f.render_widget(iso8601, converstion_chunks_third_split_half[1]);
-    
-    let unixtimestamp_text = vec![
-        Line::from(vec![Span::styled(app.date_converter.unix_timestamp.to_string(), Style::default().fg(Color::Green))]),
-        
-    ];
+
+    let unixtimestamp_text = vec![Line::from(vec![Span::styled(
+        app.date_converter.unix_timestamp.to_string(),
+        Style::default().fg(Color::Green),
+    )])];
 
     let unixtimestamp = Paragraph::new(unixtimestamp_text)
-    .style(
-        Style::default()
-            .add_modifier(Modifier::BOLD)
-            .fg(Color::Green),
-    )
-    .block(
-        Block::default()
-            .title(" Unix Conversion ")
-            .borders(Borders::ALL)
-            .border_type(BorderType::Rounded)
-            .padding(Padding::new(1, 1, 0, 0)),
-    )
-    .wrap(Wrap { trim: true });
+        .style(
+            Style::default()
+                .add_modifier(Modifier::BOLD)
+                .fg(Color::Green),
+        )
+        .block(
+            Block::default()
+                .title(" Unix Conversion ")
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 1, 0, 0)),
+        )
+        .wrap(Wrap { trim: true });
     f.render_widget(unixtimestamp, converstion_chunks_third_split[1]);
-    
+
     let converstion_chunks_fourth_split = Layout::default()
         .direction(Direction::Vertical)
-        .constraints([
-            Constraint::Percentage(50),
-            Constraint::Percentage(50),
-        ])
+        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(converstion_chunks_first_split[1]);
-    
-    let humanreadable_text = vec![
-        Line::from(vec![Span::styled(app.date_converter.human_readable.to_string(), Style::default().fg(Color::Green))]),
-        
-    ];
-    
+
+    let humanreadable_text = vec![Line::from(vec![Span::styled(
+        app.date_converter.human_readable.to_string(),
+        Style::default().fg(Color::Green),
+    )])];
+
     let humanreadable = Paragraph::new(humanreadable_text)
-    .style(
-        Style::default()
-            .add_modifier(Modifier::BOLD)
-            .fg(Color::Green),
-    )
-    .block(
-        Block::default()
-            .title(" Human Readable Conversion ")
-            .borders(Borders::ALL)
-            .border_type(BorderType::Rounded)
-            .padding(Padding::new(1, 1, 0, 0)),
-    )
-    .wrap(Wrap { trim: true });
+        .style(
+            Style::default()
+                .add_modifier(Modifier::BOLD)
+                .fg(Color::Green),
+        )
+        .block(
+            Block::default()
+                .title(" Human Readable Conversion ")
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 1, 0, 0)),
+        )
+        .wrap(Wrap { trim: true });
     f.render_widget(humanreadable, converstion_chunks_fourth_split[0]);
-    
-    let shordate_text = vec![
-        Line::from(vec![Span::styled(app.date_converter.short_date.to_string(), Style::default().fg(Color::Green))]),
-        
-    ];
-    
+
+    let shordate_text = vec![Line::from(vec![Span::styled(
+        app.date_converter.short_date.to_string(),
+        Style::default().fg(Color::Green),
+    )])];
+
     let shortdate = Paragraph::new(shordate_text)
-    .style(
-        Style::default()
-            .add_modifier(Modifier::BOLD)
-            .fg(Color::Green),
-    )
-    .block(
-        Block::default()
-            .title(" Short Date Conversion ")
-            .borders(Borders::ALL)
-            .border_type(BorderType::Rounded)
-            .padding(Padding::new(1, 1, 0, 0)),
-    )
-    .wrap(Wrap { trim: true });
+        .style(
+            Style::default()
+                .add_modifier(Modifier::BOLD)
+                .fg(Color::Green),
+        )
+        .block(
+            Block::default()
+                .title(" Short Date Conversion ")
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 1, 0, 0)),
+        )
+        .wrap(Wrap { trim: true });
     f.render_widget(shortdate, converstion_chunks_fourth_split[1]);
-        
 }
 
 fn hash_generator(
@@ -1092,10 +1013,7 @@ fn hash_generator(
 
     let input_guide_chunks = Layout::default()
         .direction(Direction::Vertical)
-        .constraints([
-            Constraint::Percentage(50),
-            Constraint::Percentage(50),
-        ])
+        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(chunks[0]);
 
     hash_generator_textarea.set_block(
@@ -1119,7 +1037,7 @@ fn hash_generator(
                     .add_modifier(Modifier::BOLD),
             ),
             Span::styled("       Quit", Style::default().fg(Color::White)),
-        ]), 
+        ]),
         Line::from(vec![
             Span::styled(
                 "Alt + x",
@@ -1127,9 +1045,12 @@ fn hash_generator(
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("   Export Generated Hash", Style::default().fg(Color::White)),
-        ]), 
-        Line::from(vec![Span::raw("")]), 
+            Span::styled(
+                "   Export Generated Hash",
+                Style::default().fg(Color::White),
+            ),
+        ]),
+        Line::from(vec![Span::raw("")]),
         Line::from(vec![
             Span::styled(
                 "Exported File Path:",
@@ -1152,22 +1073,16 @@ fn hash_generator(
         )
         .wrap(Wrap { trim: true });
     f.render_widget(guide, input_guide_chunks[1]);
-    
+
     let hash_output_chunks = Layout::default()
-    .direction(Direction::Vertical)
-    .constraints([
-        Constraint::Percentage(50),
-        Constraint::Percentage(50),
-    ])
-    .split(chunks[1]);
-    
+        .direction(Direction::Vertical)
+        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
+        .split(chunks[1]);
+
     let sha1_sha256_chunks = Layout::default()
-    .direction(Direction::Vertical)
-    .constraints([
-        Constraint::Percentage(50),
-        Constraint::Percentage(50),
-    ])
-    .split(hash_output_chunks[0]);
+        .direction(Direction::Vertical)
+        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
+        .split(hash_output_chunks[0]);
 
     let sha1 = Paragraph::new(app.hash_generator.get_sha1())
         .style(
@@ -1204,12 +1119,9 @@ fn hash_generator(
     f.render_widget(sha256, sha1_sha256_chunks[1]);
 
     let sha384_sha512_chunks = Layout::default()
-    .direction(Direction::Vertical)
-    .constraints([
-        Constraint::Percentage(50),
-        Constraint::Percentage(50),
-    ])
-    .split(hash_output_chunks[1]);
+        .direction(Direction::Vertical)
+        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
+        .split(hash_output_chunks[1]);
 
     let sha384 = Paragraph::new(app.hash_generator.get_sha384())
         .style(
@@ -1277,14 +1189,27 @@ fn number_base_converter(
     let guide_text = vec![
         Line::from(vec![Span::raw("")]),
         Line::from(vec![
-            Span::styled("Esc", Style::default().fg(Color::Blue).add_modifier(Modifier::BOLD)),
+            Span::styled(
+                "Esc",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
             Span::styled("       Quit", Style::default().fg(Color::White)),
         ]),
         Line::from(vec![
-            Span::styled("Alt + x", Style::default().fg(Color::Blue).add_modifier(Modifier::BOLD)),
-            Span::styled("   Export Generated Result", Style::default().fg(Color::White)),
+            Span::styled(
+                "Alt + x",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                "   Export Generated Result",
+                Style::default().fg(Color::White),
+            ),
         ]),
-        Line::from(vec![Span::raw("")]), 
+        Line::from(vec![Span::raw("")]),
         Line::from(vec![
             Span::styled(
                 "Exported File Path:",
@@ -1292,7 +1217,10 @@ fn number_base_converter(
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled(" export/number_conversion.txt", Style::default().fg(Color::White)),
+            Span::styled(
+                " export/number_conversion.txt",
+                Style::default().fg(Color::White),
+            ),
         ]),
     ];
 
@@ -1323,12 +1251,10 @@ fn number_base_converter(
         .split(chunks[1]);
 
     // Render individual conversion outputs
-    let binary_to_decimal_text = vec![
-        Line::from(vec![Span::styled(
-            app.number_base_converter.binary_to_decimal.to_string(),
-            Style::default().fg(Color::Green),
-        )]),
-    ];
+    let binary_to_decimal_text = vec![Line::from(vec![Span::styled(
+        app.number_base_converter.binary_to_decimal.to_string(),
+        Style::default().fg(Color::Green),
+    )])];
     let binary_to_decimal = Paragraph::new(binary_to_decimal_text)
         .style(
             Style::default()
@@ -1345,12 +1271,10 @@ fn number_base_converter(
         .wrap(Wrap { trim: true });
     f.render_widget(binary_to_decimal, output_chunks[0]);
 
-    let binary_to_hexadecimal_text = vec![
-        Line::from(vec![Span::styled(
-            app.number_base_converter.binary_to_hexadecimal.to_string(),
-            Style::default().fg(Color::Green),
-        )]),
-    ];
+    let binary_to_hexadecimal_text = vec![Line::from(vec![Span::styled(
+        app.number_base_converter.binary_to_hexadecimal.to_string(),
+        Style::default().fg(Color::Green),
+    )])];
     let binary_to_hexadecimal = Paragraph::new(binary_to_hexadecimal_text)
         .style(
             Style::default()
@@ -1367,12 +1291,10 @@ fn number_base_converter(
         .wrap(Wrap { trim: true });
     f.render_widget(binary_to_hexadecimal, output_chunks[1]);
 
-    let decimal_to_binary_text = vec![
-        Line::from(vec![Span::styled(
-            app.number_base_converter.decimal_to_binary.to_string(),
-            Style::default().fg(Color::Green),
-        )]),
-    ];
+    let decimal_to_binary_text = vec![Line::from(vec![Span::styled(
+        app.number_base_converter.decimal_to_binary.to_string(),
+        Style::default().fg(Color::Green),
+    )])];
     let decimal_to_binary = Paragraph::new(decimal_to_binary_text)
         .style(
             Style::default()
@@ -1389,12 +1311,10 @@ fn number_base_converter(
         .wrap(Wrap { trim: true });
     f.render_widget(decimal_to_binary, output_chunks[2]);
 
-    let decimal_to_hexadecimal_text = vec![
-        Line::from(vec![Span::styled(
-            app.number_base_converter.decimal_to_hexadecimal.to_string(),
-            Style::default().fg(Color::Green),
-        )]),
-    ];
+    let decimal_to_hexadecimal_text = vec![Line::from(vec![Span::styled(
+        app.number_base_converter.decimal_to_hexadecimal.to_string(),
+        Style::default().fg(Color::Green),
+    )])];
     let decimal_to_hexadecimal = Paragraph::new(decimal_to_hexadecimal_text)
         .style(
             Style::default()
@@ -1411,12 +1331,10 @@ fn number_base_converter(
         .wrap(Wrap { trim: true });
     f.render_widget(decimal_to_hexadecimal, output_chunks[3]);
 
-    let hexadecimal_to_binary_text = vec![
-        Line::from(vec![Span::styled(
-            app.number_base_converter.hexadecimal_to_binary.to_string(),
-            Style::default().fg(Color::Green),
-        )]),
-    ];
+    let hexadecimal_to_binary_text = vec![Line::from(vec![Span::styled(
+        app.number_base_converter.hexadecimal_to_binary.to_string(),
+        Style::default().fg(Color::Green),
+    )])];
     let hexadecimal_to_binary = Paragraph::new(hexadecimal_to_binary_text)
         .style(
             Style::default()
@@ -1433,12 +1351,10 @@ fn number_base_converter(
         .wrap(Wrap { trim: true });
     f.render_widget(hexadecimal_to_binary, output_chunks[4]);
 
-    let hexadecimal_to_decimal_text = vec![
-        Line::from(vec![Span::styled(
-            app.number_base_converter.hexadecimal_to_decimal.to_string(),
-            Style::default().fg(Color::Green),
-        )]),
-    ];
+    let hexadecimal_to_decimal_text = vec![Line::from(vec![Span::styled(
+        app.number_base_converter.hexadecimal_to_decimal.to_string(),
+        Style::default().fg(Color::Green),
+    )])];
     let hexadecimal_to_decimal = Paragraph::new(hexadecimal_to_decimal_text)
         .style(
             Style::default()
@@ -1530,10 +1446,7 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
 
     let settings_guide_chunks = Layout::default()
         .direction(Direction::Horizontal)
-        .constraints([
-            Constraint::Percentage(37), 
-            Constraint::Percentage(63), 
-        ])
+        .constraints([Constraint::Percentage(37), Constraint::Percentage(63)])
         .split(chunks[0]);
 
     let settings_widget = Paragraph::new(settings)
@@ -1555,7 +1468,6 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
     f.render_widget(settings_widget, settings_guide_chunks[0]);
 
     let guide_text = vec![
-        
         Line::from(vec![
             Span::styled(
                 "Esc",
@@ -1565,7 +1477,6 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
             ),
             Span::styled("   Quit", Style::default().fg(Color::White)),
         ]),
-        
         Line::from(vec![
             Span::styled(
                 "g",
@@ -1591,7 +1502,10 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("     Export Generated password", Style::default().fg(Color::White)),
+            Span::styled(
+                "     Export Generated password",
+                Style::default().fg(Color::White),
+            ),
         ]),
         Line::from(vec![
             Span::styled(
@@ -1600,7 +1514,10 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("     Increase Password Length", Style::default().fg(Color::White)),
+            Span::styled(
+                "     Increase Password Length",
+                Style::default().fg(Color::White),
+            ),
         ]),
         Line::from(vec![
             Span::styled(
@@ -1609,7 +1526,10 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("     Decrease Password Length", Style::default().fg(Color::White)),
+            Span::styled(
+                "     Decrease Password Length",
+                Style::default().fg(Color::White),
+            ),
         ]),
         Line::from(vec![
             Span::styled(
@@ -1618,7 +1538,10 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("     Generate Multiple passwords", Style::default().fg(Color::White)),
+            Span::styled(
+                "     Generate Multiple passwords",
+                Style::default().fg(Color::White),
+            ),
         ]),
         Line::from(vec![
             Span::styled(
@@ -1627,7 +1550,10 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("     Increase Password Quantity", Style::default().fg(Color::White)),
+            Span::styled(
+                "     Increase Password Quantity",
+                Style::default().fg(Color::White),
+            ),
         ]),
         Line::from(vec![
             Span::styled(
@@ -1636,7 +1562,10 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("     Decrease Password Quantity", Style::default().fg(Color::White)),
+            Span::styled(
+                "     Decrease Password Quantity",
+                Style::default().fg(Color::White),
+            ),
         ]),
         Line::from(vec![
             Span::styled(
@@ -1645,8 +1574,11 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("     Include Uppercase Characters", Style::default().fg(Color::White)),
-            Span::styled(" (e.g. ABCDE)", Style::default().fg(Color::Cyan))
+            Span::styled(
+                "     Include Uppercase Characters",
+                Style::default().fg(Color::White),
+            ),
+            Span::styled(" (e.g. ABCDE)", Style::default().fg(Color::Cyan)),
         ]),
         Line::from(vec![
             Span::styled(
@@ -1655,8 +1587,11 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("     Include Lowercase Characters", Style::default().fg(Color::White)),
-            Span::styled(" (e.g. abcde)", Style::default().fg(Color::Cyan))
+            Span::styled(
+                "     Include Lowercase Characters",
+                Style::default().fg(Color::White),
+            ),
+            Span::styled(" (e.g. abcde)", Style::default().fg(Color::Cyan)),
         ]),
         Line::from(vec![
             Span::styled(
@@ -1666,7 +1601,7 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .add_modifier(Modifier::BOLD),
             ),
             Span::styled("     Include Numbers", Style::default().fg(Color::White)),
-            Span::styled(" (e.g. 12345)", Style::default().fg(Color::Cyan))
+            Span::styled(" (e.g. 12345)", Style::default().fg(Color::Cyan)),
         ]),
         Line::from(vec![
             Span::styled(
@@ -1676,7 +1611,7 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .add_modifier(Modifier::BOLD),
             ),
             Span::styled("     Include Symbols", Style::default().fg(Color::White)),
-            Span::styled(" (e.g. !@#$%^", Style::default().fg(Color::Cyan))
+            Span::styled(" (e.g. !@#$%^", Style::default().fg(Color::Cyan)),
         ]),
         Line::from(vec![
             Span::styled(
@@ -1686,7 +1621,10 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .add_modifier(Modifier::BOLD),
             ),
             Span::styled("     Similar Characters", Style::default().fg(Color::White)),
-            Span::styled(" (e.g. i,l,L,o,0,O, etc.)", Style::default().fg(Color::Cyan))
+            Span::styled(
+                " (e.g. i,l,L,o,0,O, etc.)",
+                Style::default().fg(Color::Cyan),
+            ),
         ]),
         Line::from(vec![
             Span::styled(
@@ -1695,8 +1633,11 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("     Duplicate Characters", Style::default().fg(Color::White)),
-            Span::styled(" (e.g. pp, 11)", Style::default().fg(Color::Cyan))
+            Span::styled(
+                "     Duplicate Characters",
+                Style::default().fg(Color::White),
+            ),
+            Span::styled(" (e.g. pp, 11)", Style::default().fg(Color::Cyan)),
         ]),
         Line::from(vec![
             Span::styled(
@@ -1705,8 +1646,11 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("     Sequential Characters", Style::default().fg(Color::White)),
-            Span::styled(" (e.g. abc, 234)", Style::default().fg(Color::Cyan))
+            Span::styled(
+                "     Sequential Characters",
+                Style::default().fg(Color::White),
+            ),
+            Span::styled(" (e.g. abc, 234)", Style::default().fg(Color::Cyan)),
         ]),
         Line::from(vec![Span::raw("")]),
         Line::from(vec![
@@ -1718,9 +1662,7 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
             ),
             Span::styled(" export/password.txt", Style::default().fg(Color::White)),
         ]),
-        Line::from(vec![
-            Span::raw(""),
-        ]),
+        Line::from(vec![Span::raw("")]),
         Line::from(vec![
             Span::styled(
                 "Warning:",
@@ -1728,10 +1670,11 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::LightYellow)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled(" Multi password generator isn't working", Style::default().fg(Color::White)),
-            
+            Span::styled(
+                " Multi password generator isn't working",
+                Style::default().fg(Color::White),
+            ),
         ]),
-        
     ];
 
     let guide = Paragraph::new(guide_text)
@@ -1758,10 +1701,10 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                 .title(" Generated Password ")
                 .borders(Borders::ALL)
                 .border_type(BorderType::Rounded)
-                .padding(Padding::new(1, 1, 0, 0))
+                .padding(Padding::new(1, 1, 0, 0)),
         )
         .wrap(Wrap { trim: true });
-        
+
     f.render_widget(password, chunks[1]);
 }
 
@@ -1778,10 +1721,7 @@ fn qr_code_generator(
 
     let input_guide_chunks = Layout::default()
         .direction(Direction::Vertical)
-        .constraints([
-            Constraint::Percentage(50), 
-            Constraint::Percentage(50),
-        ])
+        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(chunks[0]);
 
     qr_code_generator_textarea.set_block(
@@ -1814,9 +1754,12 @@ fn qr_code_generator(
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("    Export Generated QR Code", Style::default().fg(Color::White)),
-        ]), 
-        Line::from(vec![Span::raw("")]), 
+            Span::styled(
+                "    Export Generated QR Code",
+                Style::default().fg(Color::White),
+            ),
+        ]),
+        Line::from(vec![Span::raw("")]),
         Line::from(vec![
             Span::styled(
                 "Exported File Path:",
@@ -1836,9 +1779,21 @@ fn qr_code_generator(
                     .fg(Color::Yellow)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled(" The file name for the QR image is created by taking ", Style::default().fg(Color::White)),
-            Span::styled("first ten characters", Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD).add_modifier(Modifier::UNDERLINED)),
-            Span::styled(" of the information you enter in the input field.", Style::default().fg(Color::White)),
+            Span::styled(
+                " The file name for the QR image is created by taking ",
+                Style::default().fg(Color::White),
+            ),
+            Span::styled(
+                "first ten characters",
+                Style::default()
+                    .fg(Color::Yellow)
+                    .add_modifier(Modifier::BOLD)
+                    .add_modifier(Modifier::UNDERLINED),
+            ),
+            Span::styled(
+                " of the information you enter in the input field.",
+                Style::default().fg(Color::White),
+            ),
         ]),
     ];
 
@@ -1878,44 +1833,36 @@ fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
         .constraints([Constraint::Percentage(30), Constraint::Percentage(70)].as_ref())
         .split(area);
 
-        let settings_guide_chunks = Layout::default()
-            .direction(Direction::Vertical)
-            .constraints([
-                Constraint::Percentage(20),
-                Constraint::Percentage(80),
-            ])
-            .split(chunks[0]);
-    
+    let settings_guide_chunks = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([Constraint::Percentage(20), Constraint::Percentage(80)])
+        .split(chunks[0]);
 
-        let settings = vec![
-            Line::from(vec![
-                Span::raw("Number of UUID: "),
-                Span::styled(
-                    app.uuid_generator.length.to_string(),
-                    Style::default().fg(Color::Yellow),
-                ),
-            ]),
-        ];
+    let settings = vec![Line::from(vec![
+        Span::raw("Number of UUID: "),
+        Span::styled(
+            app.uuid_generator.length.to_string(),
+            Style::default().fg(Color::Yellow),
+        ),
+    ])];
 
-        let settings_widget = Paragraph::new(settings)
-            .block(
-                Block::default()
-                    .title(" Settings ")
-                    .borders(Borders::ALL)
-                    .border_type(BorderType::Rounded)
-                    .padding(Padding::new(1, 0, 0, 0)),
-            )
-            .wrap(Wrap { trim: true })
-            .scroll((0, 0))
-            .style(
-                Style::default()
-                    .add_modifier(Modifier::BOLD)
-                    .fg(Color::Yellow),
-            );
-    
-        f.render_widget(settings_widget, settings_guide_chunks[0]);
+    let settings_widget = Paragraph::new(settings)
+        .block(
+            Block::default()
+                .title(" Settings ")
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 0, 0, 0)),
+        )
+        .wrap(Wrap { trim: true })
+        .scroll((0, 0))
+        .style(
+            Style::default()
+                .add_modifier(Modifier::BOLD)
+                .fg(Color::Yellow),
+        );
 
-    
+    f.render_widget(settings_widget, settings_guide_chunks[0]);
 
     let guide_text = vec![
         Line::from(vec![Span::raw("")]),
@@ -1928,7 +1875,6 @@ fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
             ),
             Span::styled("   Quit", Style::default().fg(Color::White)),
         ]),
-        
         Line::from(vec![
             Span::styled(
                 "s",
@@ -1936,7 +1882,10 @@ fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("     Generate single UUID", Style::default().fg(Color::White)),
+            Span::styled(
+                "     Generate single UUID",
+                Style::default().fg(Color::White),
+            ),
         ]),
         Line::from(vec![
             Span::styled(
@@ -1945,7 +1894,10 @@ fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("     Generate multiple UUIDs", Style::default().fg(Color::White)),
+            Span::styled(
+                "     Generate multiple UUIDs",
+                Style::default().fg(Color::White),
+            ),
         ]),
         Line::from(vec![
             Span::styled(
@@ -1954,7 +1906,10 @@ fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("     Increase number of UUIDs", Style::default().fg(Color::White)),
+            Span::styled(
+                "     Increase number of UUIDs",
+                Style::default().fg(Color::White),
+            ),
         ]),
         Line::from(vec![
             Span::styled(
@@ -1963,7 +1918,10 @@ fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("     Decrease number of UUIDs", Style::default().fg(Color::White)),
+            Span::styled(
+                "     Decrease number of UUIDs",
+                Style::default().fg(Color::White),
+            ),
         ]),
         Line::from(vec![
             Span::styled(
@@ -1972,7 +1930,10 @@ fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("     Export Generated UUIDs", Style::default().fg(Color::White)),
+            Span::styled(
+                "     Export Generated UUIDs",
+                Style::default().fg(Color::White),
+            ),
         ]),
         Line::from(vec![Span::raw("")]),
         Line::from(vec![
@@ -2009,10 +1970,8 @@ fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
             Block::default()
                 .borders(Borders::ALL)
                 .title(" Version 4 UUID ")
-                
                 .border_type(BorderType::Rounded)
-                .padding(Padding::new(1, 0, 0, 0))
+                .padding(Padding::new(1, 0, 0, 0)),
         );
     f.render_widget(version_4_uuid, chunks[1]);
-
 }
