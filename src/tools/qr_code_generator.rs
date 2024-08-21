@@ -44,7 +44,9 @@ impl QRCodeGenerator {
     pub fn get_qr_string(&self) -> String {
         match &self.qr_code {
             Some(qr) => qr.render::<unicode::Dense1x2>().quiet_zone(false).build(),
-            None => String::from("No QR code generated yet"),
+            None => String::from(
+                "No QR code generated yet, Please enter the data in the input field to create one.",
+            ),
         }
     }
 }
