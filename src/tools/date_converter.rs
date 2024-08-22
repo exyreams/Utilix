@@ -1,6 +1,7 @@
 use chrono::{DateTime, Datelike, NaiveDateTime, TimeZone, Utc};
 use std::i32;
 
+/// Struct for converting dates between different formats.
 pub struct DateConverter {
     pub input: String,
     pub rfc3339: String,
@@ -13,6 +14,7 @@ pub struct DateConverter {
 }
 
 impl DateConverter {
+    /// Creates a new instance of `DateConverter`.
     pub fn new() -> Self {
         DateConverter {
             input: String::new(),
@@ -26,6 +28,7 @@ impl DateConverter {
         }
     }
 
+    /// Convert the `input` date string to all supported formats.
     pub fn convert_all(&mut self) {
         let parsed_datetime = self.parse_input();
         match parsed_datetime {
@@ -34,6 +37,8 @@ impl DateConverter {
         }
     }
 
+    /// Parses the `input` string into a `DateTime<Utc>` object.
+    /// Returns an error message if parsing fails.
     fn parse_input(&self) -> Result<DateTime<Utc>, String> {
         if let Ok(timestamp) = self.input.parse::<i64>() {
             if timestamp < i32::MIN as i64 || timestamp > i32::MAX as i64 {
@@ -66,6 +71,7 @@ impl DateConverter {
         Err("Unrecognized date-time format".to_string())
     }
 
+    /// Converts `DateTime<Utc>` object to all supported formats.
     fn convert_from_datetime(&mut self, datetime: DateTime<Utc>) {
         self.convert_to_rfc3339(datetime);
         self.convert_to_rfc2822(datetime);
@@ -76,34 +82,42 @@ impl DateConverter {
         self.convert_to_timeonly(datetime);
     }
 
+    /// Converts the given datetime to RFC3339 format.
     fn convert_to_rfc3339(&mut self, datetime: DateTime<Utc>) {
         self.rfc3339 = datetime.to_rfc3339();
     }
 
+    /// Converts the given datetime to RFC2822 format.
     fn convert_to_rfc2822(&mut self, datetime: DateTime<Utc>) {
         self.rfc2822 = datetime.to_rfc2822();
     }
 
+    /// Converts the given datetime to ISO8601 format.
     fn convert_to_iso8601(&mut self, datetime: DateTime<Utc>) {
         self.iso8601 = datetime.format("%Y-%m-%dT%H:%M:%S%:z").to_string();
     }
 
+    /// Converts the given datetime to Unix timestamp (integer).
     fn convert_to_unixtimestamp(&mut self, datetime: DateTime<Utc>) {
         self.unix_timestamp = datetime.timestamp().to_string();
     }
 
+    /// Converts the given datetime to a human-readable format.
     fn convert_to_humanreadable(&mut self, datetime: DateTime<Utc>) {
         self.human_readable = datetime.format("%A, %B %d, %Y %I:%M:%S %p").to_string();
     }
 
+    /// Converts the given datetime to a short date format.
     fn convert_to_shortdate(&mut self, datetime: DateTime<Utc>) {
         self.short_date = datetime.format("%d/%m/%Y").to_string();
     }
 
+    /// Converts the given datetime to a time-only format.
     fn convert_to_timeonly(&mut self, datetime: DateTime<Utc>) {
         self.time_only = datetime.format("%H:%M:%S").to_string();
     }
 
+    /// Sets all output fields to the provided error message.
     fn set_all_to(&mut self, message: &str) {
         self.rfc3339 = message.to_string();
         self.rfc2822 = message.to_string();

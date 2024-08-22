@@ -6,6 +6,7 @@ use std::fs::{create_dir_all, File};
 use std::io::Write;
 use std::path::Path;
 
+/// Struct to generate secure random passwords with customizable options.
 pub struct PasswordGenerator {
     pub length: usize,
     pub use_uppercase: bool,
@@ -39,10 +40,12 @@ impl Default for PasswordGenerator {
 }
 
 impl PasswordGenerator {
+    /// Creates a new instance of `PasswordGenerator` with default settings.
     pub fn new() -> Self {
         Default::default()
     }
 
+    /// Generates a single password based on the current settings.
     pub fn generate_password(&mut self) -> Result<(), String> {
         let mut rng = thread_rng();
         let mut charset: Vec<char> = Vec::new();
@@ -64,11 +67,14 @@ impl PasswordGenerator {
             return Err("Charset is empty".to_string());
         }
 
+        // Generate password
         self.generated_password = (0..self.length)
             .map(|_| {
+                // Generate random index within the charset
                 let mut idx = rng.gen_range(0..charset.len());
                 let mut char_to_add = charset[idx];
 
+                // If duplicate characters are not allowed, loop until a unique character is found
                 if !self.use_duplicate_characters {
                     while self.generated_password.contains(char_to_add) {
                         idx = rng.gen_range(0..charset.len());
@@ -76,6 +82,7 @@ impl PasswordGenerator {
                     }
                 }
 
+                // If sequential characters are not allowed, loop until a non-sequential character is found
                 if !self.use_sequential_characters && !self.generated_password.is_empty() {
                     let last_char = self.generated_password.chars().last().unwrap();
                     while (char_to_add as i32 == last_char as i32 + 1)
@@ -86,13 +93,14 @@ impl PasswordGenerator {
                     }
                 }
 
+                // If similar characters are not allowed, loop until a dissimilar character is found
                 if !self.use_similar_characters {
                     while self.similar_characters.contains(&char_to_add) {
                         idx = rng.gen_range(0..charset.len());
                         char_to_add = charset[idx];
                     }
                 }
-
+                // Return the chosen character
                 char_to_add
             })
             .collect();
@@ -162,6 +170,7 @@ impl PasswordGenerator {
         self.quantity = self.quantity.saturating_sub(1).max(1);
     }
 
+    /// Exports the generated password to a file.
     pub fn write_to_file(&self) -> std::io::Result<()> {
         let file_path = Path::new("export/password.txt");
         if let Some(parent) = file_path.parent() {

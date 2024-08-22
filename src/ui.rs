@@ -12,6 +12,10 @@ use ratatui::{
 use std::io;
 use tui_textarea::{CursorMove, Input, Key, TextArea};
 
+/// Runs the main application loop, handling user input and rendering the User Interface.
+///
+/// This function is responsible for managing the interaction between the user,
+/// the terminal, and the various tools available in the application.
 pub fn run_app<B: Backend>(
     terminal: &mut Terminal<B>,
     mut app: App,
@@ -21,32 +25,39 @@ pub fn run_app<B: Backend>(
     number_base_converter_textarea: &mut TextArea,
     qr_code_generator_textarea: &mut TextArea,
 ) -> io::Result<()> {
+    // Start an infinite loop, continuously handling user input and redrawing the User Interface.
     loop {
+        // Draw application UI.
         terminal.draw(|f| {
             ui(
-                f,
-                &mut app,
-                base64_converter_textarea,
-                date_converter_textarea,
-                hash_generator_textarea,
-                number_base_converter_textarea,
-                qr_code_generator_textarea,
+                f,                              // A mutable reference to the terminal's frame.
+                &mut app,                       // A mutable reference to the application state.
+                base64_converter_textarea,      // Text area for base64 conversion.
+                date_converter_textarea,        // Text area for date conversion.
+                hash_generator_textarea,        // Text area for hash generation.
+                number_base_converter_textarea, // Text area for number base conversion.
+                qr_code_generator_textarea,     // Text area for QR code generation.
             )
         })?;
 
+        // Read the next user input event (keyboard, mouse).
         match crossterm::event::read()? {
+            // Handle keyboard inputs
             crossterm::event::Event::Key(key) => {
+                // Create an input object representing the keyboard key press.
                 let input = match key.code {
                     KeyCode::Char(c) => Input {
-                        key: Key::Char(c),
-                        ..Default::default()
+                        key: Key::Char(c),    // Convert the character code into a Key::Char variant.
+                        ..Default::default() // Initialize remaining input fields with their defaults.
                     },
 
+                    // Handle Esc key to quit the application.
                     KeyCode::Esc => Input {
                         key: Key::Esc,
                         ..Default::default()
                     },
 
+                    // Switch between different tools using the Tab key.
                     KeyCode::Tab => {
                         app.current_tool = match app.current_tool {
                             Tool::Base64Encoder => Tool::DateConverter,
@@ -57,10 +68,13 @@ pub fn run_app<B: Backend>(
                             Tool::QRCodeGenerator => Tool::UuidGenerator,
                             Tool::UuidGenerator => Tool::Base64Encoder,
                         };
+                        // Skip processing of other input events this time as switching tools is a dedicated action.
                         continue;
                     }
 
+                    // Handle Left, Right, Up, and Down keys to move cursor.
                     KeyCode::Left => {
+                        // Handle Ctrl + Left Arrow to move cursor word back.
                         if key.modifiers.contains(KeyModifiers::CONTROL) {
                             base64_converter_textarea
                                 .move_cursor(tui_textarea::CursorMove::WordBack);
@@ -70,6 +84,7 @@ pub fn run_app<B: Backend>(
                             hash_generator_textarea.move_cursor(tui_textarea::CursorMove::WordBack);
                             qr_code_generator_textarea
                                 .move_cursor(tui_textarea::CursorMove::WordBack);
+                        // Handle Shift + Left Arrow to select the entire line (to the left).
                         } else if key.modifiers.contains(KeyModifiers::SHIFT) {
                             base64_converter_textarea.move_cursor(CursorMove::Head);
                             base64_converter_textarea.start_selection();
@@ -90,6 +105,7 @@ pub fn run_app<B: Backend>(
                             qr_code_generator_textarea.move_cursor(CursorMove::Head);
                             qr_code_generator_textarea.start_selection();
                             qr_code_generator_textarea.move_cursor(CursorMove::End);
+                        // Handle normal Left Arrow to move cursor back one character.
                         } else {
                             base64_converter_textarea.move_cursor(tui_textarea::CursorMove::Back);
                             base64_converter_textarea.cancel_selection();
@@ -107,9 +123,12 @@ pub fn run_app<B: Backend>(
                             qr_code_generator_textarea.move_cursor(tui_textarea::CursorMove::Back);
                             qr_code_generator_textarea.cancel_selection();
                         }
+                        // Continue the loop as cursor movement is a continuous action.
                         continue;
                     }
 
+                    // Handle Right, Up, and Down arrow keys similar to Left Arrow,
+                    //  but for corresponding directions.
                     KeyCode::Right => {
                         if key.modifiers.contains(KeyModifiers::CONTROL) {
                             base64_converter_textarea
@@ -186,6 +205,7 @@ pub fn run_app<B: Backend>(
                         continue;
                     }
 
+                    // Handle Enter key to insert a newline character.
                     KeyCode::Enter => {
                         base64_converter_textarea.insert_newline();
                         date_converter_textarea.insert_newline();
@@ -195,6 +215,7 @@ pub fn run_app<B: Backend>(
                         continue;
                     }
 
+                    // Handle Backspace key to delete the previous character.
                     KeyCode::Backspace => {
                         base64_converter_textarea.delete_char();
                         date_converter_textarea.delete_char();
@@ -204,6 +225,7 @@ pub fn run_app<B: Backend>(
                         continue;
                     }
 
+                    // Handle Delete key to delete the next character.
                     KeyCode::Delete => {
                         base64_converter_textarea.delete_next_char();
                         date_converter_textarea.delete_next_char();
@@ -212,87 +234,124 @@ pub fn run_app<B: Backend>(
                         qr_code_generator_textarea.insert_newline();
                         continue;
                     }
-                    _ => continue,
+                    _ => continue, // Continue loop if input is not recognized.
                 };
 
+                // Process keyboard input based on the current selected tool.
                 match input.key {
-                    Key::Esc => return Ok(()),
+                    Key::Esc => return Ok(()), // Exit the application if Esc key is pressed.
 
                     Key::Char(c) => match app.current_tool {
+                        //  Handles functionality for Base64 Encoder
                         Tool::Base64Encoder => {
+                            // Only insert characters if ALT and CTRL are not pressed, this
+                            // prevents inserting of characters in the text area that shortcuts
+                            // for eg. if Alt + e is pressed it will not capture character "e"
+                            // and add it on the Text area/Input Field.
                             if !key.modifiers.contains(KeyModifiers::ALT)
                                 && !key.modifiers.contains(KeyModifiers::CONTROL)
                             {
                                 base64_converter_textarea.insert_char(c);
                             }
 
+                            //  Automatically insert newlines for better readability in base64 output (every 84 characters)
                             if base64_converter_textarea.lines().join("\n").len() % 84 == 0 {
                                 base64_converter_textarea.insert_newline();
                             }
 
+                            // Shortcut Key (Alt + e) to Encode the input.
                             if key.modifiers.contains(KeyModifiers::ALT) && c == 'e' {
                                 app.base64_encoder.input =
                                     base64_converter_textarea.lines().join("\n");
                                 app.base64_encoder.encode();
+                            // Shortcut Key (Alt + d) to Decode the input.
                             } else if key.modifiers.contains(KeyModifiers::ALT) && c == 'd' {
                                 app.base64_encoder.input =
                                     base64_converter_textarea.lines().join("\n");
                                 app.base64_encoder.decode();
+                            // Shortcut Key (Alt + x) to Export encoded/decoded output.
                             } else if key.modifiers.contains(KeyModifiers::ALT) && c == 'x' {
                                 let _ = app.base64_encoder.write_to_file();
                             } else if !key.modifiers.contains(KeyModifiers::ALT)
                                 && !key.modifiers.contains(KeyModifiers::SHIFT)
+                            // Starts encoding/decoding automatically when Text area has input.
                             {
                                 app.base64_encoder.input =
-                                    base64_converter_textarea.lines().join("");
+                                    base64_converter_textarea.lines().join("\n");
                                 app.base64_encoder.encode();
                                 app.base64_encoder.decode();
                             }
                         }
 
+                        //  Handles functionality for Date Converter
                         Tool::DateConverter => {
-                            date_converter_textarea.insert_char(c);
+                            // Only insert characters if ALT and CTRL are not pressed, this
+                            // prevents inserting of characters in the text area that shortcuts
+                            // for eg. if Alt + e is pressed it will not capture character "e"
+                            // and add it on the Text area/Input Field.
+                            if !key.modifiers.contains(KeyModifiers::ALT)
+                                && !key.modifiers.contains(KeyModifiers::CONTROL)
+                            {
+                                date_converter_textarea.insert_char(c);
+                            }
 
+                            // Automatically insert newlines for better readability in date output (every 50 characters).
                             if date_converter_textarea.lines().join("\n").len() % 50 == 0 {
                                 date_converter_textarea.insert_newline();
                             }
-
+                            // Update the date converter's input with the text from the TextArea.
                             app.date_converter.input = date_converter_textarea.lines().join("\n");
+                            // Automatically Convert the input date to all supported formats.
                             app.date_converter.convert_all();
                         }
 
+                        //  Handles functionality for Hash Generator
                         Tool::HashGenerator => {
+                            // Only insert characters if ALT and CTRL are not pressed, this
+                            // prevents inserting of characters in the text area that shortcuts
+                            // for eg. if Alt + e is pressed it will not capture character "e"
+                            // and add it on the Text area/Input Field.
                             if !key.modifiers.contains(KeyModifiers::ALT)
                                 && !key.modifiers.contains(KeyModifiers::CONTROL)
                             {
                                 hash_generator_textarea.insert_char(c);
                             }
 
+                            //  Automatically insert newlines for better readability in hash output (every 62 characters).
                             if hash_generator_textarea.lines().join("\n").len() % 62 == 0 {
                                 hash_generator_textarea.insert_newline();
                             }
 
+                            // Shortcut Key (Alt + x) to Export generated hashes.
                             if key.modifiers.contains(KeyModifiers::ALT) && c == 'x' {
                                 let _ = app.hash_generator.write_to_file();
+                            // If ALT is not pressed, update the input string and calculate hashes.
                             } else if !key.modifiers.contains(KeyModifiers::ALT) {
                                 let new_input = hash_generator_textarea.lines().join("\n");
                                 app.hash_generator.update_input(&new_input);
                             }
                         }
 
+                        //  Handles functionality for Number base converter.
                         Tool::NumberBaseConverter => {
+                            // Only insert characters if ALT and CTRL are not pressed, this
+                            // prevents inserting of characters in the text area that shortcuts
+                            // for eg. if Alt + e is pressed it will not capture character "e"
+                            // and add it on the Text area/Input Field.
                             if !key.modifiers.contains(KeyModifiers::ALT)
                                 && !key.modifiers.contains(KeyModifiers::CONTROL)
                             {
                                 number_base_converter_textarea.insert_char(c);
                             }
-
+                            //  Automatically insert newlines for better readability in number conversion output (every 50 characters).
                             if number_base_converter_textarea.lines().join("\n").len() % 50 == 0 {
                                 number_base_converter_textarea.insert_newline();
                             }
 
+                            // Shortcut Key (Alt + x) to Export number base conversions.
                             if key.modifiers.contains(KeyModifiers::ALT) && c == 'x' {
                                 let _ = app.number_base_converter.write_to_file();
+                            // Starts number conversion automatically, when input/Text area have characters.
                             } else if !key.modifiers.contains(KeyModifiers::ALT)
                                 && !key.modifiers.contains(KeyModifiers::SHIFT)
                             {
@@ -301,7 +360,12 @@ pub fn run_app<B: Backend>(
                                 app.number_base_converter.convert();
                             }
                         }
+
+                        //  Handles functionality for password generator.
                         Tool::PasswordGenerator => match c {
+                            // Shortcut Keys, Character mapped to each respective functionality i.e
+                            // generate, increase/decrease length, toggle uppercase/lowercase/symbols
+                            // toggle similar characters/duplicate characters, clearing etc.
                             'g' => {
                                 let _ = app.password_generator.generate_password();
                             }
@@ -350,25 +414,34 @@ pub fn run_app<B: Backend>(
                             _ => {}
                         },
 
+                        //  Handles functionality for QR Code generator.
                         Tool::QRCodeGenerator => {
+                            // Only insert characters if ALT and CTRL are not pressed, this
+                            // prevents inserting of characters in the text area that shortcuts
+                            // for eg. if Alt + e is pressed it will not capture character "e"
+                            // and add it on the Text area/Input Field.
                             if !key.modifiers.contains(KeyModifiers::ALT)
                                 && !key.modifiers.contains(KeyModifiers::CONTROL)
                             {
                                 qr_code_generator_textarea.insert_char(c);
                             }
 
+                            // Automatically insert newlines for better readability in QR code input (every 68 characters).
                             if qr_code_generator_textarea.lines().join("\n").len() % 68 == 0 {
                                 qr_code_generator_textarea.insert_newline();
                             }
 
+                            // Shortcut Key (Alt + q) to generate qrcode, it autogenerate doesn't work.
                             if key.modifiers.contains(KeyModifiers::ALT) && c == 'q' {
                                 app.qr_code_generator.input =
                                     qr_code_generator_textarea.lines().join("\n");
                                 app.qr_code_generator.generate_qr_code();
+                            // Shortcut Key (Alt + x) to Export generated qrcode.
                             } else if key.modifiers.contains(KeyModifiers::ALT) && c == 'x' {
                                 if let Err(e) = app.qr_code_generator.export_qr_code() {
                                     eprintln!("Failed to export QR code: {}", e);
                                 }
+                            // Starts number conversion automatically, when input/Text area have characters.
                             } else if !key.modifiers.contains(KeyModifiers::ALT) {
                                 app.qr_code_generator.input =
                                     qr_code_generator_textarea.lines().join("\n");
@@ -376,7 +449,10 @@ pub fn run_app<B: Backend>(
                             }
                         }
 
+                        //  Handles functionality for UUID generator.
                         Tool::UuidGenerator => match c {
+                            // Shortcut Keys, Character mapped to each respective functionality i.e
+                            // v4 generations, clear, increase/decrease length
                             's' => {
                                 app.uuid_generator.generate_v4_uuid();
                             }
@@ -398,14 +474,17 @@ pub fn run_app<B: Backend>(
                             _ => {}
                         },
                     },
+                    //  If no input matches the recognized above inputs for a given tool -  do nothing.
                     _ => {}
                 }
             }
-            _ => continue,
+            _ => continue, // Ignore events other than keyboard input.
         }
     }
 }
 
+// Renders the user interface based on the selected tool and app state.
+// Takes the frame, application state, and the input text areas for different tools as arguments.
 fn ui(
     f: &mut Frame,
     app: &mut App,
@@ -493,6 +572,7 @@ fn ui(
     }
 }
 
+// Renders the UI for Base64 encoding and decoding
 fn base64_encoder(
     f: &mut Frame,
     app: &mut App,
@@ -569,7 +649,7 @@ fn base64_encoder(
             ),
             Span::styled("         Export Generated Hash", Style::default().fg(Color::White)),
         ]),
-        Line::from(vec![Span::raw("")]), 
+        Line::from(vec![Span::raw("")]),
         Line::from(vec![
             Span::styled(
                 "Exported File Path:",
@@ -579,7 +659,7 @@ fn base64_encoder(
             ),
             Span::styled("   export/base64.txt", Style::default().fg(Color::White)),
         ]),
-        Line::from(vec![Span::raw("")]), 
+        Line::from(vec![Span::raw("")]),
         Line::from(vec![
             Span::styled(
                 "Note:",
@@ -649,6 +729,7 @@ fn base64_encoder(
     f.render_widget(decoded, encoded_decoded_chunks[1]);
 }
 
+// Renders the UI for date converter
 fn date_converter(
     f: &mut Frame,
     app: &mut App,
@@ -1000,6 +1081,7 @@ fn date_converter(
     f.render_widget(shortdate, converstion_chunks_fourth_split[1]);
 }
 
+// Renders the UI for hash generator
 fn hash_generator(
     f: &mut Frame,
     app: &mut App,
@@ -1158,6 +1240,7 @@ fn hash_generator(
     f.render_widget(sha512, sha384_sha512_chunks[1]);
 }
 
+// Renders the UI for number base conversion
 fn number_base_converter(
     f: &mut Frame,
     app: &mut App,
@@ -1372,6 +1455,7 @@ fn number_base_converter(
     f.render_widget(hexadecimal_to_decimal, output_chunks[5]);
 }
 
+// Renders the UI for password generator
 fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
     let chunks = Layout::default()
         .direction(Direction::Horizontal)
@@ -1708,6 +1792,7 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
     f.render_widget(password, chunks[1]);
 }
 
+// Renders the UI for qrcode generator
 fn qr_code_generator(
     f: &mut Frame,
     app: &mut App,
@@ -1827,6 +1912,7 @@ fn qr_code_generator(
     f.render_widget(output, chunks[1]);
 }
 
+// Renders the UI for uuid generator
 fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
     let chunks = Layout::default()
         .direction(Direction::Horizontal)

@@ -4,6 +4,7 @@ use std::fs::{create_dir_all, File};
 use std::io::Write;
 use std::path::Path;
 
+/// Struct to encapsulate base64 encoding and decoding functionality.
 pub struct Base64Encoder {
     pub input: String,
     pub encoded: String,
@@ -11,6 +12,7 @@ pub struct Base64Encoder {
 }
 
 impl Base64Encoder {
+    /// Creates a new instance of `Base64Encoder`.
     pub fn new() -> Self {
         Base64Encoder {
             input: String::new(),
@@ -19,10 +21,12 @@ impl Base64Encoder {
         }
     }
 
+    /// Encodes the `input` string using base64.
     pub fn encode(&mut self) {
         self.encoded = general_purpose::STANDARD.encode(&self.input);
     }
 
+    /// Decodes the `input` string from base64.
     pub fn decode(&mut self) {
         match general_purpose::STANDARD.decode(&self.input) {
             Ok(decoded_bytes) => {
@@ -34,6 +38,7 @@ impl Base64Encoder {
         }
     }
 
+    /// export the encoded and decoded strings to a file.
     pub fn write_to_file(&self) -> std::io::Result<()> {
         let file_path = Path::new("export/base64.txt");
         if let Some(parent) = file_path.parent() {

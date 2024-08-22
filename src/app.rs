@@ -4,6 +4,7 @@ use crate::tools::{
     qr_code_generator::QRCodeGenerator, uuid_generator::UuidGenerator,
 };
 
+/// An enum representing the different tools available in the application.
 #[derive(PartialEq)]
 pub enum Tool {
     Base64Encoder,
@@ -15,6 +16,7 @@ pub enum Tool {
     UuidGenerator,
 }
 
+/// The main application struct.
 pub struct App {
     pub current_tool: Tool,
     pub base64_encoder: Base64Encoder,
@@ -27,6 +29,7 @@ pub struct App {
 }
 
 impl App {
+    /// Creates a new instance of `App` with all tools initialized.
     pub fn new() -> App {
         App {
             current_tool: Tool::Base64Encoder,

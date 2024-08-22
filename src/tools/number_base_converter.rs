@@ -2,6 +2,7 @@ use std::fs::{create_dir_all, File};
 use std::io::Write;
 use std::path::Path;
 
+/// Struct to perform number base conversions.
 pub struct NumberBaseConverter {
     pub input: String,
     pub base_from: u32,
@@ -16,6 +17,7 @@ pub struct NumberBaseConverter {
 }
 
 impl NumberBaseConverter {
+    /// Creates a new instance of `NumberBaseConverter`.
     pub fn new() -> Self {
         NumberBaseConverter {
             input: String::new(),
@@ -31,6 +33,7 @@ impl NumberBaseConverter {
         }
     }
 
+    /// Performs the number base conversion based on `base_from` and `base_to`.
     pub fn convert(&mut self) {
         self.result = match (self.base_from, self.base_to) {
             (2, 10) => self.binary_to_decimal(),
@@ -42,6 +45,7 @@ impl NumberBaseConverter {
             _ => "Unsupported conversion".to_string(),
         };
 
+        // Perform conversions between various number bases (regardless of the initial conversion).
         self.binary_to_decimal = self.binary_to_decimal();
         self.binary_to_hexadecimal = self.binary_to_hexadecimal();
         self.decimal_to_binary = self.decimal_to_binary();
@@ -50,18 +54,21 @@ impl NumberBaseConverter {
         self.hexadecimal_to_decimal = self.hexadecimal_to_decimal();
     }
 
+    /// Converts a binary number to decimal.
     fn binary_to_decimal(&self) -> String {
         u64::from_str_radix(&self.input, 2)
             .map(|n| n.to_string())
             .unwrap_or_else(|_| "Invalid binary number".to_string())
     }
 
+    /// Converts a binary number to hexadecimal.
     fn binary_to_hexadecimal(&self) -> String {
         u64::from_str_radix(&self.input, 2)
             .map(|n| format!("{:X}", n))
             .unwrap_or_else(|_| "Invalid binary number".to_string())
     }
 
+    /// Converts a decimal number to binary.
     fn decimal_to_binary(&self) -> String {
         self.input
             .parse::<u64>()
@@ -69,6 +76,7 @@ impl NumberBaseConverter {
             .unwrap_or_else(|_| "Invalid decimal number".to_string())
     }
 
+    /// Converts a decimal number to hexadecimal.
     fn decimal_to_hexadecimal(&self) -> String {
         self.input
             .parse::<u64>()
@@ -76,18 +84,21 @@ impl NumberBaseConverter {
             .unwrap_or_else(|_| "Invalid decimal number".to_string())
     }
 
+    /// Converts a hexadecimal number to binary.
     fn hexadecimal_to_binary(&self) -> String {
         u64::from_str_radix(&self.input, 16)
             .map(|n| format!("{:b}", n))
             .unwrap_or_else(|_| "Invalid hexadecimal number".to_string())
     }
 
+    /// Converts a hexadecimal number to decimal.
     fn hexadecimal_to_decimal(&self) -> String {
         u64::from_str_radix(&self.input, 16)
             .map(|n| n.to_string())
             .unwrap_or_else(|_| "Invalid hexadecimal number".to_string())
     }
 
+    /// Exports the conversion results and create a file.
     pub fn write_to_file(&self) -> std::io::Result<()> {
         let file_path = Path::new("export/number_conversion.txt");
         if let Some(parent) = file_path.parent() {

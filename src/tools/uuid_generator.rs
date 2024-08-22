@@ -4,12 +4,14 @@ use std::fs::{create_dir_all, File};
 use std::io::Write;
 use std::path::Path;
 
+/// Struct to generate Universally Unique Identifiers (UUIDs) in version 4.
 pub struct UuidGenerator {
     pub generated_uuid: String,
     pub length: usize,
 }
 
 impl UuidGenerator {
+    /// Creates a new instance of `UuidGenerator`.
     pub fn new() -> Self {
         UuidGenerator {
             generated_uuid: String::new(),
@@ -17,10 +19,12 @@ impl UuidGenerator {
         }
     }
 
+    /// Generates a single version 4 UUID.
     pub fn generate_v4_uuid(&mut self) {
         self.generated_uuid = Uuid::new_v4().to_string();
     }
 
+    /// Generates multiple version 4 UUIDs.
     pub fn generate_multiple_v4_uuids(&mut self) {
         self.generated_uuid.clear();
         for i in 0..self.length {
@@ -46,6 +50,7 @@ impl UuidGenerator {
         self.length = 0;
     }
 
+    /// Exports the generated UUIDs to a file.
     pub fn write_to_file(&self) -> std::io::Result<()> {
         let file_path = Path::new("export/uuid.txt");
         if let Some(parent) = file_path.parent() {

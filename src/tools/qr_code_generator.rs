@@ -3,12 +3,14 @@ use qrcode::render::unicode;
 use qrcode::QrCode;
 use std::path::Path;
 
+/// Struct to generate QR codes from an input string.
 pub struct QRCodeGenerator {
     pub input: String,
     pub qr_code: Option<QrCode>,
 }
 
 impl QRCodeGenerator {
+    /// Creates a new instance of `QRCodeGenerator`.
     pub fn new() -> Self {
         QRCodeGenerator {
             input: String::new(),
@@ -16,10 +18,12 @@ impl QRCodeGenerator {
         }
     }
 
+    /// Generates a QR code from the input string.
     pub fn generate_qr_code(&mut self) {
         self.qr_code = QrCode::new(self.input.as_bytes()).ok();
     }
 
+    /// Exports the generated QR code as a PNG image.
     pub fn export_qr_code(&self) -> Result<(), Box<dyn std::error::Error>> {
         if let Some(qr_code) = &self.qr_code {
             let export_dir = "export/";
@@ -41,6 +45,7 @@ impl QRCodeGenerator {
         }
     }
 
+    /// Returns the QR code as a string of unicode characters, suitable for rendering in a terminal.
     pub fn get_qr_string(&self) -> String {
         match &self.qr_code {
             Some(qr) => qr.render::<unicode::Dense1x2>().quiet_zone(false).build(),
