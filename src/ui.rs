@@ -611,16 +611,16 @@ fn base64_encoder(
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("             Quit", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
+            Span::styled("             Quit", Style::default().fg(Color::White)),
         ]),
         Line::from(vec![
             Span::styled(
-                "Tab",
+                "Shift + 🡸 /🡺 ",
                 Style::default()
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("             Switch Tools", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
+            Span::styled("   Selection", Style::default().fg(Color::White)),
         ]),
         Line::from(vec![
             Span::styled(
@@ -629,7 +629,7 @@ fn base64_encoder(
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("         Encode", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
+            Span::styled("         Encode", Style::default().fg(Color::White)),
         ]),
         Line::from(vec![
             Span::styled(
@@ -638,7 +638,7 @@ fn base64_encoder(
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("         Decode", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
+            Span::styled("         Decode", Style::default().fg(Color::White)),
         ]),
         Line::from(vec![
             Span::styled(
@@ -647,7 +647,7 @@ fn base64_encoder(
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("         Export Generated Hash", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
+            Span::styled("         Export Generated Hash", Style::default().fg(Color::White)),
         ]),
         Line::from(vec![Span::raw("")]),
         Line::from(vec![
@@ -657,7 +657,7 @@ fn base64_encoder(
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("   export/base64.txt", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
+            Span::styled("   export/base64.txt", Style::default().fg(Color::White)),
         ]),
         Line::from(vec![Span::raw("")]),
         Line::from(vec![
@@ -674,7 +674,6 @@ fn base64_encoder(
                 Style::default()
                     .fg(Color::Yellow)
                     .add_modifier(Modifier::ITALIC)
-                    .add_modifier(Modifier::BOLD)
             ),
         ]),
     ];
@@ -769,16 +768,7 @@ fn date_converter(
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("    Quit", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
-        ]),
-        Line::from(vec![
-            Span::styled(
-                "Tab",
-                Style::default()
-                    .fg(Color::Blue)
-                    .add_modifier(Modifier::BOLD),
-            ),
-            Span::styled("    Switch Tools", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
+            Span::styled("    Quit", Style::default().fg(Color::White)),
         ]),
         Line::from(vec![Span::raw("")]),
         Line::from(vec![Span::styled(
@@ -1128,16 +1118,7 @@ fn hash_generator(
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("       Quit", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
-        ]),
-        Line::from(vec![
-            Span::styled(
-                "Tab",
-                Style::default()
-                    .fg(Color::Blue)
-                    .add_modifier(Modifier::BOLD),
-            ),
-            Span::styled("       Switch Tools", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
+            Span::styled("       Quit", Style::default().fg(Color::White)),
         ]),
         Line::from(vec![
             Span::styled(
@@ -1148,7 +1129,7 @@ fn hash_generator(
             ),
             Span::styled(
                 "   Export Generated Hash",
-                Style::default().fg(Color::White).add_modifier(Modifier::BOLD),
+                Style::default().fg(Color::White),
             ),
         ]),
         Line::from(vec![Span::raw("")]),
@@ -1159,7 +1140,7 @@ fn hash_generator(
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled(" export/hash.txt", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
+            Span::styled(" export/hash.txt", Style::default().fg(Color::White)),
         ]),
     ];
 
@@ -1297,16 +1278,7 @@ fn number_base_converter(
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("       Quit", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
-        ]),
-        Line::from(vec![
-            Span::styled(
-                "Tab",
-                Style::default()
-                    .fg(Color::Blue)
-                    .add_modifier(Modifier::BOLD),
-            ),
-            Span::styled("       Switch Tools", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
+            Span::styled("       Quit", Style::default().fg(Color::White)),
         ]),
         Line::from(vec![
             Span::styled(
@@ -1317,7 +1289,7 @@ fn number_base_converter(
             ),
             Span::styled(
                 "   Export Generated Result",
-                Style::default().fg(Color::White).add_modifier(Modifier::BOLD),
+                Style::default().fg(Color::White),
             ),
         ]),
         Line::from(vec![Span::raw("")]),
@@ -1326,11 +1298,11 @@ fn number_base_converter(
                 "Exported File Path:",
                 Style::default()
                     .fg(Color::Blue)
-                    .add_modifier(Modifier::BOLD).add_modifier(Modifier::BOLD),
+                    .add_modifier(Modifier::BOLD),
             ),
             Span::styled(
                 " export/number_conversion.txt",
-                Style::default().fg(Color::White).add_modifier(Modifier::BOLD),
+                Style::default().fg(Color::White),
             ),
         ]),
     ];
@@ -1587,16 +1559,7 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("   Quit", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
-        ]),
-        Line::from(vec![
-            Span::styled(
-                "Tab",
-                Style::default()
-                    .fg(Color::Blue)
-                    .add_modifier(Modifier::BOLD),
-            ),
-            Span::styled("   Switch Tools", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
+            Span::styled("   Quit", Style::default().fg(Color::White)),
         ]),
         Line::from(vec![
             Span::styled(
@@ -1605,7 +1568,7 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("     Generate password", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
+            Span::styled("     Generate password", Style::default().fg(Color::White)),
         ]),
         Line::from(vec![
             Span::styled(
@@ -1614,7 +1577,7 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("     Clear password", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
+            Span::styled("     Clear password", Style::default().fg(Color::White)),
         ]),
         Line::from(vec![
             Span::styled(
@@ -1625,7 +1588,7 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
             ),
             Span::styled(
                 "     Export Generated password",
-                Style::default().fg(Color::White).add_modifier(Modifier::BOLD),
+                Style::default().fg(Color::White),
             ),
         ]),
         Line::from(vec![
@@ -1637,7 +1600,7 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
             ),
             Span::styled(
                 "     Increase Password Length",
-                Style::default().fg(Color::White).add_modifier(Modifier::BOLD),
+                Style::default().fg(Color::White),
             ),
         ]),
         Line::from(vec![
@@ -1649,7 +1612,7 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
             ),
             Span::styled(
                 "     Decrease Password Length",
-                Style::default().fg(Color::White).add_modifier(Modifier::BOLD),
+                Style::default().fg(Color::White),
             ),
         ]),
         Line::from(vec![
@@ -1661,7 +1624,7 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
             ),
             Span::styled(
                 "     Generate Multiple passwords",
-                Style::default().fg(Color::White).add_modifier(Modifier::BOLD),
+                Style::default().fg(Color::White),
             ),
         ]),
         Line::from(vec![
@@ -1673,7 +1636,7 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
             ),
             Span::styled(
                 "     Increase Password Quantity",
-                Style::default().fg(Color::White).add_modifier(Modifier::BOLD),
+                Style::default().fg(Color::White),
             ),
         ]),
         Line::from(vec![
@@ -1685,7 +1648,7 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
             ),
             Span::styled(
                 "     Decrease Password Quantity",
-                Style::default().fg(Color::White).add_modifier(Modifier::BOLD),
+                Style::default().fg(Color::White),
             ),
         ]),
         Line::from(vec![
@@ -1697,9 +1660,9 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
             ),
             Span::styled(
                 "     Include Uppercase Characters",
-                Style::default().fg(Color::White).add_modifier(Modifier::BOLD),
+                Style::default().fg(Color::White),
             ),
-            Span::styled(" (e.g. ABCDE)", Style::default().fg(Color::Cyan).add_modifier(Modifier::BOLD)),
+            Span::styled(" (e.g. ABCDE)", Style::default().fg(Color::Cyan)),
         ]),
         Line::from(vec![
             Span::styled(
@@ -1710,9 +1673,9 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
             ),
             Span::styled(
                 "     Include Lowercase Characters",
-                Style::default().fg(Color::White).add_modifier(Modifier::BOLD),
+                Style::default().fg(Color::White),
             ),
-            Span::styled(" (e.g. abcde)", Style::default().fg(Color::Cyan).add_modifier(Modifier::BOLD)),
+            Span::styled(" (e.g. abcde)", Style::default().fg(Color::Cyan)),
         ]),
         Line::from(vec![
             Span::styled(
@@ -1721,8 +1684,8 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("     Include Numbers", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
-            Span::styled(" (e.g. 12345)", Style::default().fg(Color::Cyan).add_modifier(Modifier::BOLD)),
+            Span::styled("     Include Numbers", Style::default().fg(Color::White)),
+            Span::styled(" (e.g. 12345)", Style::default().fg(Color::Cyan)),
         ]),
         Line::from(vec![
             Span::styled(
@@ -1731,8 +1694,8 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("     Include Symbols", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
-            Span::styled(" (e.g. !@#$%^", Style::default().fg(Color::Cyan).add_modifier(Modifier::BOLD)),
+            Span::styled("     Include Symbols", Style::default().fg(Color::White)),
+            Span::styled(" (e.g. !@#$%^", Style::default().fg(Color::Cyan)),
         ]),
         Line::from(vec![
             Span::styled(
@@ -1741,10 +1704,10 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("     Similar Characters", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
+            Span::styled("     Similar Characters", Style::default().fg(Color::White)),
             Span::styled(
                 " (e.g. i,l,L,o,0,O, etc.)",
-                Style::default().fg(Color::Cyan).add_modifier(Modifier::BOLD),
+                Style::default().fg(Color::Cyan),
             ),
         ]),
         Line::from(vec![
@@ -1758,7 +1721,7 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                 "     Duplicate Characters",
                 Style::default().fg(Color::White),
             ),
-            Span::styled(" (e.g. pp, 11)", Style::default().fg(Color::Cyan).add_modifier(Modifier::BOLD)),
+            Span::styled(" (e.g. pp, 11)", Style::default().fg(Color::Cyan)),
         ]),
         Line::from(vec![
             Span::styled(
@@ -1769,9 +1732,9 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
             ),
             Span::styled(
                 "     Sequential Characters",
-                Style::default().fg(Color::White).add_modifier(Modifier::BOLD),
+                Style::default().fg(Color::White),
             ),
-            Span::styled(" (e.g. abc, 234)", Style::default().fg(Color::Cyan).add_modifier(Modifier::BOLD)),
+            Span::styled(" (e.g. abc, 234)", Style::default().fg(Color::Cyan)),
         ]),
         Line::from(vec![Span::raw("")]),
         Line::from(vec![
@@ -1781,7 +1744,7 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled(" export/password.txt", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
+            Span::styled(" export/password.txt", Style::default().fg(Color::White)),
         ]),
         Line::from(vec![Span::raw("")]),
         Line::from(vec![
@@ -1793,7 +1756,7 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
             ),
             Span::styled(
                 " Multi password generator isn't working",
-                Style::default().fg(Color::White).add_modifier(Modifier::BOLD),
+                Style::default().fg(Color::White),
             ),
         ]),
     ];
@@ -1867,16 +1830,7 @@ fn qr_code_generator(
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("        Quit", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
-        ]),
-        Line::from(vec![
-            Span::styled(
-                "Tab",
-                Style::default()
-                    .fg(Color::Blue)
-                    .add_modifier(Modifier::BOLD),
-            ),
-            Span::styled("        Switch Tools", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
+            Span::styled("        Quit", Style::default().fg(Color::White)),
         ]),
         Line::from(vec![
             Span::styled(
@@ -1887,7 +1841,7 @@ fn qr_code_generator(
             ),
             Span::styled(
                 "    Export Generated QR Code",
-                Style::default().fg(Color::White).add_modifier(Modifier::BOLD),
+                Style::default().fg(Color::White),
             ),
         ]),
         Line::from(vec![Span::raw("")]),
@@ -1898,9 +1852,9 @@ fn qr_code_generator(
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("   export/", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
-            Span::styled("{input_text}", Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)),
-            Span::styled(".txt", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
+            Span::styled("   export/", Style::default().fg(Color::White)),
+            Span::styled("{input_text}", Style::default().fg(Color::Yellow)),
+            Span::styled(".txt", Style::default().fg(Color::White)),
         ]),
         Line::from(vec![Span::raw("")]),
         Line::from(vec![
@@ -1912,7 +1866,7 @@ fn qr_code_generator(
             ),
             Span::styled(
                 " The file name for the QR image is created by taking ",
-                Style::default().fg(Color::White).add_modifier(Modifier::BOLD),
+                Style::default().fg(Color::White),
             ),
             Span::styled(
                 "first ten characters",
@@ -1923,7 +1877,7 @@ fn qr_code_generator(
             ),
             Span::styled(
                 " of the information you enter in the input field.",
-                Style::default().fg(Color::White).add_modifier(Modifier::BOLD),
+                Style::default().fg(Color::White),
             ),
         ]),
     ];
@@ -2005,16 +1959,7 @@ fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("   Quit", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
-        ]),
-        Line::from(vec![
-            Span::styled(
-                "Tab",
-                Style::default()
-                    .fg(Color::Blue)
-                    .add_modifier(Modifier::BOLD),
-            ),
-            Span::styled("   Switch Tools", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
+            Span::styled("   Quit", Style::default().fg(Color::White)),
         ]),
         Line::from(vec![
             Span::styled(
@@ -2025,7 +1970,7 @@ fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
             ),
             Span::styled(
                 "     Generate single UUID",
-                Style::default().fg(Color::White).add_modifier(Modifier::BOLD),
+                Style::default().fg(Color::White),
             ),
         ]),
         Line::from(vec![
@@ -2037,7 +1982,7 @@ fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
             ),
             Span::styled(
                 "     Generate multiple UUIDs",
-                Style::default().fg(Color::White).add_modifier(Modifier::BOLD),
+                Style::default().fg(Color::White),
             ),
         ]),
         Line::from(vec![
@@ -2049,7 +1994,7 @@ fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
             ),
             Span::styled(
                 "     Increase number of UUIDs",
-                Style::default().fg(Color::White).add_modifier(Modifier::BOLD),
+                Style::default().fg(Color::White),
             ),
         ]),
         Line::from(vec![
@@ -2061,7 +2006,7 @@ fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
             ),
             Span::styled(
                 "     Decrease number of UUIDs",
-                Style::default().fg(Color::White).add_modifier(Modifier::BOLD),
+                Style::default().fg(Color::White),
             ),
         ]),
         Line::from(vec![
@@ -2073,7 +2018,7 @@ fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
             ),
             Span::styled(
                 "     Export Generated UUIDs",
-                Style::default().fg(Color::White).add_modifier(Modifier::BOLD),
+                Style::default().fg(Color::White),
             ),
         ]),
         Line::from(vec![Span::raw("")]),
@@ -2084,7 +2029,7 @@ fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled(" export/uuid.txt", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
+            Span::styled(" export/uuid.txt", Style::default().fg(Color::White)),
         ]),
     ];
 
