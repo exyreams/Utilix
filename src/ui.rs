@@ -2346,7 +2346,7 @@ fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
     let guide_status_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([Constraint::Percentage(80), Constraint::Percentage(20)])
-        .split(settings_guide_chunks[0]);
+        .split(settings_guide_chunks[1]);
 
     let guide_text = vec![
         Line::from(vec![Span::raw("")]),
