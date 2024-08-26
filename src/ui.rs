@@ -512,6 +512,12 @@ pub fn run_app<B: Backend>(
                             'm' => {
                                 app.uuid_generator.generate_multiple_v4_uuids();
                             }
+                            'w' => {
+                                app.uuid_generator.generate_v7_uuid();
+                            }
+                            'e' => {
+                                app.uuid_generator.generate_multiple_v7_uuids();
+                            }
                             'c' => {
                                 app.uuid_generator.clear();
                             }
@@ -2387,7 +2393,21 @@ fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .add_modifier(Modifier::BOLD),
             ),
             Span::styled(
-                "     Generate single UUID",
+                "     Generate single V4 UUID",
+                Style::default()
+                    .fg(Color::White)
+                    .add_modifier(Modifier::BOLD),
+            ),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "w",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                "     Generate single V7 UUID",
                 Style::default()
                     .fg(Color::White)
                     .add_modifier(Modifier::BOLD),
@@ -2401,7 +2421,21 @@ fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .add_modifier(Modifier::BOLD),
             ),
             Span::styled(
-                "     Generate multiple UUIDs",
+                "     Generate multiple V4 UUIDs",
+                Style::default()
+                    .fg(Color::White)
+                    .add_modifier(Modifier::BOLD),
+            ),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "e",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                "     Generate multiple V7 UUIDs",
                 Style::default()
                     .fg(Color::White)
                     .add_modifier(Modifier::BOLD),
@@ -2415,7 +2449,7 @@ fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .add_modifier(Modifier::BOLD),
             ),
             Span::styled(
-                "     Increase number of UUIDs",
+                "     Increase number of UUIDs to generate",
                 Style::default()
                     .fg(Color::White)
                     .add_modifier(Modifier::BOLD),
@@ -2429,7 +2463,7 @@ fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .add_modifier(Modifier::BOLD),
             ),
             Span::styled(
-                "     Decrease number of UUIDs",
+                "     Decrease number of UUIDs to generate",
                 Style::default()
                     .fg(Color::White)
                     .add_modifier(Modifier::BOLD),
@@ -2502,7 +2536,12 @@ fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
         .wrap(Wrap { trim: true });
     f.render_widget(status_block, guide_status_chunks[1]);
 
-    let version_4_uuid = Paragraph::new(app.uuid_generator.generated_uuid.as_str())
+    let version4_version7_chunks = Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
+        .split(chunks[1]);
+
+    let version_4_uuid = Paragraph::new(app.uuid_generator.generated_uuid_v4.as_str())
         .style(
             Style::default()
                 .add_modifier(Modifier::BOLD)
@@ -2515,5 +2554,20 @@ fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
                 .border_type(BorderType::Rounded)
                 .padding(Padding::new(1, 0, 0, 0)),
         );
-    f.render_widget(version_4_uuid, chunks[1]);
+    f.render_widget(version_4_uuid, version4_version7_chunks[0]);
+
+    let version_7_uuid = Paragraph::new(app.uuid_generator.generated_uuid_v7.as_str())
+        .style(
+            Style::default()
+                .add_modifier(Modifier::BOLD)
+                .fg(Color::Green),
+        )
+        .block(
+            Block::default()
+                .borders(Borders::ALL)
+                .title(" Version 7 UUID ")
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 0, 0, 0)),
+        );
+    f.render_widget(version_7_uuid, version4_version7_chunks[1]);
 }
