@@ -7,6 +7,7 @@ use std::path::Path;
 pub struct QRCodeGenerator {
     pub input: String,
     pub qr_code: Option<QrCode>,
+    pub tools_export_message: Option<String>,
 }
 
 impl QRCodeGenerator {
@@ -15,6 +16,7 @@ impl QRCodeGenerator {
         QRCodeGenerator {
             input: String::new(),
             qr_code: None,
+            tools_export_message: None,
         }
     }
 

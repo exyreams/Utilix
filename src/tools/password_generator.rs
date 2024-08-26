@@ -19,6 +19,7 @@ pub struct PasswordGenerator {
     pub similar_characters: HashSet<char>,
     pub generated_password: String,
     pub quantity: usize,
+    pub tools_export_message: Option<String>,
 }
 
 impl Default for PasswordGenerator {
@@ -35,6 +36,7 @@ impl Default for PasswordGenerator {
             similar_characters: "ilLo0O".chars().collect(),
             generated_password: String::new(),
             quantity: 1,
+            tools_export_message: None,
         }
     }
 }

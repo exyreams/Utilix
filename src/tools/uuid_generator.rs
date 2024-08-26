@@ -8,6 +8,7 @@ use std::path::Path;
 pub struct UuidGenerator {
     pub generated_uuid: String,
     pub length: usize,
+    pub tools_export_message: Option<String>,
 }
 
 impl UuidGenerator {
@@ -16,6 +17,7 @@ impl UuidGenerator {
         UuidGenerator {
             generated_uuid: String::new(),
             length: 1,
+            tools_export_message: None,
         }
     }
 

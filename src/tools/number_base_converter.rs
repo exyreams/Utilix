@@ -14,6 +14,7 @@ pub struct NumberBaseConverter {
     pub decimal_to_hexadecimal: String,
     pub hexadecimal_to_binary: String,
     pub hexadecimal_to_decimal: String,
+    pub tools_export_message: Option<String>,
 }
 
 impl NumberBaseConverter {
@@ -30,6 +31,7 @@ impl NumberBaseConverter {
             decimal_to_hexadecimal: String::new(),
             hexadecimal_to_binary: String::new(),
             hexadecimal_to_decimal: String::new(),
+            tools_export_message: None,
         }
     }
 

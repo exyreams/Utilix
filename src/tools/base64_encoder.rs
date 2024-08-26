@@ -9,6 +9,7 @@ pub struct Base64Encoder {
     pub input: String,
     pub encoded: String,
     pub decoded: String,
+    pub tools_export_message: Option<String>,
 }
 
 impl Base64Encoder {
@@ -18,6 +19,7 @@ impl Base64Encoder {
             input: String::new(),
             encoded: String::new(),
             decoded: String::new(),
+            tools_export_message: None,
         }
     }
 
@@ -38,8 +40,8 @@ impl Base64Encoder {
         }
     }
 
-    /// export the encoded and decoded strings to a file.
-    pub fn write_to_file(&self) -> std::io::Result<()> {
+    /// Export the encoded and decoded strings to a file.
+    pub fn write_to_file(&mut self) -> std::io::Result<()> {
         let file_path = Path::new("export/base64.txt");
         if let Some(parent) = file_path.parent() {
             create_dir_all(parent)?;
@@ -47,6 +49,7 @@ impl Base64Encoder {
         let mut file = File::create(file_path)?;
         writeln!(file, "Encoded: {}", self.encoded)?;
         writeln!(file, "Decoded: {}", self.decoded)?;
+
         Ok(())
     }
 }

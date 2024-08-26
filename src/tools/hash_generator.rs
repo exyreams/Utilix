@@ -13,6 +13,7 @@ pub struct HashGenerator {
     sha256_hash: String,
     sha384_hash: String,
     sha512_hash: String,
+    pub tools_export_message: Option<String>,
 }
 
 impl HashGenerator {
@@ -24,6 +25,7 @@ impl HashGenerator {
             sha256_hash: String::new(),
             sha384_hash: String::new(),
             sha512_hash: String::new(),
+            tools_export_message: None,
         }
     }
 
@@ -90,7 +92,7 @@ impl HashGenerator {
     }
 
     /// Export generated hashes to a file".
-    pub fn write_to_file(&self) -> std::io::Result<()> {
+    pub fn write_to_file(&mut self) -> std::io::Result<()> {
         let file_path = Path::new("export/hash.txt");
         if let Some(parent) = file_path.parent() {
             create_dir_all(parent)?;
