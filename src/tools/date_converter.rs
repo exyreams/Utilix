@@ -68,6 +68,16 @@ impl DateConverter {
             }
         }
 
+        // If parsing as a full date-time fails, try parsing as a date-only
+        if let Ok(naive_date) = chrono::NaiveDate::parse_from_str(&self.input, "%Y-%m-%d") {
+            let naive_datetime = naive_date.and_hms_opt(0, 0, 0).unwrap();
+            let year = naive_datetime.year();
+            if year < 1 || year > 9999 {
+                return Err("Year out of supported range (1-9999)".to_string());
+            }
+            return Ok(Utc.from_utc_datetime(&naive_datetime));
+        }
+
         Err("Unrecognized date-time format".to_string())
     }
 
