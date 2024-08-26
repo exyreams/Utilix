@@ -17,4 +17,4 @@ sha2 = "0.10.8"
 tui-textarea = { version = "0.6.1", default-features = false, features = [
     "termion",
 ] }
-uuid = { version = "1.10.0", features = ["v4"] }
+uuid = { version = "1.10.0", features = ["v4", "v7"] }
