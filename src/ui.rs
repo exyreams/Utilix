@@ -1620,7 +1620,7 @@ fn hash_generator(
     // Split the guide/status area into two chunks: guide area and status area.
     let guide_status_chunks = Layout::default()
         .direction(Direction::Vertical)
-        .constraints([Constraint::Percentage(80), Constraint::Percentage(20)])
+        .constraints([Constraint::Percentage(70), Constraint::Percentage(30)])
         .split(input_guide_chunks[1]);
 
     // Create a guide text with shortcut keys and instructions.
@@ -1849,7 +1849,7 @@ fn number_base_converter(
     // Split the guide/status area into two chunks: guide area and status area.
     let guide_status_chunks = Layout::default()
         .direction(Direction::Vertical)
-        .constraints([Constraint::Percentage(80), Constraint::Percentage(20)])
+        .constraints([Constraint::Percentage(70), Constraint::Percentage(30)])
         .split(input_guide_chunks[1]);
 
     // Create a guide text with shortcut keys and instructions.
