@@ -671,7 +671,7 @@ fn ui(
             .style(
                 Style::default()
                     .add_modifier(Modifier::BOLD)
-                    .fg(Color::Magenta),
+                    .fg(Color::White),
             )
             .border_type(BorderType::Rounded),
     )
