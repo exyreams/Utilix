@@ -1,4 +1,4 @@
-use std::fs::{File, create_dir_all};
+use std::fs::{create_dir_all, File};
 use std::io::Write;
 use std::path::Path;
 
@@ -94,7 +94,13 @@ fn convert_to_cmyk(color: &Color) -> String {
     let m = (1.0 - g - k) / (1.0 - k);
     let y = (1.0 - b - k) / (1.0 - k);
 
-    format!("{:.0}%, {:.0}%, {:.0}%, {:.0}%", c * 100.0, m * 100.0, y * 100.0, k * 100.0)
+    format!(
+        "{:.0}%, {:.0}%, {:.0}%, {:.0}%",
+        c * 100.0,
+        m * 100.0,
+        y * 100.0,
+        k * 100.0
+    )
 }
 
 fn convert_to_rgb(color: &Color) -> String {
@@ -217,4 +223,3 @@ fn parse_hsl(input: &str) -> Option<Color> {
         b: ((b + m) * 255.0) as u8,
     })
 }
-
