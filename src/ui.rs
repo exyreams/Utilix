@@ -20,6 +20,7 @@ pub fn run_app<B: Backend>(
     terminal: &mut Terminal<B>,
     mut app: App,
     base64_converter_textarea: &mut TextArea,
+    color_converter_textarea: &mut TextArea,
     date_converter_textarea: &mut TextArea,
     hash_generator_textarea: &mut TextArea,
     number_base_converter_textarea: &mut TextArea,
@@ -33,6 +34,7 @@ pub fn run_app<B: Backend>(
                 f,                              // A mutable reference to the terminal's frame.
                 &mut app,                       // A mutable reference to the application state.
                 base64_converter_textarea,      // Text area for base64 conversion.
+                color_converter_textarea,       // Text area for color code conversion.
                 date_converter_textarea,        // Text area for date conversion.
                 hash_generator_textarea,        // Text area for hash generation.
                 number_base_converter_textarea, // Text area for number base conversion.
@@ -60,7 +62,8 @@ pub fn run_app<B: Backend>(
                     // Switch between different tools using the Tab key.
                     KeyCode::Tab => {
                         app.current_tool = match app.current_tool {
-                            Tool::Base64Encoder => Tool::DateConverter,
+                            Tool::Base64Encoder => Tool::ColorConverter,
+                            Tool::ColorConverter => Tool::DateConverter,
                             Tool::DateConverter => Tool::HashGenerator,
                             Tool::HashGenerator => Tool::NumberBaseConverter,
                             Tool::NumberBaseConverter => Tool::PasswordGenerator,
@@ -78,6 +81,8 @@ pub fn run_app<B: Backend>(
                         if key.modifiers.contains(KeyModifiers::CONTROL) {
                             base64_converter_textarea
                                 .move_cursor(tui_textarea::CursorMove::WordBack);
+                            color_converter_textarea
+                                .move_cursor(tui_textarea::CursorMove::WordBack);
                             date_converter_textarea.move_cursor(tui_textarea::CursorMove::WordBack);
                             number_base_converter_textarea
                                 .move_cursor(tui_textarea::CursorMove::WordBack);
@@ -89,6 +94,10 @@ pub fn run_app<B: Backend>(
                             base64_converter_textarea.move_cursor(CursorMove::Head);
                             base64_converter_textarea.start_selection();
                             base64_converter_textarea.move_cursor(CursorMove::End);
+
+                            color_converter_textarea.move_cursor(CursorMove::Head);
+                            color_converter_textarea.start_selection();
+                            color_converter_textarea.move_cursor(CursorMove::End);
 
                             date_converter_textarea.move_cursor(CursorMove::Head);
                             date_converter_textarea.start_selection();
@@ -109,6 +118,9 @@ pub fn run_app<B: Backend>(
                         } else {
                             base64_converter_textarea.move_cursor(tui_textarea::CursorMove::Back);
                             base64_converter_textarea.cancel_selection();
+
+                            color_converter_textarea.move_cursor(tui_textarea::CursorMove::Back);
+                            color_converter_textarea.cancel_selection();
 
                             date_converter_textarea.move_cursor(tui_textarea::CursorMove::Back);
                             date_converter_textarea.cancel_selection();
@@ -133,6 +145,8 @@ pub fn run_app<B: Backend>(
                         if key.modifiers.contains(KeyModifiers::CONTROL) {
                             base64_converter_textarea
                                 .move_cursor(tui_textarea::CursorMove::WordForward);
+                            color_converter_textarea
+                                .move_cursor(tui_textarea::CursorMove::WordForward);
                             date_converter_textarea
                                 .move_cursor(tui_textarea::CursorMove::WordForward);
                             hash_generator_textarea
@@ -147,6 +161,10 @@ pub fn run_app<B: Backend>(
                             base64_converter_textarea.move_cursor(CursorMove::Head);
                             base64_converter_textarea.start_selection();
                             base64_converter_textarea.move_cursor(CursorMove::End);
+
+                            color_converter_textarea.move_cursor(CursorMove::Head);
+                            color_converter_textarea.start_selection();
+                            color_converter_textarea.move_cursor(CursorMove::End);
 
                             date_converter_textarea.move_cursor(CursorMove::Head);
                             date_converter_textarea.start_selection();
@@ -168,6 +186,9 @@ pub fn run_app<B: Backend>(
                                 .move_cursor(tui_textarea::CursorMove::Forward);
                             base64_converter_textarea.cancel_selection();
 
+                            color_converter_textarea.move_cursor(tui_textarea::CursorMove::Forward);
+                            color_converter_textarea.cancel_selection();
+
                             date_converter_textarea.move_cursor(tui_textarea::CursorMove::Forward);
                             date_converter_textarea.cancel_selection();
 
@@ -187,6 +208,7 @@ pub fn run_app<B: Backend>(
 
                     KeyCode::Up => {
                         base64_converter_textarea.move_cursor(tui_textarea::CursorMove::Up);
+                        color_converter_textarea.move_cursor(tui_textarea::CursorMove::Up);
                         date_converter_textarea.move_cursor(tui_textarea::CursorMove::Up);
                         hash_generator_textarea.move_cursor(tui_textarea::CursorMove::Up);
                         number_base_converter_textarea.move_cursor(tui_textarea::CursorMove::Up);
@@ -197,6 +219,7 @@ pub fn run_app<B: Backend>(
 
                     KeyCode::Down => {
                         base64_converter_textarea.move_cursor(tui_textarea::CursorMove::Down);
+                        color_converter_textarea.move_cursor(tui_textarea::CursorMove::Down);
                         date_converter_textarea.move_cursor(tui_textarea::CursorMove::Down);
                         hash_generator_textarea.move_cursor(tui_textarea::CursorMove::Down);
                         number_base_converter_textarea.move_cursor(tui_textarea::CursorMove::Down);
@@ -208,6 +231,7 @@ pub fn run_app<B: Backend>(
                     // Handle Enter key to insert a newline character.
                     KeyCode::Enter => {
                         base64_converter_textarea.insert_newline();
+                        color_converter_textarea.insert_newline();
                         date_converter_textarea.insert_newline();
                         hash_generator_textarea.insert_newline();
                         number_base_converter_textarea.insert_newline();
@@ -218,6 +242,7 @@ pub fn run_app<B: Backend>(
                     // Handle Backspace key to delete the previous character.
                     KeyCode::Backspace => {
                         base64_converter_textarea.delete_char();
+                        color_converter_textarea.delete_char();
                         date_converter_textarea.delete_char();
                         hash_generator_textarea.delete_char();
                         number_base_converter_textarea.delete_char();
@@ -228,6 +253,7 @@ pub fn run_app<B: Backend>(
                     // Handle Delete key to delete the next character.
                     KeyCode::Delete => {
                         base64_converter_textarea.delete_next_char();
+                        color_converter_textarea.delete_next_char();
                         date_converter_textarea.delete_next_char();
                         hash_generator_textarea.delete_next_char();
                         number_base_converter_textarea.delete_next_char();
@@ -294,6 +320,41 @@ pub fn run_app<B: Backend>(
                                     base64_converter_textarea.lines().join("\n");
                                 app.base64_encoder.encode();
                                 app.base64_encoder.decode();
+                            }
+                        }
+
+                        Tool::ColorConverter => {
+                            // Only insert characters if ALT and CTRL are not pressed, this
+                            // prevents inserting of characters in the text area that shortcuts
+                            // for eg. if Alt + e is pressed it will not capture character "e"
+                            // and add it on the Text area/Input Field.
+                            if !key.modifiers.contains(KeyModifiers::ALT)
+                                && !key.modifiers.contains(KeyModifiers::CONTROL)
+                            {
+                                color_converter_textarea.insert_char(c);
+                            }
+
+                            // Shortcut Key (Alt + x) to export the input.
+                            if key.modifiers.contains(KeyModifiers::ALT) && c == 'x' {
+                                match app.color_converter.export_color_codes() {
+                                    Ok(_) => {
+                                        app.color_converter.tools_export_message = Some(
+                                            "Successfully exported to export/color_codes.txt"
+                                                .to_string(),
+                                        );
+                                    }
+                                    Err(err) => {
+                                        app.color_converter.tools_export_message =
+                                            Some(format!("Failed to export: {}", err));
+                                    }
+                                }
+                            } else if !key.modifiers.contains(KeyModifiers::ALT)
+                                && !key.modifiers.contains(KeyModifiers::SHIFT)
+                            // Starts encoding/decoding automatically when Text area has input.
+                            {
+                                app.color_converter.input =
+                                    color_converter_textarea.lines().join("\n");
+                                app.color_converter.convert_all();
                             }
                         }
 
@@ -556,6 +617,7 @@ fn ui(
     f: &mut Frame,
     app: &mut App,
     base64_converter_textarea: &mut TextArea,
+    color_converter_textarea: &mut TextArea,
     date_converter_textarea: &mut TextArea,
     hash_generator_textarea: &mut TextArea,
     number_base_converter_textarea: &mut TextArea,
@@ -590,6 +652,7 @@ fn ui(
 
     let tabs = Tabs::new(vec![
         Span::raw("Base64 Encoder"),
+        Span::raw("Color Code Converter"),
         Span::raw("Date Converter"),
         Span::raw("Hash Generator"),
         Span::raw("Number Base Generator"),
@@ -611,12 +674,13 @@ fn ui(
     .highlight_style(Style::default().bg(Color::LightMagenta))
     .select(match app.current_tool {
         Tool::Base64Encoder => 0,
-        Tool::DateConverter => 1,
-        Tool::HashGenerator => 2,
-        Tool::NumberBaseConverter => 3,
-        Tool::PasswordGenerator => 4,
-        Tool::QRCodeGenerator => 5,
-        Tool::UuidGenerator => 6,
+        Tool::ColorConverter => 1,
+        Tool::DateConverter => 2,
+        Tool::HashGenerator => 3,
+        Tool::NumberBaseConverter => 4,
+        Tool::PasswordGenerator => 5,
+        Tool::QRCodeGenerator => 6,
+        Tool::UuidGenerator => 7,
     })
     .divider("|")
     .padding(" ", " ");
@@ -626,6 +690,9 @@ fn ui(
 
     match app.current_tool {
         Tool::Base64Encoder => base64_encoder(f, app, tool_content_area, base64_converter_textarea),
+        Tool::ColorConverter => {
+            color_code_converter(f, app, tool_content_area, color_converter_textarea)
+        }
         Tool::DateConverter => date_converter(f, app, tool_content_area, date_converter_textarea),
         Tool::HashGenerator => hash_generator(f, app, tool_content_area, hash_generator_textarea),
         Tool::NumberBaseConverter => {
@@ -819,6 +886,283 @@ fn base64_encoder(
         )
         .wrap(Wrap { trim: true });
     f.render_widget(decoded, encoded_decoded_chunks[1]);
+}
+
+// Handles the UI for color code converter
+fn color_code_converter(
+    f: &mut Frame,
+    app: &mut App,
+    area: Rect,
+    color_converter_textarea: &mut TextArea,
+) {
+    let chunks = Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints([Constraint::Percentage(40), Constraint::Percentage(60)].as_ref())
+        .split(area);
+
+    let input_guide_chunks = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([Constraint::Percentage(30), Constraint::Percentage(70)])
+        .split(chunks[0]);
+
+    color_converter_textarea.set_block(
+        Block::default()
+            .title(" Enter Color Code ")
+            .title_style(Style::default().fg(Color::Yellow).bold())
+            .borders(Borders::ALL)
+            .border_style(Style::default().fg(Color::Yellow))
+            .border_type(BorderType::Rounded)
+            .padding(Padding::new(1, 1, 0, 0)),
+    );
+
+    color_converter_textarea.set_style(Style::default().bold());
+
+    f.render_widget(&*color_converter_textarea, input_guide_chunks[0]);
+
+    let guide_status_chunks = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([Constraint::Percentage(80), Constraint::Percentage(20)])
+        .split(input_guide_chunks[1]);
+
+    let guide_text = vec![
+        Line::from(vec![
+            Span::styled(
+                "Esc",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                "        Quit",
+                Style::default()
+                    .fg(Color::White)
+                    .add_modifier(Modifier::BOLD),
+            ),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "Tab",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                "        Switch Tools",
+                Style::default()
+                    .fg(Color::White)
+                    .add_modifier(Modifier::BOLD),
+            ),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "Alt + x",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                "    Export Colors",
+                Style::default()
+                    .fg(Color::White)
+                    .add_modifier(Modifier::BOLD),
+            ),
+        ]),
+        Line::from(vec![Span::raw("")]),
+        Line::from(vec![
+            Span::styled(
+                "Exported File Path:",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                " export/color_codes.txt",
+                Style::default()
+                    .fg(Color::White)
+                    .add_modifier(Modifier::BOLD),
+            ),
+        ]),
+        Line::from(vec![Span::raw("")]),
+        Line::from(vec![Span::styled(
+            "Examples:",
+            Style::default()
+                .fg(Color::Yellow)
+                .add_modifier(Modifier::BOLD),
+        )]),
+        Line::from(vec![
+            Span::styled(
+                "CMYK:",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                " 0, 26, 99, 1 or 0%, 26%, 99%, 1%",
+                Style::default()
+                    .fg(Color::White)
+                    .add_modifier(Modifier::BOLD),
+            ),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "HEX:",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                " #fcba03 or #FCBA03 ",
+                Style::default()
+                    .fg(Color::White)
+                    .add_modifier(Modifier::BOLD),
+            ),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "HSL:",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                " 44, 98, 50 or 44°, 98%, 50% ",
+                Style::default()
+                    .fg(Color::White)
+                    .add_modifier(Modifier::BOLD),
+            ),
+        ]),
+        Line::from(vec![
+            Span::styled(
+                "RGB:",
+                Style::default()
+                    .fg(Color::Blue)
+                    .add_modifier(Modifier::BOLD),
+            ),
+            Span::styled(
+                " 252, 186, 3 ",
+                Style::default()
+                    .fg(Color::White)
+                    .add_modifier(Modifier::BOLD),
+            ),
+        ]),
+    ];
+
+    let guide = Paragraph::new(guide_text)
+        .style(Style::default().add_modifier(Modifier::BOLD).fg(Color::Red))
+        .block(
+            Block::default()
+                .title(" Color Converter Help ")
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 1, 1, 0)),
+        )
+        .wrap(Wrap { trim: true });
+    f.render_widget(guide, guide_status_chunks[0]);
+
+    // status block
+    let status_text = if let Some(message) = &app.color_converter.tools_export_message {
+        format!("{}", message)
+    } else {
+        "".to_string()
+    };
+
+    let status_block = Paragraph::new(status_text)
+        .style(
+            Style::default()
+                .add_modifier(Modifier::BOLD)
+                .fg(Color::LightMagenta),
+        )
+        .block(
+            Block::default()
+                .title(" Status ")
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 1, 0, 0)),
+        )
+        .wrap(Wrap { trim: true });
+    f.render_widget(status_block, guide_status_chunks[1]);
+
+    let conversion_chunks = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([
+            Constraint::Percentage(25),
+            Constraint::Percentage(25),
+            Constraint::Percentage(25),
+            Constraint::Percentage(25),
+        ])
+        .split(chunks[1]);
+
+    let cmyk = Paragraph::new(app.color_converter.cmyk.clone())
+        .style(
+            Style::default()
+                .add_modifier(Modifier::BOLD)
+                .fg(Color::Green),
+        )
+        .block(
+            Block::default()
+                .title(" CMYK Color Code ")
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 1, 0, 0)),
+        )
+        .wrap(Wrap { trim: true })
+        .scroll((0, 0));
+
+    f.render_widget(cmyk, conversion_chunks[0]);
+
+    let hex = Paragraph::new(app.color_converter.hex.clone())
+        .style(
+            Style::default()
+                .add_modifier(Modifier::BOLD)
+                .fg(Color::Green),
+        )
+        .block(
+            Block::default()
+                .title(" HEX Color Code ")
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 1, 0, 0)),
+        )
+        .wrap(Wrap { trim: true })
+        .scroll((0, 0));
+
+    f.render_widget(hex, conversion_chunks[1]);
+
+    let hsl = Paragraph::new(app.color_converter.hsl.clone())
+        .style(
+            Style::default()
+                .add_modifier(Modifier::BOLD)
+                .fg(Color::Green),
+        )
+        .block(
+            Block::default()
+                .title(" HSL Color Code ")
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 1, 0, 0)),
+        )
+        .wrap(Wrap { trim: true })
+        .scroll((0, 0));
+
+    f.render_widget(hsl, conversion_chunks[2]);
+
+    let rgb = Paragraph::new(app.color_converter.rgb.clone())
+        .style(
+            Style::default()
+                .add_modifier(Modifier::BOLD)
+                .fg(Color::Green),
+        )
+        .block(
+            Block::default()
+                .title(" RGB Color Code ")
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 1, 0, 0)),
+        )
+        .wrap(Wrap { trim: true })
+        .scroll((0, 0));
+
+    f.render_widget(rgb, conversion_chunks[3]);
 }
 
 // Handles the UI for date converter

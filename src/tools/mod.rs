@@ -10,6 +10,7 @@
 ///  - **uuid_generator:** Generates universally unique identifiers (UUIDs) conforming to RFC4122.
 ///
 pub mod base64_encoder;
+pub mod color_converter;
 pub mod date_converter;
 pub mod hash_generator;
 pub mod number_base_converter;

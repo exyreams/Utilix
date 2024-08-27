@@ -25,6 +25,7 @@ fn main() -> Result<(), io::Error> {
 
     // Initialize text areas for each tool, these will be used to input and display data
     let mut base64_converter_textarea = TextArea::default();
+    let mut color_converter_textarea = TextArea::default();
     let mut date_converter_textarea = TextArea::default();
     let mut hash_generator_textarea = TextArea::default();
     let mut number_base_converter_textarea = TextArea::default();
@@ -39,6 +40,7 @@ fn main() -> Result<(), io::Error> {
         &mut terminal,
         app,
         &mut base64_converter_textarea,
+        &mut color_converter_textarea,
         &mut date_converter_textarea,
         &mut hash_generator_textarea,
         &mut number_base_converter_textarea,
