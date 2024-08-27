@@ -42,16 +42,19 @@ impl Base64Encoder {
 
     /// Export the encoded and decoded strings to a file.
     pub fn write_to_file(&mut self) -> std::io::Result<()> {
+        // Create the "export" directory if it doesn't exist
         let file_path = Path::new("export/base64.txt");
         if let Some(parent) = file_path.parent() {
             create_dir_all(parent)?;
         }
+
+        // create the file for in the export folder
         let mut file = File::create(file_path)?;
-        
+
         writeln!(file, "Input: {}", self.input)?;
         writeln!(file, "Encoded: {}", self.encoded)?;
         writeln!(file, "Decoded: {}", self.decoded)?;
-
+        // Return Ok(()) to indicate success
         Ok(())
     }
 }

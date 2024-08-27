@@ -2,6 +2,7 @@
 /// for performing common data manipulations and conversions.
 ///
 ///  - **base64_encoder:** Implements functionality to encode and decode data using base64 encoding.
+///  - **color_converter:** Implements functionality to convert colors between different formats CMYK, HEX, HSL, & RGB.
 ///  - **date_converter:** Provides tools to convert dates between different formats like RFC3339, RFC2822, ISO8601, Unix timestamps, and human-readable formats.
 ///  - **hash_generator:** Generates various hash values (SHA-1, SHA-256, SHA-384, SHA-512) from an input string.
 ///  - **number_base_converter:**  Facilitates the conversion of numbers between different number bases.

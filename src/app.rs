@@ -20,14 +20,23 @@ pub enum Tool {
 
 /// The main application struct.
 pub struct App {
+    /// The currently selected tool.
     pub current_tool: Tool,
+    /// The Base64 encoder tool.
     pub base64_encoder: Base64Encoder,
+    /// The color converter tool.
     pub color_converter: ColorConverter,
+    /// The date converter tool.
     pub date_converter: DateConverter,
+    /// The hash generator tool.
     pub hash_generator: HashGenerator,
+    /// The number base converter tool.
     pub number_base_converter: NumberBaseConverter,
+    /// The password generator tool.
     pub password_generator: PasswordGenerator,
+    /// The QR code generator tool.
     pub qr_code_generator: QRCodeGenerator,
+    /// The UUID generator tool.
     pub uuid_generator: UuidGenerator,
 }
 
@@ -35,7 +44,7 @@ impl App {
     /// Creates a new instance of `App` with all tools initialized.
     pub fn new() -> App {
         App {
-            current_tool: Tool::Base64Encoder,
+            current_tool: Tool::Base64Encoder, // Default to Base64Encoder tool
             base64_encoder: Base64Encoder::new(),
             color_converter: ColorConverter::new(),
             date_converter: DateConverter::new(),

@@ -32,13 +32,13 @@ fn main() -> Result<(), io::Error> {
     let mut qr_code_generator_textarea = TextArea::default();
 
     // Create a new instance of the App, the main application structure.
-    let app = App::new();
+    let app = App::new(); 
 
     // Run the UI of the application
     // `run_app` manages the user interaction, drawing the UI, and processing tool actions.
     let res = ui::run_app(
         &mut terminal,
-        app,
+        app, // remove &mut
         &mut base64_converter_textarea,
         &mut color_converter_textarea,
         &mut date_converter_textarea,

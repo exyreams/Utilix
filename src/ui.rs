@@ -205,7 +205,8 @@ pub fn run_app<B: Backend>(
                         }
                         continue;
                     }
-
+                    // Handle Right, Up, and Down arrow keys similar to Left Arrow,
+                    //  but for corresponding directions.
                     KeyCode::Up => {
                         base64_converter_textarea.move_cursor(tui_textarea::CursorMove::Up);
                         color_converter_textarea.move_cursor(tui_textarea::CursorMove::Up);
@@ -216,7 +217,8 @@ pub fn run_app<B: Backend>(
 
                         continue;
                     }
-
+                    // Handle Right, Up, and Down arrow keys similar to Left Arrow,
+                    //  but for corresponding directions.
                     KeyCode::Down => {
                         base64_converter_textarea.move_cursor(tui_textarea::CursorMove::Down);
                         color_converter_textarea.move_cursor(tui_textarea::CursorMove::Down);
@@ -623,16 +625,18 @@ fn ui(
     number_base_converter_textarea: &mut TextArea,
     qr_code_generator_textarea: &mut TextArea,
 ) {
+    // Split the frame into three chunks: title, tabs, and tool content area.
     let chunks = Layout::default()
         .direction(Direction::Vertical)
         .margin(2)
         .constraints([
-            Constraint::Length(4),
-            Constraint::Length(3),
-            Constraint::Min(1),
+            Constraint::Length(4), // Title area height
+            Constraint::Length(3), // Tabs area height
+            Constraint::Min(1),    // Tool content area takes the remaining space
         ])
         .split(f.area());
 
+    // Render the title.
     let title = Paragraph::new(
         "█░█ ▀█▀ █ █░░ █ ▀▄▀  Tools Collection\n█▄█ ░█░ █ █▄▄ █ █░█      by @exyreams",
     )
@@ -650,6 +654,7 @@ fn ui(
     );
     f.render_widget(title, chunks[0]);
 
+    // Render the tabs for different tools.
     let tabs = Tabs::new(vec![
         Span::raw("Base64 Encoder"),
         Span::raw("Color Code Converter"),
@@ -672,6 +677,7 @@ fn ui(
     )
     .style(Style::default())
     .highlight_style(Style::default().bg(Color::LightMagenta))
+    // Select the currently active tool.
     .select(match app.current_tool {
         Tool::Base64Encoder => 0,
         Tool::ColorConverter => 1,
@@ -686,8 +692,10 @@ fn ui(
     .padding(" ", " ");
     f.render_widget(tabs, chunks[1]);
 
+    // Get the content area for displaying the selected tool's UI.
     let tool_content_area = chunks[2];
 
+    // Render the UI based on the selected tool.
     match app.current_tool {
         Tool::Base64Encoder => base64_encoder(f, app, tool_content_area, base64_converter_textarea),
         Tool::ColorConverter => {
@@ -706,8 +714,10 @@ fn ui(
     }
 }
 
-//
+// Displays a message within a given area of the frame, indicating either success or an error.
 fn tools_export_message(f: &mut Frame, area: Rect, message: &str) {
+    // Create a Paragraph with the message, style it based on the message content (green for success, red for error),
+    // and center the text.
     let text = Paragraph::new(message)
         .style(Style::default().add_modifier(Modifier::BOLD).fg(
             if message.starts_with("Successfully") {
@@ -718,35 +728,39 @@ fn tools_export_message(f: &mut Frame, area: Rect, message: &str) {
         ))
         .alignment(Alignment::Center);
 
+    // Render the message within the provided area.
     f.render_widget(text, area);
 }
 
-// Handles the UI for Base64 encoding and decoding
+// Handles the UI for Base64 encoding and decoding.
 fn base64_encoder(
     f: &mut Frame,
     app: &mut App,
     area: Rect,
     base64_converter_textarea: &mut TextArea,
 ) {
+    // Split the area into three chunks: input/guide area, encoded/decoded area, and a message area.
     let chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
-            Constraint::Percentage(45),
-            Constraint::Percentage(55),
-            Constraint::Length(1),
+            Constraint::Percentage(45), // Input/guide area takes 45% of the height
+            Constraint::Percentage(55), // Encoded/decoded area takes 55% of the height
+            Constraint::Length(1),      // Message area takes 1 line
         ])
         .split(area);
 
-    // export message
+    // Render the export message if one is available.
     if let Some(message) = &app.base64_encoder.tools_export_message {
         tools_export_message(f, chunks[2], message);
     }
 
+    // Split the input/guide area horizontally.
     let input_guide_chunks = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(chunks[0]);
 
+    // Style the input area.
     base64_converter_textarea.set_block(
         Block::default()
             .title(" Input ")
@@ -759,8 +773,10 @@ fn base64_encoder(
 
     base64_converter_textarea.set_style(Style::default().bold());
 
+    // Render the input text area.
     f.render_widget(&*base64_converter_textarea, input_guide_chunks[0]);
 
+    // Create a guide text with shortcut keys and instructions.
     let guide_text = vec![
         Line::from(vec![
             Span::styled(
@@ -837,6 +853,7 @@ fn base64_encoder(
         ]),
     ];
 
+    // Render the guide text with style and padding.
     let guide = Paragraph::new(guide_text)
         .block(
             Block::default()
@@ -850,11 +867,13 @@ fn base64_encoder(
         .wrap(Wrap { trim: true });
     f.render_widget(guide, input_guide_chunks[1]);
 
+    // Split the encoded/decoded area vertically.
     let encoded_decoded_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(chunks[1]);
 
+    // Render the encoded value with styling and borders.
     let encoded = Paragraph::new(app.base64_encoder.encoded.as_str())
         .style(
             Style::default()
@@ -871,6 +890,7 @@ fn base64_encoder(
         .wrap(Wrap { trim: true });
     f.render_widget(encoded, encoded_decoded_chunks[0]);
 
+    // Render the decoded value with styling and borders.
     let decoded = Paragraph::new(app.base64_encoder.decoded.as_str())
         .style(
             Style::default()
@@ -888,23 +908,26 @@ fn base64_encoder(
     f.render_widget(decoded, encoded_decoded_chunks[1]);
 }
 
-// Handles the UI for color code converter
+// Handles the UI for color code converter.
 fn color_code_converter(
     f: &mut Frame,
     app: &mut App,
     area: Rect,
     color_converter_textarea: &mut TextArea,
 ) {
+    // Split the area into two chunks: input/guide area and conversion results area.
     let chunks = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(40), Constraint::Percentage(60)].as_ref())
         .split(area);
 
+    // Split the input/guide area into two chunks: input area and guide/status area.
     let input_guide_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([Constraint::Percentage(30), Constraint::Percentage(70)])
         .split(chunks[0]);
 
+    // Style the input text area.
     color_converter_textarea.set_block(
         Block::default()
             .title(" Enter Color Code ")
@@ -917,13 +940,16 @@ fn color_code_converter(
 
     color_converter_textarea.set_style(Style::default().bold());
 
+    // Render the input text area.
     f.render_widget(&*color_converter_textarea, input_guide_chunks[0]);
 
+    // Split the guide/status area into two chunks: guide area and status area.
     let guide_status_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([Constraint::Percentage(80), Constraint::Percentage(20)])
         .split(input_guide_chunks[1]);
 
+    // Create a guide text with shortcut keys and instructions.
     let guide_text = vec![
         Line::from(vec![
             Span::styled(
@@ -1047,6 +1073,7 @@ fn color_code_converter(
         ]),
     ];
 
+    // Render the guide text.
     let guide = Paragraph::new(guide_text)
         .style(Style::default().add_modifier(Modifier::BOLD).fg(Color::Red))
         .block(
@@ -1059,13 +1086,14 @@ fn color_code_converter(
         .wrap(Wrap { trim: true });
     f.render_widget(guide, guide_status_chunks[0]);
 
-    // status block
+    // Create a status block to display messages or errors.
     let status_text = if let Some(message) = &app.color_converter.tools_export_message {
         format!("{}", message)
     } else {
         "".to_string()
     };
 
+    // Render the status block.
     let status_block = Paragraph::new(status_text)
         .style(
             Style::default()
@@ -1082,6 +1110,7 @@ fn color_code_converter(
         .wrap(Wrap { trim: true });
     f.render_widget(status_block, guide_status_chunks[1]);
 
+    // Split the conversion results area into four chunks for displaying CMYK, HEX, HSL, and RGB.
     let conversion_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
@@ -1092,6 +1121,7 @@ fn color_code_converter(
         ])
         .split(chunks[1]);
 
+    // Render the CMYK value.
     let cmyk = Paragraph::new(app.color_converter.cmyk.clone())
         .style(
             Style::default()
@@ -1107,9 +1137,9 @@ fn color_code_converter(
         )
         .wrap(Wrap { trim: true })
         .scroll((0, 0));
-
     f.render_widget(cmyk, conversion_chunks[0]);
 
+    // Render the HEX value.
     let hex = Paragraph::new(app.color_converter.hex.clone())
         .style(
             Style::default()
@@ -1125,9 +1155,9 @@ fn color_code_converter(
         )
         .wrap(Wrap { trim: true })
         .scroll((0, 0));
-
     f.render_widget(hex, conversion_chunks[1]);
 
+    // Render the HSL value.
     let hsl = Paragraph::new(app.color_converter.hsl.clone())
         .style(
             Style::default()
@@ -1143,9 +1173,9 @@ fn color_code_converter(
         )
         .wrap(Wrap { trim: true })
         .scroll((0, 0));
-
     f.render_widget(hsl, conversion_chunks[2]);
 
+    // Render the RGB value.
     let rgb = Paragraph::new(app.color_converter.rgb.clone())
         .style(
             Style::default()
@@ -1161,27 +1191,29 @@ fn color_code_converter(
         )
         .wrap(Wrap { trim: true })
         .scroll((0, 0));
-
     f.render_widget(rgb, conversion_chunks[3]);
 }
 
-// Handles the UI for date converter
+// Handles the UI for date converter.
 fn date_converter(
     f: &mut Frame,
     app: &mut App,
     area: Rect,
     date_converter_textarea: &mut TextArea,
 ) {
+    // Split the area into two chunks: input/guide area and conversion results area.
     let chunks = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(35), Constraint::Percentage(65)].as_ref())
         .split(area);
 
+    // Split the input/guide area into two chunks: input area and guide area.
     let input_guide_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([Constraint::Percentage(25), Constraint::Percentage(75)])
         .split(chunks[0]);
 
+    // Style the input text area.
     date_converter_textarea.set_block(
         Block::default()
             .title(" Enter Date ")
@@ -1194,8 +1226,10 @@ fn date_converter(
 
     date_converter_textarea.set_style(Style::default().bold());
 
+    // Render the input text area.
     f.render_widget(&*date_converter_textarea, input_guide_chunks[0]);
 
+    // Create a guide text with supported formats, examples, and shortcut keys.
     let guide_text = vec![
         Line::from(vec![
             Span::styled(
@@ -1355,6 +1389,7 @@ fn date_converter(
         ]),
     ];
 
+    // Render the guide text.
     let guide = Paragraph::new(guide_text)
         .style(Style::default().add_modifier(Modifier::BOLD).fg(Color::Red))
         .block(
@@ -1367,26 +1402,29 @@ fn date_converter(
         .wrap(Wrap { trim: true });
     f.render_widget(guide, input_guide_chunks[1]);
 
+    // Split the conversion results area into two chunks.
     let converstion_chunks = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(60), Constraint::Percentage(40)])
         .split(chunks[1]);
 
+    // Split the first chunk of conversion results area further.
     let converstion_chunks_first_split = Layout::default()
         .direction(Direction::Vertical)
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(converstion_chunks[0]);
 
+    // Split the top portion of the first chunk again.
     let converstion_chunks_second_split = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(converstion_chunks_first_split[0]);
 
+    // Render the RFC 3339 conversion result.
     let rfc3339_text = vec![Line::from(vec![Span::styled(
         app.date_converter.rfc3339.to_string(),
         Style::default().fg(Color::Green),
     )])];
-
     let rfc3339 = Paragraph::new(rfc3339_text)
         .style(
             Style::default()
@@ -1403,11 +1441,11 @@ fn date_converter(
         .wrap(Wrap { trim: true });
     f.render_widget(rfc3339, converstion_chunks_second_split[0]);
 
+    // Render the RFC 2822 conversion result.
     let rfc2822_text = vec![Line::from(vec![Span::styled(
         app.date_converter.rfc2822.to_string(),
         Style::default().fg(Color::Green),
     )])];
-
     let rfc2822 = Paragraph::new(rfc2822_text)
         .style(
             Style::default()
@@ -1424,21 +1462,23 @@ fn date_converter(
         .wrap(Wrap { trim: true });
     f.render_widget(rfc2822, converstion_chunks_second_split[1]);
 
+    // Split the second chunk of the conversion results area.
     let converstion_chunks_third_split = Layout::default()
         .direction(Direction::Vertical)
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(converstion_chunks[1]);
 
+    // Split the first portion of the second chunk.
     let converstion_chunks_third_split_half = Layout::default()
         .direction(Direction::Vertical)
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(converstion_chunks_third_split[0]);
 
+    // Render the Time Only conversion result.
     let timeonly_text = vec![Line::from(vec![Span::styled(
         app.date_converter.time_only.to_string(),
         Style::default().fg(Color::Green),
     )])];
-
     let timeonly = Paragraph::new(timeonly_text)
         .style(
             Style::default()
@@ -1455,11 +1495,11 @@ fn date_converter(
         .wrap(Wrap { trim: true });
     f.render_widget(timeonly, converstion_chunks_third_split_half[0]);
 
+    // Render the ISO 8601 conversion result.
     let iso8601_text = vec![Line::from(vec![Span::styled(
         app.date_converter.iso8601.to_string(),
         Style::default().fg(Color::Green),
     )])];
-
     let iso8601 = Paragraph::new(iso8601_text)
         .style(
             Style::default()
@@ -1476,11 +1516,11 @@ fn date_converter(
         .wrap(Wrap { trim: true });
     f.render_widget(iso8601, converstion_chunks_third_split_half[1]);
 
+    // Render the Unix Timestamp conversion result.
     let unixtimestamp_text = vec![Line::from(vec![Span::styled(
         app.date_converter.unix_timestamp.to_string(),
         Style::default().fg(Color::Green),
     )])];
-
     let unixtimestamp = Paragraph::new(unixtimestamp_text)
         .style(
             Style::default()
@@ -1497,16 +1537,17 @@ fn date_converter(
         .wrap(Wrap { trim: true });
     f.render_widget(unixtimestamp, converstion_chunks_third_split[1]);
 
+    // Split the second portion of the first chunk.
     let converstion_chunks_fourth_split = Layout::default()
         .direction(Direction::Vertical)
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(converstion_chunks_first_split[1]);
 
+    // Render the Human Readable conversion result.
     let humanreadable_text = vec![Line::from(vec![Span::styled(
         app.date_converter.human_readable.to_string(),
         Style::default().fg(Color::Green),
     )])];
-
     let humanreadable = Paragraph::new(humanreadable_text)
         .style(
             Style::default()
@@ -1523,11 +1564,11 @@ fn date_converter(
         .wrap(Wrap { trim: true });
     f.render_widget(humanreadable, converstion_chunks_fourth_split[0]);
 
+    // Render the Short Date conversion result.
     let shordate_text = vec![Line::from(vec![Span::styled(
         app.date_converter.short_date.to_string(),
         Style::default().fg(Color::Green),
     )])];
-
     let shortdate = Paragraph::new(shordate_text)
         .style(
             Style::default()
@@ -1545,23 +1586,26 @@ fn date_converter(
     f.render_widget(shortdate, converstion_chunks_fourth_split[1]);
 }
 
-// Handles the UI for hash generator
+// Handles the UI for hash generator.
 fn hash_generator(
     f: &mut Frame,
     app: &mut App,
     area: Rect,
     hash_generator_textarea: &mut TextArea,
 ) {
+    // Split the area into two chunks: input/guide area and hash output area.
     let chunks = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(40), Constraint::Percentage(60)].as_ref())
         .split(area);
 
+    // Split the input/guide area into two chunks: input area and guide/status area.
     let input_guide_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(chunks[0]);
 
+    // Style the input text area.
     hash_generator_textarea.set_block(
         Block::default()
             .title(" Input ")
@@ -1573,11 +1617,13 @@ fn hash_generator(
     );
     f.render_widget(&*hash_generator_textarea, input_guide_chunks[0]);
 
+    // Split the guide/status area into two chunks: guide area and status area.
     let guide_status_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([Constraint::Percentage(80), Constraint::Percentage(20)])
         .split(input_guide_chunks[1]);
 
+    // Create a guide text with shortcut keys and instructions.
     let guide_text = vec![
         Line::from(vec![Span::raw("")]),
         Line::from(vec![
@@ -1642,6 +1688,7 @@ fn hash_generator(
         ]),
     ];
 
+    // Render the guide text.
     let guide = Paragraph::new(guide_text)
         .style(Style::default().add_modifier(Modifier::BOLD).fg(Color::Red))
         .block(
@@ -1654,13 +1701,12 @@ fn hash_generator(
         .wrap(Wrap { trim: true });
     f.render_widget(guide, guide_status_chunks[0]);
 
-    // status block
+    // Render the status block for messages and errors.
     let status_text = if let Some(message) = &app.hash_generator.tools_export_message {
         format!("{}", message)
     } else {
         "".to_string()
     };
-
     let status_block = Paragraph::new(status_text)
         .style(
             Style::default()
@@ -1677,16 +1723,19 @@ fn hash_generator(
         .wrap(Wrap { trim: true });
     f.render_widget(status_block, guide_status_chunks[1]);
 
+    // Split the hash output area into two chunks for SHA-1/SHA-256 and SHA-384/SHA-512.
     let hash_output_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(chunks[1]);
 
+    // Split the top chunk into SHA-1 and SHA-256.
     let sha1_sha256_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(hash_output_chunks[0]);
 
+    // Render the SHA-1 hash value.
     let sha1 = Paragraph::new(app.hash_generator.get_sha1())
         .style(
             Style::default()
@@ -1704,6 +1753,7 @@ fn hash_generator(
         .scroll((0, 0));
     f.render_widget(sha1, sha1_sha256_chunks[0]);
 
+    // Render the SHA-256 hash value.
     let sha256 = Paragraph::new(app.hash_generator.get_sha256())
         .style(
             Style::default()
@@ -1721,11 +1771,13 @@ fn hash_generator(
         .scroll((0, 0));
     f.render_widget(sha256, sha1_sha256_chunks[1]);
 
+    // Split the bottom chunk into SHA-384 and SHA-512.
     let sha384_sha512_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(hash_output_chunks[1]);
 
+    // Render the SHA-384 hash value.
     let sha384 = Paragraph::new(app.hash_generator.get_sha384())
         .style(
             Style::default()
@@ -1734,7 +1786,7 @@ fn hash_generator(
         )
         .block(
             Block::default()
-                .title(" SHA-1 Hash ")
+                .title(" SHA-384 Hash ")
                 .borders(Borders::ALL)
                 .border_type(BorderType::Rounded)
                 .padding(Padding::new(1, 1, 0, 0)),
@@ -1743,6 +1795,7 @@ fn hash_generator(
         .scroll((0, 0));
     f.render_widget(sha384, sha384_sha512_chunks[0]);
 
+    // Render the SHA-512 hash value.
     let sha512 = Paragraph::new(app.hash_generator.get_sha512())
         .style(
             Style::default()
@@ -1761,23 +1814,26 @@ fn hash_generator(
     f.render_widget(sha512, sha384_sha512_chunks[1]);
 }
 
-// Handles the UI for number base conversion
+// Handles the UI for number base conversion.
 fn number_base_converter(
     f: &mut Frame,
     app: &mut App,
     area: Rect,
     number_base_converter_textarea: &mut TextArea,
 ) {
+    // Split the area into two chunks: input/guide area and output area.
     let chunks = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(40), Constraint::Percentage(60)].as_ref())
         .split(area);
 
+    // Split the input/guide area into two chunks: input area and guide/status area.
     let input_guide_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref())
         .split(chunks[0]);
 
+    // Style the input text area.
     number_base_converter_textarea.set_block(
         Block::default()
             .title(" Input ")
@@ -1790,11 +1846,13 @@ fn number_base_converter(
 
     f.render_widget(&*number_base_converter_textarea, input_guide_chunks[0]);
 
+    // Split the guide/status area into two chunks: guide area and status area.
     let guide_status_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([Constraint::Percentage(80), Constraint::Percentage(20)])
         .split(input_guide_chunks[1]);
 
+    // Create a guide text with shortcut keys and instructions.
     let guide_text = vec![
         Line::from(vec![Span::raw("")]),
         Line::from(vec![
@@ -1857,6 +1915,7 @@ fn number_base_converter(
         ]),
     ];
 
+    // Render the guide text.
     let guide = Paragraph::new(guide_text)
         .style(Style::default().fg(Color::Red))
         .block(
@@ -1870,7 +1929,7 @@ fn number_base_converter(
         .wrap(Wrap { trim: true });
     f.render_widget(guide, guide_status_chunks[0]);
 
-    // status block
+    // Render the status block for messages and errors.
     let status_text = if let Some(message) = &app.number_base_converter.tools_export_message {
         format!("{}", message)
     } else {
@@ -1893,7 +1952,7 @@ fn number_base_converter(
         .wrap(Wrap { trim: true });
     f.render_widget(status_block, guide_status_chunks[1]);
 
-    // Output Chunks Layout
+    // Split the output area into six chunks for displaying different conversions.
     let output_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
@@ -1906,7 +1965,7 @@ fn number_base_converter(
         ])
         .split(chunks[1]);
 
-    // Display individual conversion outputs
+    // Render individual conversion outputs with styles and borders.
     let binary_to_decimal_text = vec![Line::from(vec![Span::styled(
         app.number_base_converter.binary_to_decimal.to_string(),
         Style::default().fg(Color::Green),
@@ -2028,13 +2087,15 @@ fn number_base_converter(
     f.render_widget(hexadecimal_to_decimal, output_chunks[5]);
 }
 
-// Handles the UI for password generator
+// Handles the UI for password generator.
 fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
+    // Split the area into two chunks: settings/guide area and password output area.
     let chunks = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(60), Constraint::Percentage(40)].as_ref())
         .split(area);
 
+    // Create a vector of lines representing the password generator settings.
     let settings = vec![
         Line::from(vec![
             Span::raw("Length: "),
@@ -2101,11 +2162,13 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
         ]),
     ];
 
+    // Split the settings/guide area into two chunks: settings area and guide/status area.
     let settings_guide_chunks = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(37), Constraint::Percentage(63)])
         .split(chunks[0]);
 
+    // Render the password generator settings.
     let settings_widget = Paragraph::new(settings)
         .block(
             Block::default()
@@ -2121,14 +2184,15 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                 .add_modifier(Modifier::BOLD)
                 .fg(Color::Yellow),
         );
-
     f.render_widget(settings_widget, settings_guide_chunks[0]);
 
+    // Split the guide/status area into two chunks: guide area and status area.
     let guide_status_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([Constraint::Percentage(90), Constraint::Percentage(20)])
         .split(settings_guide_chunks[1]);
 
+    // Create a guide text with shortcut keys and instructions.
     let guide_text = vec![
         Line::from(vec![
             Span::styled(
@@ -2414,6 +2478,7 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
         ]),
     ];
 
+    // Render the guide text.
     let guide = Paragraph::new(guide_text)
         .style(Style::default().fg(Color::Red))
         .block(
@@ -2426,13 +2491,13 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
         )
         .wrap(Wrap { trim: true });
     f.render_widget(guide, guide_status_chunks[0]);
-    // status block
+
+    // Render the status block for messages and errors.
     let status_text = if let Some(message) = &app.password_generator.tools_export_message {
         format!("{}", message)
     } else {
         "".to_string()
     };
-
     let status_block = Paragraph::new(status_text)
         .style(
             Style::default()
@@ -2449,6 +2514,7 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
         .wrap(Wrap { trim: true });
     f.render_widget(status_block, guide_status_chunks[1]);
 
+    // Render the generated password.
     let password = Paragraph::new(app.password_generator.generated_password.clone())
         .style(
             Style::default()
@@ -2463,27 +2529,29 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                 .padding(Padding::new(1, 1, 0, 0)),
         )
         .wrap(Wrap { trim: true });
-
     f.render_widget(password, chunks[1]);
 }
 
-// Handles the UI for qrcode generator
+// Handles the UI for QR code generator.
 fn qr_code_generator(
     f: &mut Frame,
     app: &mut App,
     area: Rect,
     qr_code_generator_textarea: &mut TextArea,
 ) {
+    // Split the area into two chunks: input/guide area and QR code output area.
     let chunks = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(40), Constraint::Percentage(60)].as_ref())
         .split(area);
 
+    // Split the input/guide area into two chunks: input area and guide/status area.
     let input_guide_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([Constraint::Percentage(40), Constraint::Percentage(60)])
         .split(chunks[0]);
 
+    // Style the input text area.
     qr_code_generator_textarea.set_block(
         Block::default()
             .title(" Input ")
@@ -2496,11 +2564,13 @@ fn qr_code_generator(
 
     f.render_widget(&*qr_code_generator_textarea, input_guide_chunks[0]);
 
+    // Split the guide/status area into two chunks: guide area and status area.
     let guide_status_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([Constraint::Percentage(70), Constraint::Percentage(30)])
         .split(input_guide_chunks[1]);
 
+    // Create a guide text with shortcut keys, instructions, and file path information.
     let guide_text = vec![
         Line::from(vec![Span::raw("")]),
         Line::from(vec![
@@ -2602,6 +2672,7 @@ fn qr_code_generator(
         ]),
     ];
 
+    // Render the guide text.
     let guide = Paragraph::new(guide_text)
         .style(Style::default().add_modifier(Modifier::BOLD).fg(Color::Red))
         .block(
@@ -2614,13 +2685,12 @@ fn qr_code_generator(
         .wrap(Wrap { trim: true });
     f.render_widget(guide, guide_status_chunks[0]);
 
-    // status block
+    // Render the status block for messages and errors.
     let status_text = if let Some(message) = &app.qr_code_generator.tools_export_message {
         format!("{}", message)
     } else {
         "".to_string()
     };
-
     let status_block = Paragraph::new(status_text)
         .style(
             Style::default()
@@ -2637,8 +2707,8 @@ fn qr_code_generator(
         .wrap(Wrap { trim: true });
     f.render_widget(status_block, guide_status_chunks[1]);
 
+    // Render the generated QR code string.
     let qr_code = app.qr_code_generator.get_qr_string();
-
     let output = Paragraph::new(qr_code)
         .style(
             Style::default()
@@ -2655,18 +2725,21 @@ fn qr_code_generator(
     f.render_widget(output, chunks[1]);
 }
 
-// Handles the UI for uuid generator
+// Handles the UI for UUID generator.
 fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
+    // Split the area into two chunks: settings/guide area and UUID output area.
     let chunks = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(35), Constraint::Percentage(65)].as_ref())
         .split(area);
 
+    // Split the settings/guide area into two chunks: settings area and guide/status area.
     let settings_guide_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([Constraint::Percentage(20), Constraint::Percentage(80)])
         .split(chunks[0]);
 
+    // Render the UUID generator settings.
     let settings = vec![Line::from(vec![
         Span::raw("Number of UUID: "),
         Span::styled(
@@ -2674,7 +2747,6 @@ fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
             Style::default().fg(Color::Yellow),
         ),
     ])];
-
     let settings_widget = Paragraph::new(settings)
         .block(
             Block::default()
@@ -2690,14 +2762,15 @@ fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
                 .add_modifier(Modifier::BOLD)
                 .fg(Color::Yellow),
         );
-
     f.render_widget(settings_widget, settings_guide_chunks[0]);
 
+    // Split the guide/status area into two chunks: guide area and status area.
     let guide_status_chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([Constraint::Percentage(80), Constraint::Percentage(20)])
         .split(settings_guide_chunks[1]);
 
+    // Create a guide text with shortcut keys and instructions.
     let guide_text = vec![
         Line::from(vec![Span::raw("")]),
         Line::from(vec![
@@ -2844,6 +2917,7 @@ fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
         ]),
     ];
 
+    // Render the guide text.
     let guide = Paragraph::new(guide_text)
         .style(Style::default().fg(Color::Red))
         .block(
@@ -2857,7 +2931,7 @@ fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
         .wrap(Wrap { trim: true });
     f.render_widget(guide, guide_status_chunks[0]);
 
-    // status block
+    // Render the status block for messages and errors.
     let status_text = if let Some(message) = &app.uuid_generator.tools_export_message {
         format!("{}", message)
     } else {
@@ -2880,11 +2954,13 @@ fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
         .wrap(Wrap { trim: true });
     f.render_widget(status_block, guide_status_chunks[1]);
 
+    // Split the UUID output area into two chunks for Version 4 and Version 7 UUIDs.
     let version4_version7_chunks = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(chunks[1]);
 
+    // Render the Version 4 UUID.
     let version_4_uuid = Paragraph::new(app.uuid_generator.generated_uuid_v4.as_str())
         .style(
             Style::default()
@@ -2900,6 +2976,7 @@ fn uuid_generator(f: &mut Frame, app: &mut App, area: Rect) {
         );
     f.render_widget(version_4_uuid, version4_version7_chunks[0]);
 
+    // Render the Version 7 UUID.
     let version_7_uuid = Paragraph::new(app.uuid_generator.generated_uuid_v7.as_str())
         .style(
             Style::default()

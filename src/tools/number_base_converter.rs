@@ -4,16 +4,27 @@ use std::path::Path;
 
 /// Struct to perform number base conversions.
 pub struct NumberBaseConverter {
+    /// The input number string.
     pub input: String,
+    /// The base of the input number.
     pub base_from: u32,
+    /// The desired base for the converted number.
     pub base_to: u32,
+    /// The result of the conversion.
     pub result: String,
+    /// The result of converting the input to decimal (binary to decimal).
     pub binary_to_decimal: String,
+    /// The result of converting the input to hexadecimal (binary to hexadecimal).
     pub binary_to_hexadecimal: String,
+    /// The result of converting the input to binary (decimal to binary).
     pub decimal_to_binary: String,
+    /// The result of converting the input to hexadecimal (decimal to hexadecimal).
     pub decimal_to_hexadecimal: String,
+    /// The result of converting the input to binary (hexadecimal to binary).
     pub hexadecimal_to_binary: String,
+    /// The result of converting the input to decimal (hexadecimal to decimal).
     pub hexadecimal_to_decimal: String,
+    /// A potential message for tools export.
     pub tools_export_message: Option<String>,
 }
 
@@ -22,8 +33,8 @@ impl NumberBaseConverter {
     pub fn new() -> Self {
         NumberBaseConverter {
             input: String::new(),
-            base_from: 10,
-            base_to: 2,
+            base_from: 10, // Default base from is decimal
+            base_to: 2,    // Default base to is binary
             result: String::new(),
             binary_to_decimal: String::new(),
             binary_to_hexadecimal: String::new(),
@@ -102,11 +113,16 @@ impl NumberBaseConverter {
 
     /// Exports the conversion results and create a file.
     pub fn write_to_file(&self) -> std::io::Result<()> {
+        // Create the "export" directory if it doesn't exist.
         let file_path = Path::new("export/number_conversion.txt");
         if let Some(parent) = file_path.parent() {
             create_dir_all(parent)?;
         }
+
+        // Open the file for writing.
         let mut file = File::create(file_path)?;
+
+        // Write the input, conversion details, and results to the file.
         writeln!(file, "Input: {}", self.input)?;
         writeln!(file, "From Base: {}", self.base_from)?;
         writeln!(file, "To Base: {}", self.base_to)?;
@@ -133,6 +149,8 @@ impl NumberBaseConverter {
             "Hexadecimal to Decimal: {}",
             self.hexadecimal_to_decimal
         )?;
+
+        // Return Ok(()) to indicate success.
         Ok(())
     }
 }
