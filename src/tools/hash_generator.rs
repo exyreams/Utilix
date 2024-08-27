@@ -98,6 +98,8 @@ impl HashGenerator {
             create_dir_all(parent)?;
         }
         let mut file = File::create(file_path)?;
+        
+        writeln!(file, "Input: {}", self.input)?;
         writeln!(file, "SHA1: {}", self.sha1_hash)?;
         writeln!(file, "SHA256: {}", self.sha256_hash)?;
         writeln!(file, "SHA384: {}", self.sha384_hash)?;

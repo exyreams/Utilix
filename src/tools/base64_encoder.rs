@@ -47,6 +47,8 @@ impl Base64Encoder {
             create_dir_all(parent)?;
         }
         let mut file = File::create(file_path)?;
+        
+        writeln!(file, "Input: {}", self.input)?;
         writeln!(file, "Encoded: {}", self.encoded)?;
         writeln!(file, "Decoded: {}", self.decoded)?;
 
