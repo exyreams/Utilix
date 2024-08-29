@@ -660,7 +660,7 @@ fn ui(
         Span::raw("Color Code Converter"),
         Span::raw("Date Converter"),
         Span::raw("Hash Generator"),
-        Span::raw("Number Base Generator"),
+        Span::raw("Number Base Converter"),
         Span::raw("Password Generator"),
         Span::raw("QR Code Generator"),
         Span::raw("UUID Generator"),
@@ -671,12 +671,11 @@ fn ui(
             .style(
                 Style::default()
                     .add_modifier(Modifier::BOLD)
-                    .fg(Color::White),
+                    .fg(Color::Magenta),
             )
             .border_type(BorderType::Rounded),
     )
-    .style(Style::default())
-    .highlight_style(Style::default().bg(Color::LightMagenta))
+    .highlight_style(Style::default().bg(Color::White).fg(Color::Black))
     // Select the currently active tool.
     .select(match app.current_tool {
         Tool::Base64Encoder => 0,
@@ -2092,7 +2091,7 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
     // Split the area into two chunks: settings/guide area and password output area.
     let chunks = Layout::default()
         .direction(Direction::Horizontal)
-        .constraints([Constraint::Percentage(60), Constraint::Percentage(40)].as_ref())
+        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref())
         .split(area);
 
     // Create a vector of lines representing the password generator settings.
@@ -2186,12 +2185,6 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
         );
     f.render_widget(settings_widget, settings_guide_chunks[0]);
 
-    // Split the guide/status area into two chunks: guide area and status area.
-    let guide_status_chunks = Layout::default()
-        .direction(Direction::Vertical)
-        .constraints([Constraint::Percentage(90), Constraint::Percentage(20)])
-        .split(settings_guide_chunks[1]);
-
     // Create a guide text with shortcut keys and instructions.
     let guide_text = vec![
         Line::from(vec![
@@ -2219,7 +2212,6 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                 "   Switch Tools",
                 Style::default()
                     .fg(Color::White)
-                    .add_modifier(Modifier::BOLD)
                     .add_modifier(Modifier::BOLD),
             ),
         ]),
@@ -2348,7 +2340,12 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::White)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled(" (e.g. ABCDE)", Style::default().fg(Color::Cyan)),
+            Span::styled(
+                " (e.g. ABCDE)",
+                Style::default()
+                    .fg(Color::Cyan)
+                    .add_modifier(Modifier::BOLD),
+            ),
         ]),
         Line::from(vec![
             Span::styled(
@@ -2363,7 +2360,12 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::White)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled(" (e.g. abcde)", Style::default().fg(Color::Cyan)),
+            Span::styled(
+                " (e.g. abcde)",
+                Style::default()
+                    .fg(Color::Cyan)
+                    .add_modifier(Modifier::BOLD),
+            ),
         ]),
         Line::from(vec![
             Span::styled(
@@ -2372,7 +2374,12 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("     Include Numbers", Style::default().fg(Color::White)),
+            Span::styled(
+                "     Include Numbers",
+                Style::default()
+                    .fg(Color::White)
+                    .add_modifier(Modifier::BOLD),
+            ),
             Span::styled(
                 " (e.g. 12345)",
                 Style::default()
@@ -2387,7 +2394,12 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("     Include Symbols", Style::default().fg(Color::White)),
+            Span::styled(
+                "     Include Symbols",
+                Style::default()
+                    .fg(Color::White)
+                    .add_modifier(Modifier::BOLD),
+            ),
             Span::styled(
                 " (e.g. !@#$%^",
                 Style::default()
@@ -2402,7 +2414,12 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                     .fg(Color::Blue)
                     .add_modifier(Modifier::BOLD),
             ),
-            Span::styled("     Similar Characters", Style::default().fg(Color::White)),
+            Span::styled(
+                "     Similar Characters",
+                Style::default()
+                    .fg(Color::White)
+                    .add_modifier(Modifier::BOLD),
+            ),
             Span::styled(
                 " (e.g. i,l,L,o,0,O, etc.)",
                 Style::default()
@@ -2419,7 +2436,9 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
             ),
             Span::styled(
                 "     Duplicate Characters",
-                Style::default().fg(Color::White),
+                Style::default()
+                    .fg(Color::White)
+                    .add_modifier(Modifier::BOLD),
             ),
             Span::styled(
                 " (e.g. pp, 11)",
@@ -2437,7 +2456,9 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
             ),
             Span::styled(
                 "     Sequential Characters",
-                Style::default().fg(Color::White),
+                Style::default()
+                    .fg(Color::White)
+                    .add_modifier(Modifier::BOLD),
             ),
             Span::styled(
                 " (e.g. abc, 234)",
@@ -2490,7 +2511,30 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                 .padding(Padding::new(1, 1, 1, 0)),
         )
         .wrap(Wrap { trim: true });
-    f.render_widget(guide, guide_status_chunks[0]);
+    f.render_widget(guide, settings_guide_chunks[1]);
+
+    // Split the guide/status area into two chunks: guide area and status area.
+    let password_status_chunk = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([Constraint::Percentage(80), Constraint::Percentage(20)])
+        .split(chunks[1]);
+
+    // Render the generated password.
+    let password = Paragraph::new(app.password_generator.generated_password.clone())
+        .style(
+            Style::default()
+                .add_modifier(Modifier::BOLD)
+                .fg(Color::Green),
+        )
+        .block(
+            Block::default()
+                .title(" Generated Password ")
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .padding(Padding::new(1, 1, 0, 0)),
+        )
+        .wrap(Wrap { trim: true });
+    f.render_widget(password, password_status_chunk[0]);
 
     // Render the status block for messages and errors.
     let status_text = if let Some(message) = &app.password_generator.tools_export_message {
@@ -2512,24 +2556,7 @@ fn password_generator(f: &mut Frame, app: &mut App, area: Rect) {
                 .padding(Padding::new(1, 1, 0, 0)),
         )
         .wrap(Wrap { trim: true });
-    f.render_widget(status_block, guide_status_chunks[1]);
-
-    // Render the generated password.
-    let password = Paragraph::new(app.password_generator.generated_password.clone())
-        .style(
-            Style::default()
-                .add_modifier(Modifier::BOLD)
-                .fg(Color::Green),
-        )
-        .block(
-            Block::default()
-                .title(" Generated Password ")
-                .borders(Borders::ALL)
-                .border_type(BorderType::Rounded)
-                .padding(Padding::new(1, 1, 0, 0)),
-        )
-        .wrap(Wrap { trim: true });
-    f.render_widget(password, chunks[1]);
+    f.render_widget(status_block, password_status_chunk[1]);
 }
 
 // Handles the UI for QR code generator.
