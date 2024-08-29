@@ -1,6 +1,6 @@
 ## Utilix: Command-Line Toolkit
 
-![utilx_tools](https://github.com/user-attachments/assets/69345455-8dac-4faa-858d-c9beac684f2b)
+![enter image description here](https://raw.githubusercontent.com/exyreams/collections/main/utilx_tools.gif?token=GHSAT0AAAAAACTM6Q5SPZXRISYE6WOQF5IQZWQHQWQ)
 
 Utilix is a comprehensive command-line toolkit designed to simplify common data manipulation tasks directly within your terminal. With a variety of built-in utilities, Utilix empowers you to encode, convert, generate, and hash data efficiently without needing a graphical interface.
 
@@ -63,10 +63,10 @@ Convert color codes between **`RGB`**, **`HEX`**, **`CMYK`**, and **`HSL`** form
 	- **`Tab`**        : Switch to Next Tool
 	- **`Alt + x`**    : Export input & all the color codes in  **`.txt`** file in **`export/color_codes.txt`** directory. 
 - **Input Formats with Examples**:
-	**CMYK Color Code**  : **`0, 26, 99, 1 or 0%, 26%, 99%, 1%`**
-	**HEX Color Code**   : **`#fcba03` or `#FCBA03`** 
-	**HSL Color Code**   : **`44, 98, 50 or 44°, 98%, 50%  `** 
-	**RGB Color Code**   : **`252, 186, 3`**
+	- **CMYK Color Code**  : **`0, 26, 99, 1 or 0%, 26%, 99%, 1%`**
+	- **HEX Color Code**   : **`#fcba03` or `#FCBA03`** 
+	- **HSL Color Code**   : **`44, 98, 50 or 44°, 98%, 50%  `** 
+	- **RGB Color Code**   : **`252, 186, 3`**
 
 #### **Date Converter:**
 
@@ -78,18 +78,18 @@ Convert dates between multiple formats, including **`RFC 3339`**, **`RFC 2822`**
 	- **`Tab`**  : Switch to Next Tool
 	- **Export feature isn't available** for date converter tool, users can directly use the terminal to copy the dates.
 - **Supported Formats:**
-	**`YYYY-MM-DD H:M:S`**
-	**`YYYY-MM-DDTH:M:S:z`**
-	**`YYYY-MM-DD`**
-	**`DD/MM/YYYY H:M:S`**
-	**`DD/MM/YYYY`**
+	- **`YYYY-MM-DD H:M:S`**
+	- **`YYYY-MM-DDTH:M:S:z`**
+	- **`YYYY-MM-DD`**
+	- **`DD/MM/YYYY H:M:S`**
+	- **`DD/MM/YYYY`**
 - **Examples:**
-	**RFC 3339**        :  `2024-05-22T13:00:00Z`
-	**RFC 2822**        :  `Tue, 22 May 2022 13:00:00 +0100`
-	**ISO 8601**        :  `2024-05-22T13:00:00+01:00 or 20240522T130000+0100`
-	**Unix Timestamp**  : `1716382800`
-	**Human Readable**  : `Tuesday, March 1, 2022, 1:00:00 PM`
-	**Time Only**       : `1:00:00 PM or 13:00:00`
+	- **RFC 3339**        :  `2024-05-22T13:00:00Z`
+	- **RFC 2822**        :  `Tue, 22 May 2022 13:00:00 +0100`
+	- **ISO 8601**        :  `2024-05-22T13:00:00+01:00 or 20240522T130000+0100`
+	- **Unix Timestamp**  : `1716382800`
+	- **Human Readable**  : `Tuesday, March 1, 2022, 1:00:00 PM`
+	- **Time Only**       : `1:00:00 PM or 13:00:00`
 
 #### **Hash Generator:**
 
@@ -106,9 +106,9 @@ Generate secure hashes using **`SHA-1`**, **`SHA-256`**, **`SHA-384`**, and **`S
 ![number_base_converter_tool](https://github.com/user-attachments/assets/825825df-0e03-426f-98a4-0470aa28bacc)
 
 Convert numbers between binary, decimal, and hexadecimal representations, simplifying calculations and data processing. It can convert to:
-	Binary ==> Decimal & Hexadecimal
-	Decimal ==> Binary & Hexadecimal
-	Hexadecimal ==> Binary & Decimal
+	- Binary ==> Decimal & Hexadecimal
+	- Decimal ==> Binary & Hexadecimal
+	- Hexadecimal ==> Binary & Decimal
 - **Guide**:
 	- **`Esc`**         : Quits Program
 	- **`Tab`**         : Switch to Next Tool
