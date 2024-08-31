@@ -1,6 +1,6 @@
 ## Utilix: Command-Line Toolkit
 
-![enter image description here](https://raw.githubusercontent.com/exyreams/collections/main/utilx_tools.gif?token=GHSAT0AAAAAACTM6Q5SPZXRISYE6WOQF5IQZWQHQWQ)
+![utili_tool](https://github.com/exyreams/collections/blob/main/utilx_tools.gif?raw=true)
 
 Utilix is a comprehensive command-line toolkit designed to simplify common data manipulation tasks directly within your terminal. With a variety of built-in utilities, Utilix empowers you to encode, convert, generate, and hash data efficiently without needing a graphical interface.
 
