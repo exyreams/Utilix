@@ -106,9 +106,9 @@ Generate secure hashes using **`SHA-1`**, **`SHA-256`**, **`SHA-384`**, and **`S
 ![number_base_converter_tool](https://github.com/user-attachments/assets/825825df-0e03-426f-98a4-0470aa28bacc)
 
 Convert numbers between binary, decimal, and hexadecimal representations, simplifying calculations and data processing. It can convert to:
-	- Binary ==> Decimal & Hexadecimal
-	- Decimal ==> Binary & Hexadecimal
-	- Hexadecimal ==> Binary & Decimal
+- Binary ==> Decimal & Hexadecimal
+- Decimal ==> Binary & Hexadecimal
+- Hexadecimal ==> Binary & Decimal
 - **Guide**:
 	- **`Esc`**         : Quits Program
 	- **`Tab`**         : Switch to Next Tool
