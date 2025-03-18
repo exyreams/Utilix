@@ -183,4 +183,4 @@ Generate version 4 (randomly generated) and version 7 (time-based) UUIDs, provid
 Export your results conveniently to text files in a designated **`export`** directory on the root of the program. **`Alt + x`** or **`x`** key can be used to export the files.
 
 ### **Utilix Demo**:
-[utilix_all_tools_demo.webm](https://github.com/user-attachments/assets/7b9bc66f-a3c3-4e13-bee9-a13549d487dd)
+[utilix_all_tools_demo.webm](https://github.com/exyreams/Utilix/blob/main/docs/utilix_all_tools_demo.webm)
