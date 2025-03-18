@@ -1,6 +1,6 @@
 ## Utilix: Command-Line Toolkit
 
-![utili_tool](https://github.com/exyreams/collections/blob/main/utilx_tools.gif?raw=true)
+![utili_tool](https://github.com/exyreams/Utilix/blob/main/docs/utilx_tools.gif)
 
 Utilix is a comprehensive command-line toolkit designed to simplify common data manipulation tasks directly within your terminal. With a variety of built-in utilities, Utilix empowers you to encode, convert, generate, and hash data efficiently without needing a graphical interface.
 
@@ -43,7 +43,7 @@ cargo run
 
 #### **Base64 Encoder/Decoder:**
 
-![base64_tool](https://github.com/user-attachments/assets/0711cf1c-31ab-459d-88db-77af91689ba5)
+![base64_tool](https://github.com/exyreams/Utilix/blob/main/docs/base64_tool.png)
 
 Encode data in Base64 format for storage, transmission, or embedding in URLs. Decode Base64-encoded strings to recover original data.
 - **Guide**:
@@ -55,7 +55,7 @@ Encode data in Base64 format for storage, transmission, or embedding in URLs. De
 
 #### **Color Code Converter:**
 
-![color_code_converter_tool](https://github.com/user-attachments/assets/fb291666-18e8-4028-a54a-de817e87e765)
+![color_code_converter_tool](https://github.com/exyreams/Utilix/blob/main/docs/color_code_converter_tool.png)
 
 Convert color codes between **`RGB`**, **`HEX`**, **`CMYK`**, and **`HSL`** formats, making it easy to work with different color representation systems. 
 - **Guide**:
@@ -70,7 +70,7 @@ Convert color codes between **`RGB`**, **`HEX`**, **`CMYK`**, and **`HSL`** form
 
 #### **Date Converter:**
 
-![date_converter_tool](https://github.com/user-attachments/assets/1c1f72af-8a78-46fe-9ccb-d2af7f1f51ab)
+![date_converter_tool](https://github.com/exyreams/Utilix/blob/main/docs/date_converter_tool.png)
 
 Convert dates between multiple formats, including **`RFC 3339`**, **`RFC 2822`**, **`ISO 8601`**, **`Unix timestamps`**, **`human-readable formats`**, and **`short date`** representations. 
 - **Guide**:
@@ -93,7 +93,7 @@ Convert dates between multiple formats, including **`RFC 3339`**, **`RFC 2822`**
 
 #### **Hash Generator:**
 
-![hash_generator_tool](https://github.com/user-attachments/assets/9ba6f51c-c888-4a87-85d1-179341fa6b1c)
+![hash_generator_tool](https://github.com/exyreams/Utilix/blob/main/docs/hash_generator_tool.png)
 
 Generate secure hashes using **`SHA-1`**, **`SHA-256`**, **`SHA-384`**, and **`SHA-512`** algorithms, ideal for data integrity verification or secure storage from the given input simultaneously.
 - **Guide**:
@@ -103,7 +103,7 @@ Generate secure hashes using **`SHA-1`**, **`SHA-256`**, **`SHA-384`**, and **`S
 
 #### **Number Base Converter:**
 
-![number_base_converter_tool](https://github.com/user-attachments/assets/825825df-0e03-426f-98a4-0470aa28bacc)
+![number_base_converter_tool](https://github.com/exyreams/Utilix/blob/main/docs/number_base_converter_tool.png)
 
 Convert numbers between binary, decimal, and hexadecimal representations, simplifying calculations and data processing. It can convert to:
 - Binary ==> Decimal & Hexadecimal
@@ -116,7 +116,7 @@ Convert numbers between binary, decimal, and hexadecimal representations, simpli
 
 #### **Password Generator:**
 
-![password_generator_tool](https://github.com/user-attachments/assets/c96c1b3d-fe15-40f1-97ab-fd146e30478b)
+![password_generator_tool](https://github.com/exyreams/Utilix/blob/main/docs/password_generator_tool.png)
 
 Generate strong and secure passwords with customization options, allowing for length control, inclusion of upper/lowercase letters, numbers, symbols, and character restriction settings.
 - **Settings Details:**
@@ -151,7 +151,7 @@ Generate strong and secure passwords with customization options, allowing for le
 
 #### **QR Code Generator:**
 
-![qr_generator_tool](https://github.com/user-attachments/assets/a9cae818-dfed-4248-9385-6d567c17614d)
+![qr_generator_tool](https://github.com/exyreams/Utilix/blob/main/docs/qr_generator_tool.png)
 
 Generate QR codes from URLs, text, and more.  utilix handles QR code creation and conveniently export the image in **`.png`** format, for more you can use QR help menu. it will automatically start generating the QR Code once you input values in the input field.
 - **Guide**:
@@ -163,7 +163,7 @@ Generate QR codes from URLs, text, and more.  utilix handles QR code creation an
 
 #### **UUID Generator (v4 & v7):**  
 
-![uuid_tool](https://github.com/user-attachments/assets/5033eed2-4cff-4aa6-81e1-495a6ccdb08b)
+![uuid_tool](https://github.com/exyreams/Utilix/blob/main/docs/uuid_tool.png)
 
 Generate version 4 (randomly generated) and version 7 (time-based) UUIDs, providing unique identifiers for various applications usecase.
 - **Settings:**
